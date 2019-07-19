@@ -1,0 +1,32 @@
+{
+  "name": "mostpeople-client",
+  "version": "1.0.0",
+  "description": "My mathematical Nuxt.js project",
+  "author": "kidow",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
+    "build": "nuxt build",
+    "start": "cross-env NODE_ENV=production node server/index.js",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/pwa": "^2.6.0",
+    "ant-design-vue": "^1.1.10",
+    "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "include-media": "^1.4.9",
+    "nuxt": "^2.0.0",
+    "open-color": "^1.7.0"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^24.1.0",
+    "jest": "^24.1.0",
+    "vue-jest": "^3.0.3",
+    "nodemon": "^1.18.9"
+  }
+}
