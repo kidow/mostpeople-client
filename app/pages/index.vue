@@ -1,5 +1,7 @@
 <template>
-  <div>asd</div>
+  <div>
+    <h1>asdasf</h1>
+  </div>
 </template>
 
 <script>
