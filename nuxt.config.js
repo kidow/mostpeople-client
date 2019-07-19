@@ -15,7 +15,14 @@ module.exports = {
         name: 'description'
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700&display=swap&subset=korean'
+      }
+    ]
   },
   loading: { color: '#fff' },
   css: ['ant-design-vue/dist/antd.css'],
