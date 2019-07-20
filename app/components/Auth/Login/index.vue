@@ -33,7 +33,7 @@
 
 <script>
 export default {
-  name: 'Login',
+  name: 'AuthLogin',
   methods: {
     redirectAfterLogin() {
       const { redirect } = this.$route.query

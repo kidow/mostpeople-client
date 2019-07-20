@@ -15,6 +15,9 @@ export default {
   components: {
     VueAuthLogin,
     VueLogo
-  }
+  },
+  head: _ => ({
+    title: '로그인 - 모스트피플'
+  })
 }
 </script>

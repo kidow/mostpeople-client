@@ -1,5 +1,5 @@
 const { NODE_ENV } = process.env
-const TITLE = 'Mostpeople'
+const TITLE = '모스트피플'
 const DESCRIPTION = 'Most people have a job.'
 const IMAGE = ''
 const PUBLIC_LINK = 'https://www.born-hater.com'
@@ -127,6 +127,27 @@ module.exports = {
     API_BASE_URL
   },
   build: {
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      config.module.rules.push({
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {
+                'primary-color': COLOR,
+                'link-color': COLOR
+              }
+            }
+          }
+        ]
+      })
+    }
   }
 }

@@ -5,7 +5,7 @@
       <a-step title="이메일 인증" />
       <a-step title="기본 정보" />
     </a-steps>
-    <vue-auth-signup />
+    <vue-auth-signup :step="step" @count="step += 1" />
   </div>
 </template>
 
@@ -13,6 +13,9 @@
 import VueAuthSignup from '~/components/Auth/Signup'
 export default {
   layout: 'auth',
+  head: _ => ({
+    title: '회원가입 - 모스트피플'
+  }),
   data: _ => ({
     step: 0
   }),
@@ -23,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.signup__container {
-  // width: 100%;
+.ant-steps {
+  padding-bottom: 1rem;
 }
 </style>
