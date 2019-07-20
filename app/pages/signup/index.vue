@@ -1,10 +1,10 @@
 <template>
   <div class="signup__container">
-    <a-steps progressDot :current="step" size="small">
+    <!-- <a-steps progressDot :current="step" size="small">
       <a-step title="가입 수단" />
       <a-step title="이메일 인증" />
       <a-step title="기본 정보" />
-    </a-steps>
+    </a-steps>-->
     <vue-auth-signup :step="step" @count="step += 1" />
   </div>
 </template>

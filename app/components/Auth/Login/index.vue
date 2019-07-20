@@ -56,21 +56,52 @@ export default {
       }
     },
     async facebookLogin() {
-      let clientId
+      let clientId = process.env.FACEBOOK_APP_ID
+
+      const getToken = () => {
+        return new Promise((resolve, reject) => {
+          const url = ``
+
+          const popup = window.open(
+            url,
+            'social_login',
+            'menubar=1, resizable=1, width=400, height=600'
+          )
+
+          const f = function(e) {
+            if (e.origin !== process.env.BASE_URL) return
+
+            const data = JSON.parse(e.data)
+            if (!data.success) {
+              popup.close()
+              reject(data.message)
+            } else {
+              resolve(data.access_token)
+            }
+            window.removeEventListener('message', f, false)
+          }
+
+          window.addEventListener('message', f)
+        })
+      }
+      try {
+        const accessToken = await getToken()
+        return
+        this.redirectAfterLogin()
+      } catch (err) {
+        this.error = err.response.data.message
+        console.log(err)
+      }
     },
     async googleLogin() {
       let clientId = process.env.GOOGLE_CLIENT_ID
-      let baseURL =
-        process.env.NODE_ENV === 'production'
-          ? 'https://api.mostpeople.kr'
-          : 'http://localhost:3001'
       let state = Math.random()
         .toString(36)
         .substring(2)
 
       const getToken = () => {
         return new Promise((resolve, reject) => {
-          const url = `https://accounts.google.com/o/oauth2/auth?redirect_uri=${baseURL}/auth/naver&client_id=${process.env.GOOGLE_APP_KEY}&response_type=code&approval_state=force&state=profile&scope=email%20profile`
+          const url = `https://accounts.google.com/o/oauth2/auth?redirect_uri=${process.env.API_BASE_URL}/auth/naver&client_id=${process.env.GOOGLE_APP_KEY}&response_type=code&approval_state=force&state=profile&scope=email%20profile`
 
           const popup = window.open(
             url,
@@ -99,11 +130,8 @@ export default {
         const accessToken = await getToken()
         return
         this.redirectAfterLogin()
-        const options = {
-          url: '/auth/google',
-          method: 'post'
-        }
       } catch (err) {
+        this.error = err.response.data.message
         console.log(err)
       }
     }

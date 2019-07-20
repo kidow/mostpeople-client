@@ -1,7 +1,7 @@
 <template>
   <div class="auth__box">
     <template v-if="step <= 1">
-      <form @submit.prevent="step ? verifyEmail : submitEmail">
+      <form @submit.prevent="submitEmail">
         <a-input size="large" :disabled="step === 1" v-model="email" placeholder="이메일을 입력해주세요" />
         <div style="height: 12px" />
         <a-input size="large" v-if="step === 1" v-model="code" placeholder="인증코드" />
@@ -13,23 +13,30 @@
           :disabled="!email"
           size="large"
           :loading="loading"
+          html-type="submit"
           block
         >이메일 전송</a-button>
       </form>
     </template>
     <template v-else>
-      <form @submit="resetPassword">
-      <a-input size="large" v-model="password" type="password" placeholder="새 비밀번호 (8 ~ 20자)" />
+      <form @submit.prevent="resetPassword">
+        <a-input size="large" v-model="email" disabled />
         <div style="height: 12px" />
-        <a-input size="large" v-model="passwordConfirm" type="password" placeholder="새 비밀번호 확인" /> 
+        <a-input size="large" v-model="password" type="password" placeholder="새 비밀번호 (8 ~ 20자)" />
+        <div style="height: 12px" />
+        <a-input size="large" v-model="passwordConfirm" type="password" placeholder="새 비밀번호 확인" />
         <div style="height: 12px" />
         <a-alert v-if="error" showIcon :message="error" type="error" banner />
-        <div style="height: 12px" v-if="error" />
-        <a-button 
-          block 
-          :class="{ disabled: !password || !passwordConfirm }" :disabled="!password || !passwordConfirm" 
-          size="large" 
-          :loading="loading">비밀번호 변경</a-button>
+        <a-alert v-if="success" showIcon message="성공적으로 변경하였습니다" type="success" banner />
+        <div style="height: 12px" v-if="error || success" />
+        <a-button
+          block
+          :class="{ disabled: !password || !passwordConfirm }"
+          :disabled="!password || !passwordConfirm"
+          size="large"
+          :loading="loading"
+          html-type="submit"
+        >비밀번호 변경</a-button>
       </form>
     </template>
   </div>
@@ -53,7 +60,8 @@ export default {
     code: '',
     codeConfirm: '',
     password: '',
-    passwordConfirm: ''
+    passwordConfirm: '',
+    success: false
   }),
   methods: {
     async submitEmail() {
@@ -75,19 +83,39 @@ export default {
         this.error = ''
       } catch (err) {
         console.log(err)
-        this.notify({
-          type: 'error',
-          message: '오류',
-          description: err.response.data.message
-        })
+        this.error = err.response.data.message
         this.loading = false
       }
     },
     verifyEmail() {
-      if (!this.code !== this.codeConfirm) return (this.error = '')
+      if (!this.code !== this.codeConfirm)
+        return (this.error = '코드가 일치하지 않습니다')
+      this.$emit('count')
     },
     async resetPassword() {
       this.error = ''
+      if (!isLength(this.password, { min: 8, max: 20 }))
+        return (this.error = '비밀번호는 8 ~ 20자 이내입니다')
+      if (this.password !== this.passwordConfirm)
+        return (this.error = '비밀번호가 일치하지 않습니다')
+      this.loading = true
+      const options = {
+        url: '/auth/forgot',
+        method: 'post',
+        data: {
+          email: this.email,
+          password: this.password
+        }
+      }
+      try {
+        await this.$axios(options)
+        this.success = true
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.response.data.message
+        this.loading = false
+        console.log(err)
+      }
     }
   }
 }
