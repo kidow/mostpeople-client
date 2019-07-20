@@ -37,6 +37,7 @@ export default {
   },
   methods: {
     onSearch(keyword) {
+      if (!keyword) return
       this.$router.push(`/search?keyword=${keyword}`)
     }
   },
