@@ -1,18 +1,16 @@
 <template>
   <vue-layout>
-    <vue-header />
     <nuxt />
     <a-divider />
     <vue-footer />
   </vue-layout>
 </template>
+
 <script>
-import VueHeader from '~/components/Header'
-import VueFooter from '~/components/Footer'
 import VueLayout from '~/components/Layout'
+import VueFooter from '~/components/Footer'
 export default {
   components: {
-    VueHeader,
     VueFooter,
     VueLayout
   }
