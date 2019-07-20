@@ -21,3 +21,12 @@ export default {
   })
 }
 </script>
+
+<style lang="scss" scoped>
+.auth__box {
+  text-align: center;
+  .auth__logo {
+    padding-bottom: 1rem;
+  }
+}
+</style>
