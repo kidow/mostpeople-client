@@ -14,7 +14,7 @@
       </li>
       <li>
         <span class="separator">•</span>
-        <nuxt-link to="/ads">광고문의</nuxt-link>
+        <nuxt-link to="/marketing">광고문의</nuxt-link>
       </li>
       <li>
         <span class="separator">•</span>

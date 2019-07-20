@@ -1,4 +1,5 @@
 @import './color';
+@import './ant-design';
 
 html {
   height: 100%;
@@ -14,9 +15,11 @@ body {
 }
 
 a {
+  color: $oc-gray-6;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
+    color: $oc-gray-8;
   }
 }
 
