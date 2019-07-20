@@ -3,10 +3,15 @@
     <div class="header__box" v-if="!$device.isMobile">
       <vue-logo />
       <a-input-search placeholder="통합검색" size="large" @search="onSearch" />
-      <span>
+      <span v-if="!isLoggedIn" class="text">
         <nuxt-link to="/login">로그인</nuxt-link>
         <a-divider type="vertical" />
         <nuxt-link to="/signup">회원가입</nuxt-link>
+      </span>
+      <span v-else class="text">
+        <nuxt-link to="/profile">내 정보</nuxt-link>
+        <a-divider type="vertical" />
+        <span class="logout">로그아웃</span>
       </span>
     </div>
     <div class="header__box__mobile" v-else>
@@ -54,6 +59,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/scss/media.scss';
+@import '~/assets/scss/color.scss';
 
 .header__container {
   padding-top: 3rem;
@@ -66,6 +72,16 @@ export default {
     align-items: center;
     .ant-input-affix-wrapper {
       max-width: 300px;
+    }
+    .text {
+      .logout {
+        color: $oc-gray-6;
+        cursor: pointer;
+        &:hover {
+          color: $oc-gray-8;
+          text-decoration: underline;
+        }
+      }
     }
   }
   .header__box__mobile {
