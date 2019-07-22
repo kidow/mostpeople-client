@@ -52,7 +52,8 @@ export default {
     })
   },
   data: _ => ({
-    visible: false
+    visible: false,
+    menu: ['mail']
   })
 }
 </script>

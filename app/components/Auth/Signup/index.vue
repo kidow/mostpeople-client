@@ -48,6 +48,14 @@
         <div style="height: 12px" />
         <a-input v-model="password" placeholder="비밀번호 (8 ~ 20자리)" type="password" size="large" />
         <div style="height: 12px" />
+        <a-auto-complete
+          :dataSource="jobData"
+          placeholder="직업 (선택)"
+          @select="onSelect"
+          @search="onSearch"
+          size="large"
+        />
+        <div style="height: 12px" />
         <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
           <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>에 동의합니다
         </a-checkbox>
@@ -61,7 +69,7 @@
           @click="onSignup"
           html-type="submit"
           size="large"
-          :disabled="!email || !nickname || !password || !checked"
+          :disabled="!email || !nickname || !password || !checked || !job"
         >가입하기</a-button>
       </form>
     </template>
@@ -105,6 +113,8 @@ export default {
       this.error = ''
     },
     async onSignup() {
+      console.log(this.job)
+      return
       this.error = ''
       if (!isLength(this.nickname, { min: 4, max: 8 }))
         return (this.error = '닉네임은 4 ~ 8자리로 입력해주세요')
@@ -126,6 +136,12 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    onSearch(val) {
+      console.log('search :', val)
+    },
+    onSelect(val) {
+      console.log('select :', val)
     }
   },
   data: _ => ({
@@ -136,13 +152,27 @@ export default {
     codeConfirm: '',
     nickname: '',
     password: '',
-    checked: false
+    checked: false,
+    job: '',
+    jobData: ['백수', '개발자']
   }),
   props: {
     step: {
       type: Number,
       default: 0
     }
+  },
+  async asyncData({ app }) {
+    // const options = {
+    //   url: '/jobs',
+    //   methods: 'get'
+    // }
+    // try {
+    //   const { data } = await app.$axios(options)
+    //   this.jobData = data
+    // } catch (err) {
+    //   console.log(err)
+    // }
   }
 }
 </script>

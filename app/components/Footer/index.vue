@@ -40,6 +40,9 @@ footer {
     padding: 0;
     margin: 0;
     font-size: 14px;
+    @include media('<phone') {
+      font-size: 12px;
+    }
     li {
       display: inline-block;
       a {
