@@ -106,7 +106,12 @@ module.exports = {
   loading: { color: COLOR },
   css: ['ant-design-vue/dist/antd.css', '~/assets/scss/main.scss'],
   plugins: ['@/plugins/antd-ui'],
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-device-detect'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/pwa',
+    'nuxt-device-detect',
+    ['@nuxtjs/moment', { locales: ['ko'], defaultLocale: 'ko' }]
+  ],
   axios: {
     baseURL: API_BASE_URL,
     credentials: true,

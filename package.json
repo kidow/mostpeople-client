@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/moment": "^1.2.0",
     "@nuxtjs/pwa": "^2.6.0",
     "ant-design-vue": "^1.1.10",
     "cross-env": "^5.2.0",
@@ -24,6 +25,7 @@
     "nuxt": "^2.0.0",
     "nuxt-device-detect": "^1.1.5",
     "open-color": "^1.7.0",
+    "reqwest": "^2.0.5",
     "sass-loader": "^7.1.0",
     "validator": "^11.1.0",
     "vue-count-to": "^1.0.13"

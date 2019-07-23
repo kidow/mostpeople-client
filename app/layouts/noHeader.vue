@@ -3,6 +3,7 @@
     <nuxt />
     <a-divider />
     <vue-footer />
+    <a-back-top />
   </vue-layout>
 </template>
 

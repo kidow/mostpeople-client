@@ -1,7 +1,7 @@
 <template>
   <a-list :grid="{ gutter: 16, lg: 4, sm: 3, xs: 2 }" :dataSource="list">
     <a-list-item slot="renderItem" slot-scope="item">
-      <a-card hoverable style="width: 200px">
+      <a-card hoverable style="width: 200px" @click="cardClick(item)">
         <img alt="example" :src="item.src" slot="cover" />
         <a-card-meta>
           <template slot="title">{{ item.title }}</template>
@@ -26,6 +26,11 @@ export default {
     list: {
       type: Array,
       default: _ => []
+    }
+  },
+  methods: {
+    cardClick(item) {
+      this.$router.push(`/board/${item.label}/${item.id}`)
     }
   }
 }

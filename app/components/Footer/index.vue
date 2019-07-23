@@ -35,7 +35,7 @@ export default {
 @import '~/assets/scss/media.scss';
 
 footer {
-  height: 250px;
+  height: 150px;
   ul {
     padding: 0;
     margin: 0;

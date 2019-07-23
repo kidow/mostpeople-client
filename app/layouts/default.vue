@@ -1,7 +1,6 @@
 <template>
   <vue-layout>
     <vue-header />
-    <a-divider />
     <nuxt />
     <a-divider />
     <vue-footer />
