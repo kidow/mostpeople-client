@@ -8,15 +8,6 @@
       <vue-list-home :list="cards" />
       <span>직업 수 워크넷 기준 6025개</span>
     </div>
-    <!-- <div class="card__container">
-      <div style="margin-bottom: 8px;">
-        <span
-          style="font-size: 24px; font-weight: bold; margin-right: 8px"
-          class="card__title"
-        >인기 게시판</span>
-      </div>
-      <vue-list-home :list="cards" />
-    </div>-->
     <div class="card__container">
       <div style="margin-bottom: 8px;">
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">게시판</span>

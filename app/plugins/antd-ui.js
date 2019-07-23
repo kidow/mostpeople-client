@@ -10,6 +10,11 @@ export default () => {
             message: message || '성공',
             description: description || '성공적으로 적용하였습니다'
           })
+        },
+        message({ type, message }) {
+          this.$message[type || 'success'](
+            message || '성공적으로 적용하였습니다'
+          )
         }
       }
     })
