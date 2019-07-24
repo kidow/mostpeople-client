@@ -2,8 +2,53 @@
   <div>
     <a-tabs type="card" defaultActiveKey="1" :tabPosition="$device.isMobile ? 'top' : 'left'">
       <a-tab-pane tab="기본 정보" key="1"></a-tab-pane>
-      <a-tab-pane tab="비밀번호 변경" key="2">Content of tab 2</a-tab-pane>
-      <a-tab-pane tab="계정 관리" key="3">
+      <a-tab-pane tab="내 활동" key="2">
+        <div style="font-size: 16px; line-height: 2.0">
+          게시글
+          <vue-count-to style="font-weight: bold; font-size: 24px" :end-val="130" :duration="1500" />개
+          <div>as</div>
+        </div>
+        <div style="font-size: 16px">
+          댓글
+          <vue-count-to
+            style="font-weight: bold; font-size: 24px; line-height: 2.0"
+            :end-val="10"
+            :duration="1500"
+          />개
+        </div>
+      </a-tab-pane>
+      <a-tab-pane tab="비밀번호 변경" key="3">
+        <form @submit.prevent="changePassword">
+          <a-input
+            style="width: 300px; display: block; margin-bottom: 8px"
+            size="large"
+            type="password"
+            placeholder="기존 비밀번호"
+            v-model="password"
+          />
+          <a-input
+            style="width: 300px; display: block; margin-bottom: 8px"
+            size="large"
+            type="password"
+            placeholder="새 비밀번호 (8 ~ 20자)"
+            v-model="newPassword"
+          />
+          <a-input
+            size="large"
+            style="width: 300px; display: block; margin-bottom: 8px"
+            type="password"
+            placeholder="새 비밀번호 확인"
+            v-model="newPasswordConfirm"
+          />
+          <!-- <a-alert type="error" message="Error text" banner /> -->
+          <a-button
+            :disabled="!password || !newPassword || !newPasswordConfirm"
+            size="large"
+            type="primary"
+          >변경하기</a-button>
+        </form>
+      </a-tab-pane>
+      <a-tab-pane tab="계정 탈퇴" key="4">
         <h1 style="font-weight: bold;">탈퇴 안내</h1>
         <p class="desc">회원 탈퇴를 하시기 전에 안내 사항을 꼭 확인해주세요.</p>
         <ul>
@@ -16,12 +61,13 @@
         </div>
         <a-button :disabled="!checked" size="large" type="danger" @click="resign">회원 탈퇴하기</a-button>
       </a-tab-pane>
-      <a-tab-pane tab="알림 설정" key="4">Content of tab 4</a-tab-pane>
+      <a-tab-pane tab="알림 설정" key="5">준비중입니다.</a-tab-pane>
     </a-tabs>
   </div>
 </template>
 
 <script>
+import VueCountTo from 'vue-count-to'
 export default {
   head: _ => ({
     title: '내정보 - 모스트피플'
@@ -30,7 +76,7 @@ export default {
     email: '',
     password: '',
     checked: false,
-    passwordConfirm: '',
+    newPasswordConfirm: '',
     newPassword: '',
     loading: false,
     nickname: '',
@@ -49,6 +95,9 @@ export default {
         }
       })
     }
+  },
+  components: {
+    VueCountTo
   }
 }
 </script>
@@ -62,7 +111,7 @@ export default {
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
   border-bottom: 1px solid #e8e8e8;
-  min-height: 200px;
+  min-height: 300px;
   padding: 1rem;
 }
 </style>
