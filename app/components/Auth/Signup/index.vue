@@ -48,12 +48,13 @@
         <div style="height: 12px" />
         <a-input v-model="password" placeholder="비밀번호 (8 ~ 20자리)" type="password" size="large" />
         <div style="height: 12px" />
-        <a-auto-complete
-          :dataSource="jobData"
-          placeholder="직업 (선택)"
-          @select="onSelect"
-          @search="onSearch"
+        <a-cascader
+          expandTrigger="hover"
           size="large"
+          :options="options"
+          :showSearch="{filter}"
+          @change="onChange"
+          placeholder="직업"
         />
         <div style="height: 12px" />
         <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
@@ -113,8 +114,6 @@ export default {
       this.error = ''
     },
     async onSignup() {
-      console.log(this.job)
-      return
       this.error = ''
       if (!isLength(this.nickname, { min: 4, max: 8 }))
         return (this.error = '닉네임은 4 ~ 8자리로 입력해주세요')
@@ -137,11 +136,16 @@ export default {
         console.log(err)
       }
     },
-    onSearch(val) {
-      console.log('search :', val)
+    onChange(value, selectedOptions) {
+      this.occupation = value[0]
+      this.category = value[1]
+      console.log(value, selectedOptions)
     },
-    onSelect(val) {
-      console.log('select :', val)
+    filter(inputValue, path) {
+      return path.some(
+        option =>
+          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+      )
     }
   },
   data: _ => ({
@@ -153,8 +157,50 @@ export default {
     nickname: '',
     password: '',
     checked: false,
-    job: '',
-    jobData: ['백수', '개발자']
+    occupation: '',
+    category: '',
+    options: [
+      {
+        value: 'professional',
+        label: '전문직',
+        children: [
+          {
+            value: 'lawyer',
+            label: '변호사'
+          },
+          {
+            value: 'doctor',
+            label: '의사'
+          }
+        ]
+      },
+      {
+        value: 'student',
+        label: '학생',
+        children: [
+          {
+            value: 'elementary',
+            label: '초등학생'
+          },
+          {
+            value: 'middle',
+            label: '중학생'
+          },
+          {
+            value: 'high',
+            label: '고등학생'
+          },
+          {
+            value: 'university',
+            label: '대학생'
+          },
+          {
+            value: 'pregraduate',
+            label: '대학원생'
+          }
+        ]
+      }
+    ]
   }),
   props: {
     step: {

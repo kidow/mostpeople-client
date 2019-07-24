@@ -5,6 +5,7 @@
         placeholder="직종 / 직업"
         @change="onChange"
         :options="options"
+        expandTrigger="hover"
         size="large"
         v-model="cascader"
       />

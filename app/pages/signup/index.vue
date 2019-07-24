@@ -17,7 +17,7 @@ export default {
     title: '회원가입 - 모스트피플'
   }),
   data: _ => ({
-    step: 2
+    step: 0
   }),
   components: {
     VueAuthSignup

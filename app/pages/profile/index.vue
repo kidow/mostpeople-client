@@ -1,51 +1,139 @@
 <template>
   <div>
     <a-tabs type="card" defaultActiveKey="1" :tabPosition="$device.isMobile ? 'top' : 'left'">
-      <a-tab-pane tab="기본 정보" key="1"></a-tab-pane>
+      <a-tab-pane tab="기본 정보" key="1">
+        <span class="basic">
+          <label for="email">이메일</label>
+          <a-input size="large" style="width: 300px;" id="email" v-model="email" disabled />
+        </span>
+        <span class="basic">
+          <label for="nickname">닉네임</label>
+          <a-input
+            size="large"
+            placeholder="닉네임 (4 ~ 8자)"
+            style="width: 300px;"
+            id="nickname"
+            v-model="nickname"
+          />
+        </span>
+        <span class="basic">
+          <label for="job">직업</label>
+          <a-cascader
+            style="width: 300px"
+            expandTrigger="hover"
+            size="large"
+            :options="options"
+            :showSearch="{filter}"
+            @change="onChange"
+            placeholder="직업"
+          />
+        </span>
+        <span class="basic">
+          <a-button
+            :disabled="!email || !nickname || !occupation"
+            size="large"
+            style="display: block; margin-top: 1.5rem"
+            type="primary"
+          >변경하기</a-button>
+        </span>
+      </a-tab-pane>
       <a-tab-pane tab="내 활동" key="2">
         <div style="font-size: 16px; line-height: 2.0">
           게시글
-          <vue-count-to style="font-weight: bold; font-size: 24px" :end-val="130" :duration="1500" />개
-          <div>as</div>
+          <vue-count-to style="font-weight: bold; font-size: 28px" :end-val="130" :duration="1500" />개
+          <div>
+            <a-list
+              itemLayout="vertical"
+              size="large"
+              :pagination="pagination"
+              :dataSource="listData"
+            >
+              <a-list-item slot="renderItem" slot-scope="item" key="item.title">
+                <template slot="actions" v-for="{type, text} in actions">
+                  <span :key="type">
+                    <a-icon :type="type" style="margin-right: 8px" />
+                    {{text}}
+                  </span>
+                </template>
+                <img
+                  slot="extra"
+                  width="272"
+                  style="cursor: pointer"
+                  alt="logo"
+                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                  @click="$router.push(item.href)"
+                />
+                <a-list-item-meta>
+                  <nuxt-link slot="title" :to="item.href">{{item.title}}</nuxt-link>
+                </a-list-item-meta>
+                {{item.content}}
+              </a-list-item>
+            </a-list>
+          </div>
         </div>
         <div style="font-size: 16px">
           댓글
           <vue-count-to
-            style="font-weight: bold; font-size: 24px; line-height: 2.0"
+            style="font-weight: bold; font-size: 28px; line-height: 2.0"
             :end-val="10"
             :duration="1500"
           />개
+          <div>
+            <a-list class="comment-list" itemLayout="horizontal" :dataSource="data">
+              <a-list-item slot="renderItem" slot-scope="item">
+                <a-comment :author="item.author" :avatar="item.avatar">
+                  <template slot="actions">
+                    <span v-for="(action, i) in item.actions" :key="i">{{action}}</span>
+                  </template>
+                  <p slot="content">{{item.content}}</p>
+                  <a-tooltip slot="datetime" :title="item.datetime">
+                    <span>{{item.datetime}}</span>
+                  </a-tooltip>
+                </a-comment>
+              </a-list-item>
+            </a-list>
+          </div>
         </div>
       </a-tab-pane>
       <a-tab-pane tab="비밀번호 변경" key="3">
         <form @submit.prevent="changePassword">
-          <a-input
-            style="width: 300px; display: block; margin-bottom: 8px"
-            size="large"
-            type="password"
-            placeholder="기존 비밀번호"
-            v-model="password"
-          />
-          <a-input
-            style="width: 300px; display: block; margin-bottom: 8px"
-            size="large"
-            type="password"
-            placeholder="새 비밀번호 (8 ~ 20자)"
-            v-model="newPassword"
-          />
-          <a-input
-            size="large"
-            style="width: 300px; display: block; margin-bottom: 8px"
-            type="password"
-            placeholder="새 비밀번호 확인"
-            v-model="newPasswordConfirm"
-          />
-          <!-- <a-alert type="error" message="Error text" banner /> -->
-          <a-button
-            :disabled="!password || !newPassword || !newPasswordConfirm"
-            size="large"
-            type="primary"
-          >변경하기</a-button>
+          <span class="basic">
+            <label for="password">기존 비밀번호</label>
+            <a-input
+              size="large"
+              style="width: 300px;"
+              id="password"
+              v-model="password"
+              type="password"
+            />
+          </span>
+          <span class="basic">
+            <label for="newPassword">새 비밀번호</label>
+            <a-input
+              size="large"
+              placeholder="8 ~ 20자"
+              style="width: 300px;"
+              id="newPassword"
+              v-model="newPassword"
+            />
+          </span>
+          <span class="basic">
+            <label for="newPasswordConfirm">새 비밀번호 확인</label>
+            <a-input
+              size="large"
+              style="width: 300px;"
+              id="newPasswordConfirm"
+              v-model="newPasswordConfirm"
+            />
+          </span>
+          <span class="basic">
+            <a-button
+              :disabled="!email || !nickname || !occupation"
+              size="large"
+              style="display: block"
+              type="primary"
+            >변경하기</a-button>
+          </span>
         </form>
       </a-tab-pane>
       <a-tab-pane tab="계정 탈퇴" key="4">
@@ -67,12 +155,52 @@
 </template>
 
 <script>
+const listData = []
+for (let i = 0; i < 23; i++) {
+  listData.push({
+    href: 'https://vue.ant.design/',
+    title: `ant design vue part ${i}`,
+    content:
+      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
+  })
+}
 import VueCountTo from 'vue-count-to'
 export default {
   head: _ => ({
     title: '내정보 - 모스트피플'
   }),
   data: _ => ({
+    listData,
+    pagination: {
+      onChange: page => console.log(page),
+      pageSize: 5,
+      size: 'small'
+    },
+    actions: [
+      { type: 'like', text: '156' },
+      { type: 'message', text: '2' },
+      { type: 'eye', text: '156' }
+    ],
+    data: [
+      {
+        actions: ['수정', '삭제'],
+        author: 'Han Solo',
+        avatar:
+          'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        content:
+          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+        datetime: 'a day ago'
+      },
+      {
+        actions: ['수정', '삭제'],
+        author: 'Han Solo',
+        avatar:
+          'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+        content:
+          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+        datetime: '2 days ago'
+      }
+    ],
     email: '',
     password: '',
     checked: false,
@@ -80,7 +208,50 @@ export default {
     newPassword: '',
     loading: false,
     nickname: '',
-    jos: ''
+    category: '',
+    occupation: '',
+    options: [
+      {
+        value: 'professional',
+        label: '전문직',
+        children: [
+          {
+            value: 'lawyer',
+            label: '변호사'
+          },
+          {
+            value: 'doctor',
+            label: '의사'
+          }
+        ]
+      },
+      {
+        value: 'student',
+        label: '학생',
+        children: [
+          {
+            value: 'elementary',
+            label: '초등학생'
+          },
+          {
+            value: 'middle',
+            label: '중학생'
+          },
+          {
+            value: 'high',
+            label: '고등학생'
+          },
+          {
+            value: 'university',
+            label: '대학생'
+          },
+          {
+            value: 'pregraduate',
+            label: '대학원생'
+          }
+        ]
+      }
+    ]
   }),
   methods: {
     resign() {
@@ -94,6 +265,17 @@ export default {
           console.log(1)
         }
       })
+    },
+    onChange(value, selectedOptions) {
+      this.occupation = value[0]
+      this.category = value[1]
+      console.log(value, selectedOptions)
+    },
+    filter(inputValue, path) {
+      return path.some(
+        option =>
+          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+      )
     }
   },
   components: {
@@ -129,5 +311,26 @@ export default {
 
 ul {
   list-style: initial;
+}
+
+.basic {
+  label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  input {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.ant-list-item-meta {
+  margin-top: 20px;
+}
+
+.ant-list-item-meta-title {
+  font-size: 24px;
+  margin-bottom: 6px;
 }
 </style>
