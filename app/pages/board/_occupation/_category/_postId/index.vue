@@ -3,10 +3,8 @@
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <h1>롤체 너무 꿀잼이다</h1>
     <div class="user-meta">
-      <template @click="$router.push('/profile/@kidow')">
-        <a-avatar icon="user" class="avatar" />
-        <span class="id">kidow</span>
-      </template>
+      <a-avatar icon="user" class="avatar" @click="$router.push('/profile/@kidow')" />
+      <span class="id" @click="$router.push('/profile/@kidow')">kidow</span>
       <a-divider type="vertical" />
       <span class="date">2019-03-12 18:29:43</span>
     </div>

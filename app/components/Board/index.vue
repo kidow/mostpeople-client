@@ -127,3 +127,9 @@ export default {
   }
 }
 </style>
+
+<style lang="scss">
+.ant-tree-iconEle {
+  width: 3px !important;
+}
+</style>
