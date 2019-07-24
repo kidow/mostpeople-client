@@ -2,8 +2,15 @@
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <h1>롤체 너무 꿀잼이다</h1>
-    <div>2019-03-12 18:29:43</div>
-    <div>넘모 재밌어</div>
+    <div class="user-meta">
+      <template @click="$router.push('/profile/@kidow')">
+        <a-avatar icon="user" class="avatar" />
+        <span class="id">kidow</span>
+      </template>
+      <a-divider type="vertical" />
+      <span class="date">2019-03-12 18:29:43</span>
+    </div>
+    <vue-editor :readonly="true" value="<p>asdsfs</p>" />
 
     <vue-comments-list :comments="comments" @comment="onCommentPush" />
 
@@ -27,6 +34,7 @@
 import VueCommentsList from '~/components/List/Comment'
 import VueTable from '~/components/Table'
 import VueBreadcrumb from '~/components/Breadcrumb'
+import VueEditor from '~/components/Editor'
 export default {
   // validate({ params }) {
   //   return /[0-9a-f]{32}/.test(params.postId)
@@ -34,7 +42,8 @@ export default {
   components: {
     VueBreadcrumb,
     VueTable,
-    VueCommentsList
+    VueCommentsList,
+    VueEditor
   },
   data: _ => ({
     breadcrumbs: [
@@ -83,7 +92,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/scss/color.scss';
+
 h1 {
   margin-top: 0.5em;
+  font-size: 30px;
+  font-weight: 600;
+}
+.user-meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  .id {
+    margin-left: 10px;
+    font-size: 20px;
+  }
+  .avatar,
+  .id {
+    cursor: pointer;
+  }
+  .date {
+    color: $oc-gray-5;
+  }
 }
 </style>

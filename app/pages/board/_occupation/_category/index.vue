@@ -1,10 +1,10 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <a-card :loading="loading" :title="'프로게이머는(은) 뭔가요?'">
+    <a-card :loading="loading" :title="'프로게이머(이)란?'">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
-        <h1>개좃같은것ㅁㄴㅇㅁㄴㄹㅁㄹㅁ</h1>
+        <h1>그냥 게임만 주구장창 하는 폐인</h1>
         <div style="display: flex; justify-content: space-between">
           <span class="createdAt">{{ $moment().format('YYYY-MM-DD hh:mm:ss') }}</span>
           <span class="author">- {{ 'dsadaf' }} -</span>

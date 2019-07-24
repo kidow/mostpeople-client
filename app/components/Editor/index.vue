@@ -150,7 +150,7 @@ export default {
   color: black;
   line-height: 1.8;
   font-size: 1rem;
-  min-height: 35vh;
+  min-height: 20vh;
 
   img {
     width: 100% !important;

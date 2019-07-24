@@ -1,11 +1,13 @@
 <template>
   <div>
-    <a-list
-      v-if="comments.length"
-      :dataSource="comments"
-      :header="`댓글 ${comments.length}`"
-      itemLayout="horizontal"
-    >
+    <div class="comment__header">
+      <span>댓글 {{ comments.length }}</span>
+      <a-divider type="vertical" />
+      <span class="recommend">추천 {{ comments.length }}</span>
+      <a-divider type="vertical" />
+      <span>조회수 {{ comments.length }}</span>
+    </div>
+    <a-list v-if="comments.length" :dataSource="comments" itemLayout="horizontal">
       <a-list-item slot="renderItem" slot-scope="item">
         <a-comment
           :author="item.author"
@@ -187,5 +189,10 @@ export default {
 <style lang="scss" scoped>
 .ant-list-item {
   padding: 0;
+}
+.comment__header {
+  .recommend {
+    cursor: pointer;
+  }
 }
 </style>
