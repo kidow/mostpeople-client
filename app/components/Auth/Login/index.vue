@@ -40,7 +40,8 @@ export default {
       location.href = redirect || '/'
     },
     async onSubmit() {
-      const options = {
+      this.loading = true
+      let options = {
         url: '/auth/login',
         method: 'post',
         data: {
@@ -49,9 +50,13 @@ export default {
         }
       }
       try {
+        const token = await this.$recaptcha.execute('login')
+        if (!token) return
+        options.data.token = token
         await this.$axios(options)
         this.redirectAfterLogin()
       } catch (err) {
+        this.loading = false
         console.log(err)
       }
     },

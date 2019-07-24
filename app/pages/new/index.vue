@@ -43,6 +43,7 @@ export default {
     board: '',
     content: '',
     dataSource: [],
+    loading: false,
     options: [
       {
         value: 'student',
@@ -95,7 +96,7 @@ export default {
       this.category = value[1]
     },
     async onSubmit() {
-      const options = {
+      let options = {
         url: '/posts',
         method: 'post',
         data: {
@@ -106,6 +107,10 @@ export default {
         }
       }
       try {
+        const token = await this.$recaptcha.execute('social')
+        if (!token) return
+        options.data.token = token
+        this.loading = true
         const { data } = await this.$axios(options)
         this.$router.push(
           `/board/${data.occupation}/${data.category}/${data.id}`
@@ -113,6 +118,7 @@ export default {
         console.log(1)
       } catch (err) {
         console.log(err)
+        this.loading = false
       }
     }
   },

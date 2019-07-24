@@ -110,7 +110,9 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     'nuxt-device-detect',
-    ['@nuxtjs/moment', { locales: ['ko'], defaultLocale: 'ko' }]
+    ['@nuxtjs/moment', { locales: ['ko'], defaultLocale: 'ko' }],
+    '@nuxtjs/recaptcha',
+    ['@nuxtjs/sitemap']
   ],
   axios: {
     baseURL: API_BASE_URL,
@@ -126,6 +128,11 @@ module.exports = {
         'application/x-www-form-urlencoded;application/json'
       return config
     }
+  },
+  recaptcha: {
+    hideBadge: true,
+    siteKey: '6LdDgq0UAAAAAAT2cDFE9gl-IPZPSHPd7mfbmPEa',
+    version: 3
   },
   env: {
     BASE_URL,
