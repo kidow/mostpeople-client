@@ -29,19 +29,31 @@ export default {
         title: '취업하기 힘든 이유',
         src:
           'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        category: '백수',
+        category: {
+          value: 'basic',
+          label: '기본'
+        },
         commentsLength: 15,
         likesLength: 30,
-        label: 'jobless'
+        occupation: {
+          value: 'jobless',
+          label: '무직'
+        }
       },
       {
         id: 2,
         title: '롤체 너무 재밌따',
         src: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
-        category: '프로게이머',
+        category: {
+          value: 'university',
+          label: '대학생'
+        },
         commentsLength: 15,
         likesLength: 30,
-        label: 'progamer'
+        occupation: {
+          value: 'student',
+          label: '학생'
+        }
       }
     ]
   }),

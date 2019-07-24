@@ -63,10 +63,7 @@ export default {
 @import '~/assets/scss/color.scss';
 
 .header__container {
-  padding: 3rem 0 1rem;
-  @include media('<phone') {
-    padding: 1rem 0;
-  }
+  padding-bottom: 1rem;
   .header__box {
     display: flex;
     justify-content: space-between;

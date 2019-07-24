@@ -16,7 +16,6 @@ export default {
   name: 'Board',
   methods: {
     onSelect(selectedKeys) {
-      if (!isNaN(selectedKeys[0])) return
       this.$router.push(`/board/${selectedKeys[0]}`)
     }
   },
@@ -27,15 +26,15 @@ export default {
         [
           {
             title: '전문직',
-            key: '0',
+            key: 'professional/basic',
             children: [
               {
                 title: '의사',
-                key: 'doctor'
+                key: 'professional/doctor'
               },
               {
                 title: '변호사',
-                key: 'lawyer'
+                key: 'professional/lawyer'
               }
             ]
           }
@@ -43,23 +42,27 @@ export default {
         [
           {
             title: '학생',
-            key: '1',
+            key: 'student/basic',
             children: [
               {
                 title: '초등학생',
-                key: 'elementaryschoolstudent'
+                key: 'student/elementary'
               },
               {
                 title: '중학생',
-                key: 'middleschoolstudent'
+                key: 'student/middle'
               },
               {
                 title: '고등학생',
-                key: 'highschoolstudent'
+                key: 'student/high'
               },
               {
                 title: '대학생',
-                key: 'universitystudent'
+                key: 'student/university'
+              },
+              {
+                title: '대학원생',
+                key: 'student/postgraduate'
               }
             ]
           }
@@ -77,6 +80,7 @@ export default {
   border: 1px solid $oc-gray-4;
   border-radius: 4px;
   padding: 8px;
+  background: white;
   .draggable-tree {
     display: inline-flex;
   }

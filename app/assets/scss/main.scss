@@ -1,5 +1,6 @@
 @import './color';
 @import './ant-design';
+@import './media';
 
 html {
   height: 100%;
@@ -7,6 +8,10 @@ html {
 
 body {
   margin: 0;
+  padding: 3rem 0;
+  @include media('<phone') {
+    padding: 1rem 0;
+  }
   background: $oc-gray-0;
   font-family: 'Nanum Gothic', sans-serif;
 }

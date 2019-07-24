@@ -5,7 +5,7 @@
         <img alt="example" :src="item.src" slot="cover" />
         <a-card-meta>
           <template slot="title">{{ item.title }}</template>
-          <template slot="description">{{ item.category }}</template>
+          <template slot="description">{{ item.occupation.label }} > {{ item.category.label}}</template>
           <template slot="description">
             <div>
               <a-icon type="message" />
@@ -30,7 +30,9 @@ export default {
   },
   methods: {
     cardClick(item) {
-      this.$router.push(`/board/${item.label}/${item.id}`)
+      this.$router.push(
+        `/board/${item.occupation.value}/${item.category.value}/${item.id}`
+      )
     }
   }
 }

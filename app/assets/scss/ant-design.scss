@@ -7,3 +7,15 @@
 .ant-table-row {
   cursor: pointer;
 }
+
+.ant-table-body {
+  background: white;
+}
+
+thead {
+  tr {
+    th {
+      background: $oc-gray-2 !important;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 <template>
-  <a-table :dataSource="dataSource" :columns="columns" :loading="loading" :customRow="customRow"></a-table>
+  <a-table size="small" :dataSource="dataSource" :columns="columns" :loading="loading" :customRow="customRow"></a-table>
 </template>
 
 <script>
@@ -17,7 +17,7 @@ export default {
       type: Array,
       default: _ => [
         {
-          title: '번호',
+          title: '',
           dataIndex: 'id'
         },
         {
