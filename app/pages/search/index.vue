@@ -75,6 +75,9 @@ export default {
   },
   data: _ => ({
     count: 345
+  }),
+  head: _ => ({
+    title: '검색 - 모스트피플'
   })
 }
 </script>

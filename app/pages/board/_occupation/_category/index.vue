@@ -118,7 +118,10 @@ export default {
   components: {
     VueTable,
     VueBreadcrumb
-  }
+  },
+  head: _ => ({
+    title: '프로게이머 - 모스트피플'
+  })
 }
 </script>
 

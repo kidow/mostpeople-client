@@ -75,7 +75,10 @@ export default {
     onCommentPush(comment) {
       this.comments.push(comment)
     }
-  }
+  },
+  head: _ => ({
+    title: '롤체 너무 꿀잼이다 - 모스트피플'
+  })
 }
 </script>
 
