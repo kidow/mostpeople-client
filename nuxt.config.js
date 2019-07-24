@@ -4,6 +4,7 @@ const DESCRIPTION = 'Most people have a job.'
 const IMAGE = ''
 const PUBLIC_LINK = 'https://www.born-hater.com'
 const COLOR = '#41b883'
+const RECAPTCHA_KEY = '6LdDgq0UAAAAAAT2cDFE9gl-IPZPSHPd7mfbmPEa'
 const BASE_URL =
   NODE_ENV === 'production'
     ? 'https://www.mostpeople.kr'
@@ -131,12 +132,13 @@ module.exports = {
   },
   recaptcha: {
     hideBadge: true,
-    siteKey: '6LdDgq0UAAAAAAT2cDFE9gl-IPZPSHPd7mfbmPEa',
+    siteKey: RECAPTCHA_KEY,
     version: 3
   },
   env: {
     BASE_URL,
-    API_BASE_URL
+    API_BASE_URL,
+    RECAPTCHA_KEY
   },
   build: {
     extend(config, ctx) {

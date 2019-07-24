@@ -1,6 +1,7 @@
 <template>
   <div class="board__container">
     <a-tree
+      showIcon
       v-for="(job, i) in jobs"
       :key="i"
       class="draggable-tree"
@@ -35,6 +36,46 @@ export default {
               {
                 title: '변호사',
                 key: 'professional/lawyer'
+              },
+              {
+                title: '약사',
+                key: 'professional/pharmacist'
+              }
+            ]
+          }
+        ],
+        [
+          {
+            title: '사무직',
+            key: 'office/basic',
+            children: [
+              {
+                title: '집배원',
+                key: 'office/postman'
+              }
+            ]
+          }
+        ],
+        [
+          {
+            title: '관리직',
+            key: 'management/basic',
+            children: [
+              {
+                title: '군인',
+                key: 'management/soldier'
+              }
+            ]
+          }
+        ],
+        [
+          {
+            title: '서비스직',
+            key: 'service/basic',
+            children: [
+              {
+                title: '승무원',
+                key: 'service/filghtattendant'
               }
             ]
           }

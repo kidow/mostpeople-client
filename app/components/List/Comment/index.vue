@@ -22,7 +22,7 @@
               />
               <span style="padding-left: '8px';cursor: 'auto'">{{ likes }}</span>
             </a-tooltip>
-            <span>
+            <!-- <span>
               <a-tooltip title="Dislike">
                 <a-icon
                   type="dislike"
@@ -31,12 +31,19 @@
                 />
                 <span style="padding-left: '8px';cursor: 'auto'">{{dislikes}}</span>
               </a-tooltip>
-            </span>
+            </span>-->
             <span>수정</span>
             <span>삭제</span>
             <span @click="isReply = !isReply">답글</span>
           </template>
-          <a-comment v-for="reply in item.children" :key="reply.id" :author="reply.author" :avatar="reply.avatar" :content="reply.content" :datetime="$moment(reply.createdAt).fromNow()" >
+          <a-comment
+            v-for="reply in item.children"
+            :key="reply.id"
+            :author="reply.author"
+            :avatar="reply.avatar"
+            :content="reply.content"
+            :datetime="$moment(reply.createdAt).fromNow()"
+          >
             <template slot="actions">
               <a-tooltip title="좋아요">
                 <a-icon
@@ -46,7 +53,7 @@
                 />
                 <span style="padding-left: '8px';cursor: 'auto'">{{ likes }}</span>
               </a-tooltip>
-              <span>
+              <!-- <span>
                 <a-tooltip title="Dislike">
                   <a-icon
                     type="dislike"
@@ -55,7 +62,7 @@
                   />
                   <span style="padding-left: '8px';cursor: 'auto'">{{dislikes}}</span>
                 </a-tooltip>
-              </span>
+              </span>-->
               <span>수정</span>
               <span>삭제</span>
             </template>
@@ -83,6 +90,7 @@
         </a-comment>
       </a-list-item>
     </a-list>
+
     <a-comment>
       <a-avatar
         slot="avatar"
@@ -100,7 +108,7 @@
             :loading="submitting.comment"
             @click="commentSubmit"
             type="primary"
-          >Add Comment</a-button>
+          >등록</a-button>
         </a-form-item>
       </div>
     </a-comment>
@@ -118,7 +126,7 @@ export default {
     },
     action: null,
     likes: 0,
-    dislikes: 0,
+    // dislikes: 0,
     isReply: false
   }),
   props: {
@@ -134,12 +142,12 @@ export default {
       setTimeout(() => {
         this.submitting.comment = false
         let comment = {
-            author: 'Han Solo',
-            avatar:
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            content: this.comment,
-            datetime: this.$moment().fromNow()
-          }
+          author: 'Han Solo',
+          avatar:
+            'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+          content: this.comment,
+          datetime: this.$moment().fromNow()
+        }
         this.$emit('comment', comment)
         this.comment = ''
       }, 1000)
@@ -164,12 +172,12 @@ export default {
     },
     async like() {
       this.likes = 1
-      this.dislikes = 0
+      // this.dislikes = 0
       this.action = 'liked'
     },
     async dislike() {
       this.likes = 0
-      this.dislikes = 1
+      // this.dislikes = 1
       this.action = 'disliked'
     }
   }

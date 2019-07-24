@@ -1,5 +1,7 @@
 <template>
-  <div>about</div>
+  <div>
+    <h1>직업 별로 소통하는 커뮤니티입니다.</h1>
+  </div>
 </template>
 
 <script>

@@ -1,5 +1,11 @@
 <template>
-  <a-table size="small" :dataSource="dataSource" :columns="columns" :loading="loading" :customRow="customRow"></a-table>
+  <a-table
+    size="small"
+    :dataSource="dataSource"
+    :columns="columns"
+    :loading="loading"
+    :customRow="customRow"
+  ></a-table>
 </template>
 
 <script>
@@ -17,7 +23,6 @@ export default {
       type: Array,
       default: _ => [
         {
-          title: '',
           dataIndex: 'id'
         },
         {
@@ -35,6 +40,10 @@ export default {
         {
           title: '조회수',
           dataIndex: 'views'
+        },
+        {
+          title: '추천',
+          dataIndex: 'likes'
         }
       ]
     }

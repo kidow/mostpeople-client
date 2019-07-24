@@ -19,7 +19,7 @@
           />
         </a-list-item-meta>
       </a-list-item>
-    </a-list> -->
+    </a-list>-->
   </div>
 </template>
 
@@ -69,9 +69,7 @@ export default {
         views: 2
       }
     ],
-    comments: [{
-      
-    }]
+    comments: []
   }),
   methods: {
     onCommentPush(comment) {

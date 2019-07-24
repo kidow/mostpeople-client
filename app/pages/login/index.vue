@@ -17,7 +17,14 @@ export default {
     VueLogo
   },
   head: _ => ({
-    title: '로그인 - 모스트피플'
+    title: '로그인 - 모스트피플',
+    head: {
+      script: [
+        {
+          src: `https://www.google.com/recaptcha/api.js?render=${process.env.RECAPTCHA_KEY}`
+        }
+      ]
+    }
   })
 }
 </script>

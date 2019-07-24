@@ -17,12 +17,13 @@
     <div style="height: 12px" />
     <a-input placeholder="제목" v-model="title" size="large" />
     <div style="height: 12px" />
-    <a-textarea
+    <vue-editor @input="val => content = val" />
+    <!-- <a-textarea
       placeholder="내용"
       :autosize="{ minRows: 8, maxRows: 20 }"
       v-model="content"
       size="large"
-    />
+    />-->
     <div style="height: 12px" />
     <a-button
       type="primary"
@@ -34,6 +35,7 @@
 </template>
 
 <script>
+import VueEditor from '~/components/Editor'
 export default {
   data: _ => ({
     occupation: '',
@@ -127,6 +129,19 @@ export default {
     this.occupation = occupation
     this.category = category
     this.cascader = [occupation, category]
-  }
+  },
+  components: {
+    VueEditor
+  },
+  head: _ => ({
+    title: '새 글 - 모스트피플',
+    head: {
+      script: [
+        {
+          src: `https://www.google.com/recaptcha/api.js?render=${process.env.RECAPTCHA_KEY}`
+        }
+      ]
+    }
+  })
 }
 </script>
