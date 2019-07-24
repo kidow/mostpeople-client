@@ -19,7 +19,7 @@
         <span class="basic">
           <label for="job">직업</label>
           <a-cascader
-            style="width: 300px"
+            style="width: 300px; margin-bottom: 1.5rem"
             expandTrigger="hover"
             size="large"
             :options="options"
@@ -27,6 +27,10 @@
             @change="onChange"
             placeholder="직업"
           />
+        </span>
+        <span class="basic">
+          <label for="intro">자기 소개</label>
+          <a-textarea v-model="intro" id="intro" />
         </span>
         <span class="basic">
           <a-button
@@ -149,7 +153,12 @@
         </div>
         <a-button :disabled="!checked" size="large" type="danger" @click="resign">회원 탈퇴하기</a-button>
       </a-tab-pane>
-      <a-tab-pane tab="알림 설정" key="5">준비중입니다.</a-tab-pane>
+      <a-tab-pane tab="알림 설정" key="5">
+        <span class="basic">
+          <label for="email">이메일</label>
+          <a-switch v-model="alarm.email" />
+        </span>
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>
@@ -202,12 +211,17 @@ export default {
       }
     ],
     email: '',
+    intro: '',
     password: '',
     checked: false,
     newPasswordConfirm: '',
     newPassword: '',
     loading: false,
     nickname: '',
+    alarm: {
+      sms: false,
+      email: false
+    },
     category: '',
     occupation: '',
     options: [
