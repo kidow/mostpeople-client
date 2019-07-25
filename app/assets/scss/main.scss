@@ -65,3 +65,11 @@ textarea {
 .flex {
   display: flex;
 }
+
+thead {
+  tr {
+    th {
+      background: $oc-gray-2 !important;
+    }
+  }
+}

@@ -29,6 +29,26 @@
           />
         </span>
         <span class="basic">
+          <label for="facebook">페이스북</label>
+          <a-input
+            size="large"
+            addonBefore="https://facebook.com/"
+            style="width: 300px; margin-bottom: 1.5rem"
+            id="facebook"
+            v-model="facebook"
+          />
+        </span>
+        <span class="basic">
+          <label for="twitter">트위터</label>
+          <a-input
+            size="large"
+            addonBefore="https://twitter.com/"
+            style="width: 300px; margin-bottom: 1.5rem"
+            id="twitter"
+            v-model="twitter"
+          />
+        </span>
+        <span class="basic">
           <label for="intro">자기 소개</label>
           <a-textarea v-model="intro" id="intro" />
         </span>
@@ -265,7 +285,9 @@ export default {
           }
         ]
       }
-    ]
+    ],
+    facebook: '',
+    twitter: ''
   }),
   methods: {
     resign() {
@@ -294,6 +316,11 @@ export default {
   },
   components: {
     VueCountTo
+  },
+  watch: {
+    facebook(val) {
+      console.log(val)
+    }
   }
 }
 </script>
@@ -315,6 +342,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/scss/media.scss';
+@import '~/assets/scss/color.scss';
 
 .desc {
   font-size: 18px;

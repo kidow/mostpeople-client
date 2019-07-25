@@ -84,12 +84,10 @@ export default {
   }),
   methods: {
     customRow({ categoryValue, occupationValue, id }) {
+      const url = `/board/${occupationValue}/${categoryValue}/${id}`
       return {
         on: {
-          click: _ =>
-            this.$router.push(
-              `/board/${occupationValue}/${categoryValue}/${id}`
-            )
+          click: _ => this.$router.push(url)
         }
       }
     }

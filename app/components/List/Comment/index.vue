@@ -3,9 +3,11 @@
     <div class="comment__header">
       <span>댓글 {{ comments.length }}</span>
       <a-divider type="vertical" />
-      <span class="recommend">추천 {{ comments.length }}</span>
+      <span class="recommend">추천 {{ likes }}</span>
       <a-divider type="vertical" />
-      <span>조회수 {{ comments.length }}</span>
+      <span>조회수 {{ views }}</span>
+      <a-divider type="vertical" />
+      <span class="recommend">신고</span>
     </div>
     <a-list v-if="comments.length" :dataSource="comments" itemLayout="horizontal">
       <a-list-item slot="renderItem" slot-scope="item">
@@ -24,16 +26,6 @@
               />
               <span style="padding-left: '8px';cursor: 'auto'">{{ likes }}</span>
             </a-tooltip>
-            <!-- <span>
-              <a-tooltip title="Dislike">
-                <a-icon
-                  type="dislike"
-                  :theme="action === 'disliked' ? 'filled' : 'outlined'"
-                  @click="dislike"
-                />
-                <span style="padding-left: '8px';cursor: 'auto'">{{dislikes}}</span>
-              </a-tooltip>
-            </span>-->
             <span>수정</span>
             <span>삭제</span>
             <span @click="isReply = !isReply">답글</span>
@@ -55,16 +47,6 @@
                 />
                 <span style="padding-left: '8px';cursor: 'auto'">{{ likes }}</span>
               </a-tooltip>
-              <!-- <span>
-                <a-tooltip title="Dislike">
-                  <a-icon
-                    type="dislike"
-                    :theme="action === 'disliked' ? 'filled' : 'outlined'"
-                    @click="dislike"
-                  />
-                  <span style="padding-left: '8px';cursor: 'auto'">{{dislikes}}</span>
-                </a-tooltip>
-              </span>-->
               <span>수정</span>
               <span>삭제</span>
             </template>
@@ -128,7 +110,7 @@ export default {
     },
     action: null,
     likes: 0,
-    // dislikes: 0,
+    views: 0,
     isReply: false
   }),
   props: {

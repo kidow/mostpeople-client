@@ -13,18 +13,14 @@
   margin: 0 !important;
 }
 
-thead {
-  tr {
-    th {
-      background: $oc-gray-2 !important;
-    }
-  }
-}
-
 .ant-tag {
   background: white;
 }
 
 .ant-tree-iconEle .ant-tree-icon__open {
   width: 0;
+}
+
+.ant-input-group-addon {
+  color: $oc-gray-5;
 }
