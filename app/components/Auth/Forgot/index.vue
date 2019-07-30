@@ -101,7 +101,7 @@ export default {
       this.loading = true
       const options = {
         url: '/auth/forgot',
-        method: 'post',
+        method: 'put',
         data: {
           email: this.email,
           password: this.password

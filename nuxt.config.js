@@ -9,9 +9,10 @@ const BASE_URL =
   NODE_ENV === 'production'
     ? 'https://www.mostpeople.kr'
     : 'http://localhost:3000'
-const API_BASE_URL = 'production'
-  ? 'https://api.mostpeople.kr'
-  : 'http://localhost:3001'
+const API_BASE_URL =
+  NODE_ENV === 'production'
+    ? 'https://api.mostpeople.kr'
+    : 'http://localhost:3001'
 
 module.exports = {
   mode: 'universal',

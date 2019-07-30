@@ -1,6 +1,6 @@
 <template>
   <div class="board__container">
-    <a-tree
+    <!-- <a-tree
       showIcon
       v-for="(job, i) in jobs"
       :key="i"
@@ -8,7 +8,37 @@
       :treeData="job"
       defaultExpandAll
       @select="onSelect"
-    />
+    />-->
+    <div class="board">
+      <h4>title</h4>
+      <ul>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+      </ul>
+    </div>
+    <div class="board">
+      <h4>title</h4>
+      <ul>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+      </ul>
+    </div>
+    <div class="board">
+      <h4>title</h4>
+      <ul>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+        <li>desc</li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -121,9 +151,20 @@ export default {
   border: 1px solid $oc-gray-4;
   border-radius: 4px;
   padding: 8px;
+  display: flex;
   background: white;
   .draggable-tree {
     display: inline-flex;
+  }
+  .board {
+    width: 150px;
+    h4 {
+      border-bottom: 1px solid $oc-gray-4;
+      font-size: 1rem;
+    }
+    ul {
+      padding: 0;
+    }
   }
 }
 </style>

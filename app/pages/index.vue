@@ -61,6 +61,18 @@ export default {
     VueCard,
     VueListHome,
     VueBoard
+  },
+  async asyncData({ app }) {
+    const options = {
+      url: '/',
+      methods: 'get'
+    }
+    try {
+      // const { data } = await app.$axios(options)
+      // console.log('data: ', data)
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 </script>

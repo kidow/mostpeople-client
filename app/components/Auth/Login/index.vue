@@ -58,6 +58,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
+        this.notifyError(err.response.data.message)
       }
     },
     async facebookLogin() {
