@@ -25,7 +25,10 @@ export default {
         }
       ]
     }
-  })
+  }),
+  asyncData({ store, redirect }) {
+    if (store.getters['auth/IS_LOGGED_IN']) redirect('/')
+  }
 }
 </script>
 

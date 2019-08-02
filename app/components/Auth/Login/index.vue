@@ -37,7 +37,7 @@ export default {
   methods: {
     redirectAfterLogin() {
       const { redirect } = this.$route.query
-      location.href = redirect || '/'
+      this.$router.push(redirect || '/')
     },
     async onSubmit() {
       this.loading = true
@@ -51,95 +51,26 @@ export default {
       }
       try {
         const token = await this.$recaptcha.execute('login')
+        console.log('token: ', token)
         if (!token) return
         options.data.token = token
-        await this.$axios(options)
+        await this.$store.dispatch('auth/LOGIN', options.data)
         this.redirectAfterLogin()
       } catch (err) {
         this.loading = false
         console.log(err)
-        this.notifyError(err.response.data.message)
+        this.notify({
+          type: 'error',
+          message: '실패',
+          description: err.response.data.message
+        })
       }
     },
     async facebookLogin() {
-      let clientId = process.env.FACEBOOK_APP_ID
-
-      const getToken = () => {
-        return new Promise((resolve, reject) => {
-          const url = ``
-
-          const popup = window.open(
-            url,
-            'social_login',
-            'menubar=1, resizable=1, width=400, height=600'
-          )
-
-          const f = function(e) {
-            if (e.origin !== process.env.BASE_URL) return
-
-            const data = JSON.parse(e.data)
-            if (!data.success) {
-              popup.close()
-              reject(data.message)
-            } else {
-              resolve(data.access_token)
-            }
-            window.removeEventListener('message', f, false)
-          }
-
-          window.addEventListener('message', f)
-        })
-      }
-      try {
-        const accessToken = await getToken()
-        return
-        this.redirectAfterLogin()
-      } catch (err) {
-        this.error = err.response.data.message
-        console.log(err)
-      }
+      location.href = `${process.env.API_BASE_URL}/auth/facebook`
     },
     async googleLogin() {
-      let clientId = process.env.GOOGLE_CLIENT_ID
-      let state = Math.random()
-        .toString(36)
-        .substring(2)
-
-      const getToken = () => {
-        return new Promise((resolve, reject) => {
-          const url = `https://accounts.google.com/o/oauth2/auth?redirect_uri=${process.env.API_BASE_URL}/auth/naver&client_id=${process.env.GOOGLE_APP_KEY}&response_type=code&approval_state=force&state=profile&scope=email%20profile`
-
-          const popup = window.open(
-            url,
-            'social_login',
-            'menubar=1, resizble=1, width=400, height=600'
-          )
-
-          const f = function(e) {
-            if (e.origin !== process.env.BASE_URL) return
-
-            const data = JSON.parse(e.data)
-            if (!data.success) {
-              popup.close()
-              reject(data.message)
-            } else {
-              resolve(data.access_token)
-            }
-            window.removeEventListener('message', f, false)
-          }
-
-          window.addEventListener('message', f)
-        })
-      }
-
-      try {
-        const accessToken = await getToken()
-        return
-        this.redirectAfterLogin()
-      } catch (err) {
-        this.error = err.response.data.message
-        console.log(err)
-      }
+      location.href = `${process.env.API_BASE_URL}/auth/google`
     }
   },
   data: _ => ({

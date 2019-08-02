@@ -68,11 +68,12 @@ export default {
       methods: 'get'
     }
     try {
-      // const { data } = await app.$axios(options)
+      const { data } = await app.$axios(options)
       // console.log('data: ', data)
     } catch (err) {
       console.log(err)
     }
-  }
+  },
+  middleware: ['me']
 }
 </script>

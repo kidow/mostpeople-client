@@ -11,7 +11,7 @@
       <span v-else class="text">
         <nuxt-link to="/profile">내 정보</nuxt-link>
         <a-divider type="vertical" />
-        <span class="logout">로그아웃</span>
+        <span class="logout" @click="$store.dispatch('auth/LOGOUT')">로그아웃</span>
       </span>
     </div>
     <div class="header__box__mobile" v-else>

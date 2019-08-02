@@ -1,10 +1,10 @@
 <template>
   <div class="signup__container">
-    <!-- <a-steps progressDot :current="step" size="small">
+    <a-steps :current="step" v-if="!$device.isMobile" style="margin-bottom: 12px;">
       <a-step title="가입 수단" />
       <a-step title="이메일 인증" />
       <a-step title="기본 정보" />
-    </a-steps>-->
+    </a-steps>
     <vue-auth-signup :step="step" @count="step += 1" />
   </div>
 </template>
@@ -17,10 +17,13 @@ export default {
     title: '회원가입 - 모스트피플'
   }),
   data: _ => ({
-    step: 0
+    step: 2
   }),
   components: {
     VueAuthSignup
+  },
+  asyncData({ store, redirect }) {
+    if (store.getters['auth/IS_LOGGED_IN']) redirect('/')
   }
 }
 </script>

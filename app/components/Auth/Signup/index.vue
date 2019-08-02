@@ -21,9 +21,10 @@
         >이메일로 가입</a-button>
       </form>
     </template>
+
     <template v-else-if="step === 1">
       <form @submit.prevent="verifyEmail">
-        <span class="verify">인증 메일의 코드를 입력해주세요</span>
+        <div class="verify">인증 메일의 코드를 입력해주세요</div>
         <a-input placeholder="코드" v-model="code" size="large" />
         <div style="height: 12px" />
         <a-alert v-if="error" showIcon :message="error" type="error" banner />
@@ -40,11 +41,12 @@
         >이메일 인증</a-button>
       </form>
     </template>
+
     <template v-else>
       <form @submit.prevent="onSignup">
         <a-input v-model="email" size="large" disabled />
         <div style="height: 12px" />
-        <a-input v-model="nickname" placeholder="닉네임 (4 ~ 8자리)" size="large" />
+        <a-input v-model="nickname" placeholder="닉네임 (3 ~ 8자리)" size="large" />
         <div style="height: 12px" />
         <a-input v-model="password" placeholder="비밀번호 (8 ~ 20자리)" type="password" size="large" />
         <div style="height: 12px" />
@@ -54,7 +56,7 @@
           :options="options"
           :showSearch="{filter}"
           @change="onChange"
-          placeholder="직업"
+          placeholder="직업 (선택)"
         />
         <div style="height: 12px" />
         <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
@@ -93,6 +95,9 @@ export default {
         method: 'post',
         data: {
           email: this.email
+        },
+        params: {
+          type: 'verify'
         }
       }
       try {
@@ -103,10 +108,19 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
+        this.notify({
+          type: 'error',
+          message: '실패',
+          description: err.response.data.message
+        })
       }
     },
-    async facebookSignup() {},
-    async googleSignup() {},
+    async facebookSignup() {
+      location.href = `${process.env.API_BASE_URL}/auth/facebook`
+    },
+    async googleSignup() {
+      location.href = `${process.env.API_BASE_URL}/auth/google`
+    },
     verifyEmail() {
       if (this.code !== this.codeConfirm)
         return (this.error = '코드가 일치하지 않습니다')
@@ -115,30 +129,31 @@ export default {
     },
     async onSignup() {
       this.error = ''
-      if (!isLength(this.nickname, { min: 4, max: 8 }))
-        return (this.error = '닉네임은 4 ~ 8자리로 입력해주세요')
+      if (!isLength(this.nickname, { min: 3, max: 8 }))
+        return (this.error = '닉네임은 3 ~ 8자리로 입력해주세요')
       if (!isLength(this.password, { min: 8, max: 20 }))
         return (this.error = '비밀번호는 8 ~ 20자리로 입력해주세요')
       this.loading = true
-      const options = {
-        url: '/auth/signup',
-        method: 'post',
-        data: {
-          email: this.email,
-          nickname: this.nickname,
-          password: this.password
-        }
+      const payload = {
+        email: this.email,
+        nickname: this.nickname,
+        password: this.password
       }
       try {
-        await this.$axios(options)
+        await this.$store.dispatch('auth/SIGN_UP', payload)
         this.$router.push('/')
       } catch (err) {
+        this.loading = false
         console.log(err)
+        this.notify({
+          type: 'error',
+          message: '실패',
+          descriptions: err.response.data.message
+        })
       }
     },
     onChange(value, selectedOptions) {
       this.occupation = value[0]
-      this.category = value[1]
       console.log(value, selectedOptions)
     },
     filter(inputValue, path) {
@@ -158,7 +173,6 @@ export default {
     password: '',
     checked: false,
     occupation: '',
-    category: '',
     options: [
       {
         value: 'professional',
@@ -207,18 +221,6 @@ export default {
       type: Number,
       default: 0
     }
-  },
-  async asyncData({ app }) {
-    // const options = {
-    //   url: '/jobs',
-    //   methods: 'get'
-    // }
-    // try {
-    //   const { data } = await app.$axios(options)
-    //   this.jobData = data
-    // } catch (err) {
-    //   console.log(err)
-    // }
   }
 }
 </script>
@@ -245,6 +247,11 @@ export default {
   #signup {
     background: $brand-color;
     border-color: $brand-color;
+  }
+  .verify {
+    margin-bottom: 12px;
+    font-size: 20px;
+    text-align: center;
   }
 }
 </style>

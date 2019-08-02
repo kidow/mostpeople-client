@@ -74,6 +74,9 @@ export default {
         method: 'post',
         data: {
           email: this.email
+        },
+        params: {
+          type: 'forgot'
         }
       }
       try {
