@@ -72,7 +72,7 @@
           @click="onSignup"
           html-type="submit"
           size="large"
-          :disabled="!email || !nickname || !password || !checked || !job"
+          :disabled="!email || !nickname || !password || !checked"
         >가입하기</a-button>
       </form>
     </template>

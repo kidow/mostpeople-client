@@ -1,5 +1,11 @@
 <template>
-  <div>404</div>
+  <div class="not-found">
+    <a-icon type="question-circle" />
+    <div class="number">404</div>
+    <h3>죄송합니다.</h3>
+    <h3>페이지를 찾을 수 없습니다.</h3>
+    <a-button size="large" @click="$router.push('/')">홈으로 이동하기</a-button>
+  </div>
 </template>
 
 <script>
@@ -9,3 +15,23 @@ export default {
   })
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/scss/color.scss';
+
+.not-found {
+  text-align: center;
+  margin: 4rem 0 6rem;
+  i {
+    font-size: 50px;
+    display: block;
+  }
+  .number {
+    font-weight: bold;
+    font-size: 60px;
+  }
+  h3 {
+    margin: 0.3rem 0 1rem;
+  }
+}
+</style>
