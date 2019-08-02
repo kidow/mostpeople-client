@@ -20,9 +20,6 @@ const API_BASE_URL =
 module.exports = {
   mode: 'universal',
   srcDir: 'app/',
-  router: {
-    middleware: ['me']
-  },
   head: {
     title: TITLE,
     meta: [

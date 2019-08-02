@@ -127,9 +127,7 @@ export default {
   head: _ => ({
     title: '소셜 가입 - 모스트피플'
   }),
-  asyncData({ store, redirect }) {
-    if (store.getters['auth/IS_LOGGED_IN']) redirect('/')
-  }
+  middleware: ['isLoggedIn']
 }
 </script>
 

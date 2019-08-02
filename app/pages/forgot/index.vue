@@ -21,6 +21,7 @@ export default {
   },
   data: _ => ({
     step: 0
-  })
+  }),
+  middleware: ['me']
 }
 </script>

@@ -8,7 +8,7 @@
     <a-divider />
     <div>
       <div class="category">
-        게시판명
+        게시판
         <span class="text">검색결과</span>
         <vue-count-to :end-val="2" :duration="1500" />
         <span class="text">개</span>

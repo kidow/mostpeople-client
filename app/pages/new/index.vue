@@ -143,6 +143,7 @@ export default {
         }
       ]
     }
-  })
+  }),
+  middleware: ['isLoggedIn']
 }
 </script>

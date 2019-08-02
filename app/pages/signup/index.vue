@@ -22,9 +22,7 @@ export default {
   components: {
     VueAuthSignup
   },
-  asyncData({ store, redirect }) {
-    if (store.getters['auth/IS_LOGGED_IN']) redirect('/')
-  }
+  middleware: ['isLoggedIn']
 }
 </script>
 

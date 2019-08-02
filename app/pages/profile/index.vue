@@ -321,7 +321,8 @@ export default {
     facebook(val) {
       console.log(val)
     }
-  }
+  },
+  middleware: ['isLoggedIn', 'me']
 }
 </script>
 
