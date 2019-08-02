@@ -5,9 +5,6 @@ const IMAGE = ''
 const PUBLIC_LINK = 'https://www.born-hater.com'
 const COLOR = '#41b883'
 const RECAPTCHA_KEY = '6LdDgq0UAAAAAAT2cDFE9gl-IPZPSHPd7mfbmPEa'
-const GOOGLE_APP_ID =
-  '157772738344-es6b6etib1565kcg7dns54pe048vofvt.apps.googleusercontent.com'
-const FACEBOOK_APP_ID = '648214592329089'
 const BASE_URL =
   NODE_ENV === 'production'
     ? 'https://www.mostpeople.kr'
@@ -20,6 +17,9 @@ const API_BASE_URL =
 module.exports = {
   mode: 'universal',
   srcDir: 'app/',
+  router: {
+    middleware: 'me'
+  },
   head: {
     title: TITLE,
     meta: [

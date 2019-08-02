@@ -26,7 +26,7 @@ export default {
       ]
     }
   }),
-  middleware: ['me']
+  middleware: ['isLoggedIn']
 }
 </script>
 

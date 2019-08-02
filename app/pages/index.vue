@@ -73,7 +73,6 @@ export default {
     } catch (err) {
       console.log(err)
     }
-  },
-  middleware: ['me']
+  }
 }
 </script>

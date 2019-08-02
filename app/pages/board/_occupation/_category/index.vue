@@ -121,8 +121,7 @@ export default {
   },
   head: _ => ({
     title: '프로게이머 - 모스트피플'
-  }),
-  middleware: ['me']
+  })
 }
 </script>
 

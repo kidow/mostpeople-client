@@ -322,7 +322,7 @@ export default {
       console.log(val)
     }
   },
-  middleware: ['isLoggedIn', 'me']
+  middleware: ['isNotLoggedIn']
 }
 </script>
 

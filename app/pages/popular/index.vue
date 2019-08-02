@@ -94,7 +94,6 @@ export default {
   },
   head: _ => ({
     title: '인기 글 - 모스트피플'
-  }),
-  middleware: ['me']
+  })
 }
 </script>

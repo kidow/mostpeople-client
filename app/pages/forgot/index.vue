@@ -22,6 +22,6 @@ export default {
   data: _ => ({
     step: 0
   }),
-  middleware: ['me']
+  middleware: ['isLoggedIn']
 }
 </script>

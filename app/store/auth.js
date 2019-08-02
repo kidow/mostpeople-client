@@ -5,9 +5,7 @@ export const state = () => ({
     nickname: '',
     status: null,
     providerId: null
-  },
-  step: 0,
-  socialId: null
+  }
 })
 
 export const getters = {
@@ -97,7 +95,6 @@ export const actions = {
 
       try {
         const { data } = await this.$axios(options)
-        console.log('data: ', data)
         commit('SAVE_USER', data)
         resolve()
       } catch (err) {

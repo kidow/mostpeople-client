@@ -100,7 +100,7 @@ export default {
     },
     async onSubmit() {
       let options = {
-        url: '/posts',
+        url: '/prt/posts',
         method: 'post',
         data: {
           occupation: this.occupation,
@@ -144,6 +144,6 @@ export default {
       ]
     }
   }),
-  middleware: ['isLoggedIn']
+  middleware: ['isNotLoggedIn']
 }
 </script>

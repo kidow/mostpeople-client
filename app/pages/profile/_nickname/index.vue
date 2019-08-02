@@ -156,8 +156,7 @@ export default {
     goTwitter() {
       window.open('https://twitter.com', '_blank')
     }
-  },
-  middleware: ['me']
+  }
 }
 </script>
 
