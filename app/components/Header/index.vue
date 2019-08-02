@@ -11,7 +11,7 @@
       <span v-else class="text">
         <nuxt-link to="/profile">내 정보</nuxt-link>
         <a-divider type="vertical" />
-        <span class="logout" @click="$store.dispatch('auth/LOGOUT')">로그아웃</span>
+        <span class="logout" @click="logout">로그아웃</span>
       </span>
     </div>
     <div class="header__box__mobile" v-else>
@@ -44,6 +44,20 @@ export default {
     onSearch(keyword) {
       if (!keyword) return
       this.$router.push(`/search?keyword=${keyword}`)
+    },
+    async logout() {
+      const { path } = this.$route
+      try {
+        await this.$store.dispatch('auth/LOGOUT')
+        if (path === '/profile' || path === '/new') this.$router.push('/')
+      } catch (err) {
+        console.dir(err)
+        this.notify({
+          type: 'error',
+          message: '실패',
+          description: err.response.data.message
+        })
+      }
     }
   },
   computed: {

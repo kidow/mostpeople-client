@@ -1,10 +1,10 @@
 <template>
   <div class="auth__box">
-    <!-- <a-steps progressDot :current="step" size="small">
+    <a-steps :current="step" v-if="!$device.isMobile" style="margin-bottom: 12px">
       <a-step title="이메일 전송" />
       <a-step title="이메일 인증" />
       <a-step title="비밀번호 변경" />
-    </a-steps>-->
+    </a-steps>
     <vue-auth-forgot :step="step" @count="step += 1" />
   </div>
 </template>

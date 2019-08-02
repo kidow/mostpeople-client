@@ -19,12 +19,6 @@
     <a-input placeholder="제목" v-model="title" size="large" />
     <div style="height: 12px" />
     <vue-editor @input="val => content = val" />
-    <!-- <a-textarea
-      placeholder="내용"
-      :autosize="{ minRows: 8, maxRows: 20 }"
-      v-model="content"
-      size="large"
-    />-->
     <div style="height: 12px" />
     <a-button
       type="primary"

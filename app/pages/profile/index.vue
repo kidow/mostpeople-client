@@ -1,6 +1,11 @@
 <template>
   <div>
-    <a-tabs type="card" defaultActiveKey="1" :tabPosition="$device.isMobile ? 'top' : 'left'">
+    <a-tabs
+      type="card"
+      defaultActiveKey="1"
+      :tabPosition="$device.isMobile ? 'top' : 'left'"
+      @change="tabChange"
+    >
       <a-tab-pane tab="기본 정보" key="1">
         <span class="basic">
           <label for="email">이메일</label>
@@ -179,6 +184,7 @@
           <a-switch v-model="alarm.email" />
         </span>
       </a-tab-pane>
+      <a-tab-pane tab="새 글 등록" key="6"></a-tab-pane>
     </a-tabs>
   </div>
 </template>
@@ -312,6 +318,9 @@ export default {
         option =>
           option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
       )
+    },
+    tabChange(key) {
+      if (key === '6') this.$router.push('/new')
     }
   },
   components: {

@@ -51,7 +51,6 @@ export default {
       }
       try {
         const token = await this.$recaptcha.execute('login')
-        console.log('token: ', token)
         if (!token) return
         options.data.token = token
         await this.$store.dispatch('auth/LOGIN', options.data)
