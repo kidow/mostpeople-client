@@ -12,10 +12,11 @@
     <a-list v-if="comments.length" :dataSource="comments" itemLayout="horizontal">
       <a-list-item slot="renderItem" slot-scope="item">
         <a-comment
-          :author="item.author"
-          :avatar="item.avatar"
+          :author="item.nickname"
+          :avatar="item.profileUrl"
           :content="item.content"
-          :datetime="item.datetime"
+          :datetime="item.createdAt"
+          :class="item.parentId"
         >
           <template slot="actions">
             <a-tooltip title="좋아요">
@@ -30,27 +31,6 @@
             <span>삭제</span>
             <span @click="isReply = !isReply">답글</span>
           </template>
-          <a-comment
-            v-for="reply in item.children"
-            :key="reply.id"
-            :author="reply.author"
-            :avatar="reply.avatar"
-            :content="reply.content"
-            :datetime="$moment(reply.createdAt).fromNow()"
-          >
-            <template slot="actions">
-              <a-tooltip title="좋아요">
-                <a-icon
-                  type="like"
-                  :theme="action === 'liked' ? 'filled' : 'outlined'"
-                  @click="like"
-                />
-                <span style="padding-left: '8px';cursor: 'auto'">{{ likes }}</span>
-              </a-tooltip>
-              <span>수정</span>
-              <span>삭제</span>
-            </template>
-          </a-comment>
           <a-comment v-if="isReply">
             <a-avatar
               slot="avatar"
@@ -64,7 +44,7 @@
               <a-form-item>
                 <a-button
                   htmlType="submit"
-                  :loading="submitting.reply"
+                  :loading="loading.reply"
                   @click="replySubmit"
                   type="primary"
                 >Add Comment</a-button>
@@ -75,7 +55,7 @@
       </a-list-item>
     </a-list>
 
-    <a-comment>
+    <a-comment v-if="isLoggedIn">
       <a-avatar
         slot="avatar"
         src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
@@ -89,7 +69,7 @@
           <a-button
             :disabled="!comment"
             htmlType="submit"
-            :loading="submitting.comment"
+            :loading="loading.comment"
             @click="commentSubmit"
             type="primary"
           >등록</a-button>
@@ -100,12 +80,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'ListComment',
   data: _ => ({
     comment: '',
     reply: '',
-    submitting: {
+    loading: {
       comment: false,
       reply: false
     },
@@ -122,26 +103,26 @@ export default {
   },
   methods: {
     async commentSubmit() {
-      this.submitting.comment = true
-
-      setTimeout(() => {
-        this.submitting.comment = false
-        let comment = {
-          author: 'Han Solo',
-          avatar:
-            'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-          content: this.comment,
-          datetime: this.$moment().fromNow()
+      this.loading.comment = true
+      const options = {
+        url: `/prt/comments/${this.$route.params.postId}`,
+        method: 'post',
+        data: {
+          content: this.comment
         }
-        this.$emit('comment', comment)
-        this.comment = ''
-      }, 1000)
+      }
+      try {
+        const { data } = await this.$axios(options)
+      } catch (err) {
+        console.log(err)
+        this.notifyError({ description: err.response.data.message })
+      }
     },
     async replySubmit() {
-      this.submitting.reply = true
+      this.loading.reply = true
 
       setTimeout(() => {
-        this.submitting.reply = false
+        this.loading.reply = false
         this.comments = [
           {
             author: 'Han Solo',
@@ -165,6 +146,11 @@ export default {
       // this.dislikes = 1
       this.action = 'disliked'
     }
+  },
+  computed: {
+    ...mapGetters({
+      isLoggedIn: 'auth/IS_LOGGED_IN'
+    })
   }
 }
 </script>

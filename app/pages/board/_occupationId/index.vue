@@ -1,17 +1,17 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <a-card :loading="loading" :title="'프로게이머(이)란?'">
+    <a-card :loading="loading" :title="`${korName}(이)란 무엇인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
-        <h1>그냥 게임만 주구장창 하는 폐인</h1>
+        <h1>{{ intro }}</h1>
         <div style="display: flex; justify-content: space-between">
-          <span class="createdAt">{{ $moment().format('YYYY-MM-DD hh:mm:ss') }}</span>
-          <span class="author">- {{ 'dsadaf' }} -</span>
+          <span class="createdAt">{{ $moment(createdAt).format('YYYY-MM-DD hh:mm') }}</span>
+          <span class="author">- {{ nickname }} -</span>
         </div>
       </template>
       <a-textarea
-        v-model="description"
+        v-model="intro"
         v-else
         placeholder="한 줄 요약"
         @keyup.enter="onEdit"
@@ -23,7 +23,7 @@
         <vue-table :dataSource="dataSource" v-if="!$device.isMobile" />
         <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
           <a-list-item @click="onClickList(item)" slot="renderItem" slot-scope="item">
-            <a-list-item-meta :description="item.createdAt">
+            <a-list-item-meta :intro="item.createdAt">
               <a slot="title" :href="`${$route.path}/post/${item.uuid}`">{{item.title}}</a>
               <a-avatar
                 slot="avatar"
@@ -37,7 +37,7 @@
       <a-tab-pane tab="구직게시판" key="2">준비중입니다.</a-tab-pane>
       <a-button
         slot="tabBarExtraContent"
-        @click="$router.push(`/new?occupation=${$route.params.occupation}`)"
+        @click="$router.push(`/new?occupation=${$route.params.occupationId}`)"
       >새 글</a-button>
     </a-tabs>
   </div>
@@ -48,10 +48,11 @@ import VueBreadcrumb from '~/components/Breadcrumb'
 import VueTable from '~/components/Table'
 export default {
   validate({ params }) {
-    return /[0-9]/g.test(params.occupation)
+    return /[0-9]/g.test(params.occupationId)
   },
   data: _ => ({
-    tab: 1,
+    tab: '1',
+    korName: '프로게이머',
     dataSource: [
       {
         key: '1',
@@ -72,17 +73,15 @@ export default {
     ],
     loading: false,
     isEdit: false,
-    description: '',
+    intro: '',
     breadcrumbs: [
       {
-        url: '/board/management',
+        url: '/board/1',
         name: '관리직'
-      },
-      {
-        url: '/board/management/universitystudent',
-        name: '대학생'
       }
-    ]
+    ],
+    createdAt: '',
+    nickname: ''
   }),
   methods: {
     onChangeTab(tab) {
@@ -93,24 +92,22 @@ export default {
     },
     async onEdit() {
       if (!this.isEdit) return (this.isEdit = true)
-      if (!this.description) return (this.isEdit = false)
-      if (this.description.length > 40)
-        return this.notify({
-          type: 'warning',
-          message: '경고',
-          description: '40자 이하로 작성해주세요'
-        })
+      if (!this.intro) return (this.isEdit = false)
+      if (this.intro.length > 40)
+        return this.notifyWarning({ intro: '40자 이하로 작성해주세요' })
       const options = {
-        url: '/boards',
+        url: `/prt/introductions/${this.$route.params.occupationId}`,
         method: 'put',
         data: {
-          description: this.description
+          intro: this.intro
         }
       }
       try {
-        this.message({ type: 'success', message: '성공적으로 적용하였습니다.' })
+        await this.$axios(options)
+        this.messageSuccess()
         this.isEdit = false
       } catch (err) {
+        this.notifyError({ description: err.response.data.message })
         console.log(err)
       }
     }
@@ -121,7 +118,26 @@ export default {
   },
   head: _ => ({
     title: '프로게이머 - 모스트피플'
-  })
+  }),
+  async asyncData({ params, app }) {
+    const options = {
+      url: `/occupations/${params.occupationId}`,
+      method: 'get'
+    }
+    try {
+      const { data } = await app.$axios(options)
+      return {
+        intro: data.intro,
+        korName: data.korName,
+        nickname: data.nickname,
+        createdAt: data.createdAt,
+        breadcrumbs: data.breadcrumbs,
+        dataSource: data.posts
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 </script>
 
@@ -142,9 +158,9 @@ export default {
   background: white;
 }
 .ant-input {
-  font-size: 2em;
+  font-size: 1rem;
   &::placeholder {
-    font-size: 1em;
+    font-size: 1rem;
   }
 }
 </style>

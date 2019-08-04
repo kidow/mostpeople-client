@@ -108,11 +108,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
-        this.notify({
-          type: 'error',
-          message: '실패',
-          description: err.response.data.message
-        })
+        this.notifyError({ description: err.response.data.message })
       }
     },
     async facebookSignup() {
@@ -145,11 +141,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
-        this.notify({
-          type: 'error',
-          message: '실패',
-          descriptions: err.response.data.message
-        })
+        this.notifyError({ descriptions: err.response.data.message })
       }
     },
     onChange(value, selectedOptions) {

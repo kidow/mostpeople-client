@@ -9,7 +9,8 @@ export const state = () => ({
     facebookUrl: '',
     twitterUrl: '',
     intro: '',
-    occupation: null
+    occupation: null,
+    profileUrl: ''
   }
 })
 

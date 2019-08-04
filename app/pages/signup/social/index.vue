@@ -106,11 +106,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.dir(err)
-        this.notify({
-          type: 'error',
-          message: '실패',
-          description: err.response.data.message
-        })
+        this.notifyError({ description: err.response.data.message })
       }
     },
     onChange(value, selectedOptions) {

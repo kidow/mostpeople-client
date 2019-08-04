@@ -352,25 +352,17 @@ export default {
       } catch (err) {
         console.log(err)
         this.loading = false
-        this.notify({
-          type: 'error',
-          message: '실패',
-          description: err.response.data.message
-        })
+        this.notifyError({ description: err.response.data.message })
       }
     },
     async changePassword() {
       this.loading = true
       if (this.newPassword !== this.newPasswordConfirm)
-        return this.notify({
-          type: 'warning',
-          message: '경고',
+        return this.notifyWarning({
           description: '비밀번호가 일치하지 않습니다'
         })
       if (!isLength(this.newPassword, { min: 8, max: 20 }))
-        return this.notify({
-          type: 'warning',
-          message: '경고',
+        return this.notifyWarning({
           description: '비밀번호는 8 ~ 20자리 사이로 입력해주세요'
         })
       const options = {
@@ -387,11 +379,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.loading = false
-        this.notify({
-          type: 'error',
-          message: '실패',
-          description: err.response.data.message
-        })
+        this.notifyError({ description: err.response.data.message })
       }
     }
   },

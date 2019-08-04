@@ -10,7 +10,7 @@
     </div>
     <vue-editor :readonly="true" value="<p>asdsfs</p>" />
 
-    <vue-comments-list :comments="comments" @comment="onCommentPush" />
+    <vue-comments-list :comments="comments" />
 
     <!-- <vue-table :dataSource="dataSource" v-if="!$device.isMobile" />
     <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
@@ -33,6 +33,7 @@ import VueCommentsList from '~/components/List/Comment'
 import VueTable from '~/components/Table'
 import VueBreadcrumb from '~/components/Breadcrumb'
 import VueEditor from '~/components/Editor'
+import { mapGetters } from 'vuex'
 export default {
   // validate({ params }) {
   //   return /[0-9a-f]{32}/.test(params.postId)
@@ -44,43 +45,69 @@ export default {
     VueEditor
   },
   data: _ => ({
-    breadcrumbs: [
-      {
-        url: '/board/student',
-        name: '학생'
-      },
-      {
-        url: '/board/student/university',
-        name: '대학생'
-      },
-      {
-        url: '/board/student/university/1',
-        name: '롤체 너무 꿀잼이다'
-      }
-    ],
-    dataSource: [
-      {
-        key: '1',
-        id: 1,
-        title: '롤체 꿀잼',
-        author: 'kidow',
-        createdAt: '21:08',
-        views: 1
-      },
-      {
-        key: '2',
-        id: 2,
-        title: '백수가 암울한이유',
-        author: 'kidow',
-        createdAt: '21:08',
-        views: 2
-      }
-    ],
-    comments: []
+    breadcrumbs: [],
+    dataSource: [],
+    comments: [],
+    comment: '',
+    reply: '',
+    loading: {
+      comment: false,
+      edit: false,
+      next: false
+    },
+    action: null,
+    likes: 0,
+    views: 0,
+    isReply: false
   }),
   methods: {
     onCommentPush(comment) {
       this.comments.push(comment)
+    },
+    async commentSubmit() {
+      this.loading.comment = true
+      const options = {
+        url: `/prt/comments/${this.$route.params.postId}`,
+        method: 'post',
+        data: {
+          content: this.comment
+        }
+      }
+      try {
+        const { data } = await this.$axios(options)
+        this.loading.comment = false
+        this.comment = ''
+      } catch (err) {
+        this.loading.comment = false
+      }
+    },
+    async replySubmit() {
+      this.loading.reply = true
+
+      setTimeout(() => {
+        this.loading.reply = false
+        this.comments = [
+          {
+            author: 'Han Solo',
+            avatar:
+              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+            content: this.value,
+            datetime: this.$moment().fromNow()
+          },
+          ...this.comments
+        ]
+        this.value = ''
+      }, 1000)
+    },
+    async like() {
+      this.likes = 1
+      // this.dislikes = 0
+      this.action = 'liked'
+    },
+    async dislike() {
+      this.likes = 0
+      // this.dislikes = 1
+      this.action = 'disliked'
     }
   },
   head: _ => ({
@@ -96,11 +123,16 @@ export default {
       return {
         breadcrumbs: data.breadcrumbs,
         dataSource: data.dataSource,
-        comments: data.comments
+        comments: data.comments || []
       }
     } catch (err) {
       console.log(err)
     }
+  },
+  computed: {
+    ...mapGetters({
+      isLoggedIn: 'auth/IS_LOGGED_IN'
+    })
   }
 }
 </script>
@@ -127,6 +159,14 @@ h1 {
   }
   .date {
     color: $oc-gray-5;
+  }
+}
+.ant-list-item {
+  padding: 0;
+}
+.comment__header {
+  .recommend {
+    cursor: pointer;
   }
 }
 </style>
