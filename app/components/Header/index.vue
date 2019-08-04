@@ -23,10 +23,32 @@
       </div>
       <div style="height: 4px" />
       <a-input-search placeholder="통합검색" @search="onSearch" />
-      <a-drawer title="Basic Drawer" placement="left" @close="visible = false" :visible="visible">
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+      <a-drawer placement="left" @close="visible = false" :visible="visible">
+        <div slot="title" @click="$router.push('/')">모스트피플</div>
+        <div>
+          <h3>인증</h3>
+          <template v-if="isLoggedIn">
+            <nuxt-link to="/login">로그인</nuxt-link>
+            <nuxt-link to="/signup">회원가입</nuxt-link>
+          </template>
+          <template v-else>
+            <nuxt-link to="/profile">내 정보</nuxt-link>
+            <a @click="logout">로그아웃</a>
+          </template>
+        </div>
+        <div>
+          <h3>메뉴</h3>
+          <nuxt-link to="/popular">인기글 보기</nuxt-link>
+          <nuxt-link to="/new">새 글 등록</nuxt-link>
+        </div>
+        <div>
+          <h3>모스트피플</h3>
+          <nuxt-link to="/about">소개</nuxt-link>
+          <nuxt-link to="/terms">이용약관</nuxt-link>
+          <nuxt-link to="/privacy">개인정보처리방침</nuxt-link>
+          <nuxt-link to="/marketing">광고 문의</nuxt-link>
+          <a>고객센터</a>
+        </div>
       </a-drawer>
     </div>
   </header>
@@ -104,6 +126,22 @@ export default {
       i {
         font-size: 20px;
       }
+    }
+  }
+}
+
+.ant-drawer-body {
+  div {
+    margin-bottom: 2rem;
+    h3 {
+      font-size: 18px;
+      color: $oc-gray-5;
+    }
+    a {
+      margin: 12px 0 12px 24px;
+      display: block;
+      color: $oc-gray-7;
+      font-size: 20px;
     }
   }
 }

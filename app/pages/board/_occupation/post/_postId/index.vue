@@ -85,7 +85,23 @@ export default {
   },
   head: _ => ({
     title: '롤체 너무 꿀잼이다 - 모스트피플'
-  })
+  }),
+  async asyncData({ app, params }) {
+    const options = {
+      url: `/posts/${params.postId}`,
+      method: 'get'
+    }
+    try {
+      const { data } = await app.$axios(options)
+      return {
+        breadcrumbs: data.breadcrumbs,
+        dataSource: data.dataSource,
+        comments: data.comments
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 </script>
 

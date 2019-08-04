@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  name: 'Table',
   props: {
     dataSource: {
       type: Array,
@@ -23,7 +24,7 @@ export default {
       type: Array,
       default: _ => [
         {
-          dataIndex: 'id'
+          dataIndex: 'uuid'
         },
         {
           title: '제목',
@@ -53,12 +54,12 @@ export default {
   }),
   methods: {
     onSelect() {
-      console.log(1)
+      console.log('onSelect')
     },
-    customRow({ id }) {
+    customRow({ uuid }) {
       return {
         on: {
-          click: _ => this.$router.push(`${this.$route.path}/${id}`)
+          click: _ => this.$router.push(`${this.$route.path}/post/${uuid}`)
         }
       }
     }

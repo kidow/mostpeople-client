@@ -15,7 +15,7 @@
           <label for="nickname">닉네임</label>
           <a-input
             size="large"
-            placeholder="닉네임 (4 ~ 8자)"
+            placeholder="닉네임 (3 ~ 8자)"
             style="width: 300px;"
             id="nickname"
             v-model="nickname"
@@ -40,7 +40,7 @@
             addonBefore="https://facebook.com/"
             style="width: 300px; margin-bottom: 1.5rem"
             id="facebook"
-            v-model="facebook"
+            v-model="facebookUrl"
           />
         </span>
         <span class="basic">
@@ -50,7 +50,7 @@
             addonBefore="https://twitter.com/"
             style="width: 300px; margin-bottom: 1.5rem"
             id="twitter"
-            v-model="twitter"
+            v-model="twitterUrl"
           />
         </span>
         <span class="basic">
@@ -66,17 +66,17 @@
           >변경하기</a-button>
         </span>
       </a-tab-pane>
+
       <a-tab-pane tab="내 활동" key="2">
         <div style="font-size: 16px; line-height: 2.0">
           게시글
-          <vue-count-to style="font-weight: bold; font-size: 28px" :end-val="130" :duration="1500" />개
+          <vue-count-to
+            style="font-weight: bold; font-size: 28px"
+            :end-val="posts.length"
+            :duration="1500"
+          />개
           <div>
-            <a-list
-              itemLayout="vertical"
-              size="large"
-              :pagination="pagination"
-              :dataSource="listData"
-            >
+            <a-list itemLayout="vertical" size="large" :pagination="pagination" :dataSource="posts">
               <a-list-item slot="renderItem" slot-scope="item" key="item.title">
                 <template slot="actions" v-for="{type, text} in actions">
                   <span :key="type">
@@ -104,11 +104,11 @@
           댓글
           <vue-count-to
             style="font-weight: bold; font-size: 28px; line-height: 2.0"
-            :end-val="10"
+            :end-val="comments.length"
             :duration="1500"
           />개
           <div>
-            <a-list class="comment-list" itemLayout="horizontal" :dataSource="data">
+            <a-list class="comment-list" itemLayout="horizontal" :dataSource="comments">
               <a-list-item slot="renderItem" slot-scope="item">
                 <a-comment :author="item.author" :avatar="item.avatar">
                   <template slot="actions">
@@ -124,6 +124,7 @@
           </div>
         </div>
       </a-tab-pane>
+
       <a-tab-pane tab="비밀번호 변경" key="3">
         <form @submit.prevent="changePassword">
           <span class="basic">
@@ -157,7 +158,8 @@
           </span>
           <span class="basic">
             <a-button
-              :disabled="!email || !nickname || !occupation"
+              :disabled="!password || !newPassword || !newPasswordConfirm"
+              :loading="loading"
               size="large"
               style="display: block"
               type="primary"
@@ -190,9 +192,10 @@
 </template>
 
 <script>
-const listData = []
+import isLength from 'validator/lib/isLength'
+const posts = []
 for (let i = 0; i < 23; i++) {
-  listData.push({
+  posts.push({
     href: 'https://vue.ant.design/',
     title: `ant design vue part ${i}`,
     content:
@@ -200,12 +203,13 @@ for (let i = 0; i < 23; i++) {
   })
 }
 import VueCountTo from 'vue-count-to'
+import { mapGetters } from 'vuex'
 export default {
   head: _ => ({
     title: '내정보 - 모스트피플'
   }),
   data: _ => ({
-    listData,
+    posts,
     pagination: {
       onChange: page => console.log(page),
       pageSize: 5,
@@ -216,7 +220,7 @@ export default {
       { type: 'message', text: '2' },
       { type: 'eye', text: '156' }
     ],
-    data: [
+    comments: [
       {
         actions: ['수정', '삭제'],
         author: 'Han Solo',
@@ -248,7 +252,6 @@ export default {
       sms: false,
       email: false
     },
-    category: '',
     occupation: '',
     options: [
       {
@@ -292,8 +295,8 @@ export default {
         ]
       }
     ],
-    facebook: '',
-    twitter: ''
+    facebookUrl: '',
+    twitterUrl: ''
   }),
   methods: {
     resign() {
@@ -304,13 +307,25 @@ export default {
         cancelText: '아니오',
         okType: 'danger',
         async onOk() {
-          console.log(1)
+          this.loading = true
+          const options = {
+            url: '/prt/users',
+            method: 'delete'
+          }
+          try {
+            await this.$axios(options)
+            this.loading = false
+            this.$store.commit('auth/CLEAR_USER')
+            this.$router.push('/')
+          } catch (err) {
+            this.loading = false
+            console.log(err)
+          }
         }
       })
     },
     onChange(value, selectedOptions) {
       this.occupation = value[0]
-      this.category = value[1]
       console.log(value, selectedOptions)
     },
     filter(inputValue, path) {
@@ -320,18 +335,91 @@ export default {
       )
     },
     tabChange(key) {
-      if (key === '6') this.$router.push('/new')
+      if (key === '2') this.getTimeline()
+      else if (key === '6') this.$router.push('/new')
+    },
+    async getTimeline() {
+      this.loading = true
+      const options = {
+        url: '/prt/users/timeline',
+        method: 'get'
+      }
+      try {
+        const { data } = await this.$axios(options)
+        this.posts = data.posts
+        this.comments = data.comments
+        this.loading = false
+      } catch (err) {
+        console.log(err)
+        this.loading = false
+        this.notify({
+          type: 'error',
+          message: '실패',
+          description: err.response.data.message
+        })
+      }
+    },
+    async changePassword() {
+      this.loading = true
+      if (this.newPassword !== this.newPasswordConfirm)
+        return this.notify({
+          type: 'warning',
+          message: '경고',
+          description: '비밀번호가 일치하지 않습니다'
+        })
+      if (!isLength(this.newPassword, { min: 8, max: 20 }))
+        return this.notify({
+          type: 'warning',
+          message: '경고',
+          description: '비밀번호는 8 ~ 20자리 사이로 입력해주세요'
+        })
+      const options = {
+        url: '/prt/users/password',
+        method: 'put',
+        data: {
+          password: this.newPassword
+        }
+      }
+      try {
+        await this.$axios(options)
+        this.notify()
+        this.loading = false
+      } catch (err) {
+        console.log(err)
+        this.loading = false
+        this.notify({
+          type: 'error',
+          message: '실패',
+          description: err.response.data.message
+        })
+      }
     }
   },
   components: {
     VueCountTo
   },
-  watch: {
-    facebook(val) {
-      console.log(val)
-    }
+  middleware: ['isNotLoggedIn'],
+  computed: {
+    ...mapGetters({
+      user: 'auth/GET_USER'
+    })
   },
-  middleware: ['isNotLoggedIn']
+  mounted() {
+    const {
+      email,
+      nickname,
+      intro,
+      occupation,
+      facebookUrl,
+      twitterUrl
+    } = this.user
+    this.email = email
+    this.nickname = nickname
+    this.intro = intro
+    this.occupation = occupation
+    this.facebookUrl = facebookUrl
+    this.twitterUrl = twitterUrl
+  }
 }
 </script>
 

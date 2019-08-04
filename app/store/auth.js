@@ -1,10 +1,15 @@
 export const state = () => ({
   user: {
+    id: null,
     uuid: null,
     email: '',
     nickname: '',
     status: null,
-    providerId: null
+    providerId: null,
+    facebookUrl: '',
+    twitterUrl: '',
+    intro: '',
+    occupation: null
   }
 })
 

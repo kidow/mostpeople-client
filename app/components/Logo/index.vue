@@ -2,6 +2,12 @@
   <nuxt-link to="/">MostPeople</nuxt-link>
 </template>
 
+<script>
+export default {
+  name: 'Logo'
+}
+</script>
+
 <style lang="scss" scoped>
 @import '~/assets/scss/color.scss';
 

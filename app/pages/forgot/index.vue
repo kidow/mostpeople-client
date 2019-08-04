@@ -1,6 +1,6 @@
 <template>
   <div class="auth__box">
-    <a-steps :current="step" v-if="!$device.isMobile" style="margin-bottom: 12px">
+    <a-steps :current="step" v-if="!$device.isMobile" style="margin-bottom: 20px">
       <a-step title="이메일 전송" />
       <a-step title="이메일 인증" />
       <a-step title="비밀번호 변경" />

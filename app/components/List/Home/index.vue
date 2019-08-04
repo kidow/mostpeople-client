@@ -22,6 +22,7 @@
 
 <script>
 export default {
+  name: 'ListHome',
   props: {
     list: {
       type: Array,

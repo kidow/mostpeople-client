@@ -94,6 +94,20 @@ export default {
   },
   head: _ => ({
     title: '인기 글 - 모스트피플'
-  })
+  }),
+  async asyncData({ app }) {
+    const options = {
+      url: '/posts/popular',
+      method: 'get'
+    }
+    try {
+      const { data } = await this.$axios(options)
+      return {
+        dataSource: data
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 </script>

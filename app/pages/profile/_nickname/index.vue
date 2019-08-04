@@ -1,16 +1,17 @@
 <template>
   <div>
-    <a-tabs type="card" defaultActiveKey="1" :tabPosition="$device.isMobile ? 'top' : 'left'">
+    <a-tabs
+      type="card"
+      @change="tabChange"
+      defaultActiveKey="1"
+      :tabPosition="$device.isMobile ? 'top' : 'left'"
+    >
       <a-tab-pane tab="기본 정보" key="1">
         <div style="display: flex; align-items: center; position: relative;">
-          <a-avatar
-            alt="thumbnail"
-            src="https://cdn.pixabay.com/photo/2018/07/03/19/34/mountains-3514551_1280.jpg"
-            size="large"
-          />
+          <a-avatar alt="thumbnail" :src="profileUrl" size="large" />
           <span
-            style="font-size: 36px; margin-left: 8px; top: 7rem; left: 9rem; position: absolute"
-          >kidow</span>
+            style="font-size: 36px; margin-left: 8px; top: 7rem; left: 10rem; position: absolute"
+          >{{ nickname }}</span>
         </div>
         <div style="display: flex; align-items: center; margin: 1rem 0;">
           <a-icon @click="goFacebook" theme="filled" class="facebook" type="facebook" />
@@ -28,6 +29,7 @@
           style="margin: 1rem 0; font-size: 1rem"
         >Frontend Engineer@Laftel Inc. 개발을 재미있게 이것 저것 하는 개발자입니다.</p>
       </a-tab-pane>
+
       <a-tab-pane tab="활동" key="2">
         <div style="font-size: 16px; line-height: 2.0">
           게시글
@@ -147,14 +149,63 @@ export default {
     intro: '',
     nickname: '',
     occupation: '',
-    category: ''
+    profileUrl: '',
+    facebookUrl: '',
+    twitterUrl: '',
+    timelineFetched: false,
+    loading: false
   }),
   methods: {
     goFacebook() {
-      window.open('https://facebook.com', '_blank')
+      window.open(`https://facebook.com/${this.facebookUrl}`, '_blank')
     },
     goTwitter() {
-      window.open('https://twitter.com', '_blank')
+      window.open(`https://twitter.com/${this.twitterUrl}`, '_blank')
+    },
+    tabChange(key) {
+      if (key === '2') this.getTimeline()
+    },
+    async getTimeline() {
+      const { nickname } = this.$route.params
+      if (this.timelineFetched) return
+      this.loading = true
+      const options = {
+        url: `/users/${nickname.slice(1)}/timeline`,
+        method: 'get'
+      }
+      try {
+        const { data } = await this.$axios(options)
+        this.timelineFetched = true
+        this.loading = false
+      } catch (err) {
+        console.log(err)
+        this.loading = false
+        this.notify({
+          type: 'error',
+          message: '실패',
+          description: err.response.data.message
+        })
+      }
+    }
+  },
+  async asyncData({ app, params }) {
+    const options = {
+      url: `/users/${params.nickname.slice(1)}`,
+      method: 'get'
+    }
+    try {
+      const { data } = await this.$axios(options)
+      return {
+        nickname: data.nickname,
+        profileUrl: data.profileUrl,
+        facebookUrl: data.facebookUrl,
+        twitterUrl: data.twitterUrl,
+        email: data.email,
+        occupation: data.occupation,
+        intro: data.intro
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 }

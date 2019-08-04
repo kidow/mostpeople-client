@@ -101,6 +101,7 @@
 
 <script>
 export default {
+  name: 'ListComment',
   data: _ => ({
     comment: '',
     reply: '',

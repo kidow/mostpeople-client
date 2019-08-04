@@ -10,9 +10,7 @@
       <a-input placeholder="패스워드" type="password" v-model="password" size="large" />
       <div style="height: 12px" />
       <div style="text-align: right">
-        <nuxt-link to="/forgot">
-          <a-icon type="question-circle" />기억이 안나시나요?
-        </nuxt-link>
+        <nuxt-link to="/forgot">비밀번호 찾기</nuxt-link>
       </div>
       <div style="height: 12px" />
       <a-button
