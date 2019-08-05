@@ -5,6 +5,7 @@
     :columns="columns"
     :loading="loading"
     :customRow="customRow"
+    :locale="{ emptyText: '글이 존재하지 않습니다' }"
   ></a-table>
 </template>
 
@@ -40,11 +41,11 @@ export default {
         },
         {
           title: '조회수',
-          dataIndex: 'views'
+          dataIndex: 'viewCount'
         },
         {
           title: '추천',
-          dataIndex: 'likes'
+          dataIndex: 'likeCount'
         }
       ]
     }
@@ -53,10 +54,8 @@ export default {
     loading: false
   }),
   methods: {
-    onSelect() {
-      console.log('onSelect')
-    },
     customRow({ uuid }) {
+      if (!uuid) return
       return {
         on: {
           click: _ => this.$router.push(`${this.$route.path}/post/${uuid}`)

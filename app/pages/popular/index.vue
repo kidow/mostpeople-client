@@ -2,13 +2,9 @@
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <div style="height: 24px" />
-    <a-table
-      size="small"
-      :dataSource="dataSource"
-      :loading="loading"
-      :customRow="customRow"
-      :columns="columns"
-    ></a-table>
+    <a-input-search placeholder="검색" @search="onSearch" style="width: 200px; margin-bottom: 24px" />
+    <a-table size="small" :data="data" :loading="loading" :customRow="customRow" :columns="columns"></a-table>
+    <a-pagination :total="total" v-model="currentPage" style="margin-top: 24px" />
   </div>
 </template>
 
@@ -25,39 +21,14 @@ export default {
         name: '인기 글'
       }
     ],
-    dataSource: [
-      {
-        key: '1',
-        id: 1,
-        category: '프로게이머',
-        title: '롤체 꿀잼',
-        author: 'kidow',
-        createdAt: '21:08',
-        views: 1,
-        likes: 150,
-        categoryValue: 'progamer',
-        occupationValue: 'sports'
-      },
-      {
-        key: '2',
-        id: 2,
-        category: '백수',
-        title: '백수가 암울한이유',
-        author: 'kidow',
-        createdAt: '21:08',
-        views: 2,
-        likes: 200,
-        categoryValue: 'basic',
-        occupationValue: 'jobless'
-      }
-    ],
+    data: [],
     columns: [
       {
-        dataIndex: 'id'
+        dataIndex: 'uuid'
       },
       {
         title: '직업',
-        dataIndex: 'category'
+        dataIndex: 'korName'
       },
       {
         title: '제목',
@@ -65,7 +36,7 @@ export default {
       },
       {
         title: '글쓴이',
-        dataIndex: 'author'
+        dataIndex: 'nickname'
       },
       {
         title: '작성일',
@@ -73,40 +44,73 @@ export default {
       },
       {
         title: '조회수',
-        dataIndex: 'views'
+        dataIndex: 'viewCount'
       },
       {
         title: '추천',
-        dataIndex: 'likes'
+        dataIndex: 'likeCount'
       }
     ],
-    loading: false
+    loading: false,
+    total: 0,
+    currentPage: 1
   }),
   methods: {
-    customRow({ categoryValue, occupationValue, id }) {
-      const url = `/board/${occupationValue}/${categoryValue}/${id}`
+    customRow({ occupationId, uuid }) {
+      if (!uuid) return
+      const url = `/board/${occupationId}/post/${uuid}`
       return {
         on: {
           click: _ => this.$router.push(url)
         }
+      }
+    },
+    onSearch(search) {
+      this.updateQuerystring({ search, offset: 0 })
+    },
+    updateQuerystring(payload) {
+      const query = Object.assign({}, this.$route.query, payload)
+      this.$router.push({ query })
+    },
+    async getData() {
+      this.loading = true
+      const options = {
+        url: '/posts/popular',
+        method: 'get',
+        params: this.$route.query
+      }
+      try {
+        const { data } = await this.$axios(options)
+        this.data = data
+        this.loading = false
+      } catch (err) {
+        this.loading = false
+        console.log(err)
       }
     }
   },
   head: _ => ({
     title: '인기 글 - 모스트피플'
   }),
-  async asyncData({ app }) {
+  async asyncData({ app, query }) {
     const options = {
       url: '/posts/popular',
-      method: 'get'
+      method: 'get',
+      params: query
     }
     try {
-      const { data } = await this.$axios(options)
-      return {
-        dataSource: data
-      }
+      const { data } = await app.$axios(options)
+      return { data }
     } catch (err) {
       console.log(err)
+    }
+  },
+  watch: {
+    currentPage() {
+      this.updateQuerystring({ offset: 20 * (this.currentPage - 1) })
+    },
+    '$route.query'() {
+      this.getData()
     }
   }
 }

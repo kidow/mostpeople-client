@@ -55,20 +55,19 @@ export default {
     korName: '프로게이머',
     dataSource: [
       {
-        key: '1',
         uuid: 1,
         title: '롤체 꿀잼',
         author: 'kidow',
         createdAt: '21:08',
-        views: 1
+        viewCount: 1,
+        likeCount: 1
       },
       {
-        key: '2',
-        uuid: 2,
         title: '백수가 암울한이유',
         author: 'kidow',
         createdAt: '21:08',
-        views: 2
+        viewCount: 2,
+        likeCount: 1
       }
     ],
     loading: false,
@@ -126,6 +125,7 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
+      console.log(data.posts)
       return {
         intro: data.intro,
         korName: data.korName,

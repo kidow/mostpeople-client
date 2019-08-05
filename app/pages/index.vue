@@ -5,11 +5,12 @@
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">인기 글</span>
         <nuxt-link to="/popular">더 보기</nuxt-link>
       </div>
-      <vue-list-home :list="cards" />
+      <a-table size="small" :data="data" :customRow="customRow" :columns="columns"></a-table>
+      <!-- <vue-list-home :list="cards" /> -->
       <!-- <span>직업 수 워크넷 기준 6025개</span> -->
     </div>
     <div class="card__container">
-      <div style="margin-bottom: 8px;">
+      <div style="margin: 8px 0">
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">게시판</span>
       </div>
       <vue-board :occupations="occupations" />
@@ -18,44 +19,12 @@
 </template>
 
 <script>
-import VueListHome from '~/components/List/Home'
+import VueTable from '~/components/Table'
 import VueBoard from '~/components/Board'
 import VueCard from '~/components/Card'
 export default {
   data: _ => ({
-    cards: [
-      {
-        id: 1,
-        title: '취업하기 힘든 이유',
-        src:
-          'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        category: {
-          value: 'post',
-          label: '기본'
-        },
-        commentsLength: 15,
-        likesLength: 30,
-        occupation: {
-          value: '1',
-          label: '무직'
-        }
-      }
-      // {
-      //   id: 2,
-      //   title: '롤체 너무 재밌따',
-      //   src: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
-      //   category: {
-      //     value: 'university',
-      //     label: '대학생'
-      //   },
-      //   commentsLength: 15,
-      //   likesLength: 30,
-      //   occupation: {
-      //     value: 'student',
-      //     label: '학생'
-      //   }
-      // }
-    ],
+    data: [],
     occupations: [
       {
         uuid: 1,
@@ -85,11 +54,40 @@ export default {
           }
         ]
       }
+    ],
+    columns: [
+      {
+        dataIndex: 'uuid'
+      },
+      {
+        title: '직업',
+        dataIndex: 'korName'
+      },
+      {
+        title: '제목',
+        dataIndex: 'title'
+      },
+      {
+        title: '글쓴이',
+        dataIndex: 'nickname'
+      },
+      {
+        title: '작성일',
+        dataIndex: 'createdAt'
+      },
+      {
+        title: '조회수',
+        dataIndex: 'viewCount'
+      },
+      {
+        title: '추천',
+        dataIndex: 'likeCount'
+      }
     ]
   }),
   components: {
     VueCard,
-    VueListHome,
+    VueTable,
     VueBoard
   },
   async asyncData({ app }) {
@@ -99,9 +97,21 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      // console.log('data: ', data)
+      console.log(data)
+      return { data }
     } catch (err) {
       console.log(err)
+    }
+  },
+  methods: {
+    customRow({ occupationId, uuid }) {
+      if (!uuid) return
+      const url = `/board/${occupationId}/post/${uuid}`
+      return {
+        on: {
+          click: _ => this.$router.push(url)
+        }
+      }
     }
   }
 }
