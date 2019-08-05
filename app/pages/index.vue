@@ -10,7 +10,7 @@
       <!-- <span>직업 수 워크넷 기준 6025개</span> -->
     </div>
     <div class="card__container">
-      <div style="margin: 8px 0">
+      <div style="margin: 24px 0 8px">
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">게시판</span>
       </div>
       <vue-board :occupations="occupations" />
@@ -97,7 +97,6 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      console.log(data)
       return { data }
     } catch (err) {
       console.log(err)

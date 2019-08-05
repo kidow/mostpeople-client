@@ -81,7 +81,8 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
-        this.data = data
+        this.data = data.posts
+        this.total = data.total
         this.loading = false
       } catch (err) {
         this.loading = false
@@ -100,7 +101,7 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      return { data }
+      return { data: data.posts, total: data.total }
     } catch (err) {
       console.log(err)
     }

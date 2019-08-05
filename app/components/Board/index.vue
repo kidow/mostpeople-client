@@ -9,10 +9,10 @@
       defaultExpandAll
       @select="onSelect"
     />-->
-    <div class="board" v-for="occupation in occupations" :key="occupation.id">
+    <div class="board" v-for="occupation in occupations" :key="occupation.uuid">
       <h4>{{ occupation.title }}</h4>
-      <div style="margin-left: 12px;" v-for="job in occupation.jobs" :key="job.id">
-        <nuxt-link :to="`/board/${job.id}`">{{ job.title }}</nuxt-link>
+      <div style="margin-left: 12px;" v-for="job in occupation.jobs" :key="job.uuid">
+        <nuxt-link :to="`/board/${job.uuid}`">{{ job.title }}</nuxt-link>
       </div>
     </div>
   </div>

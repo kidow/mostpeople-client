@@ -83,8 +83,9 @@ export default {
   async asyncData({ query, app, redirect }) {
     if (!query.keyword) return redirect('/')
     const options = {
-      url: `/search?keyword=${query.keyword}`,
-      method: 'get'
+      url: `/search`,
+      method: 'get',
+      params: query
     }
     try {
       const { data } = await app.$axios(options)
@@ -98,11 +99,12 @@ export default {
   },
   methods: {
     async getSearch() {
-      const { keyword } = this.$route.query
-      if (!keyword) return
+      const { query } = this.$route
+      if (!query.keyword) return
       const options = {
-        url: `/search?keyword=${keyword}`,
-        method: 'get'
+        url: `/search`,
+        method: 'get',
+        params: query
       }
       try {
         const { data } = await this.$axios(options)
@@ -114,7 +116,7 @@ export default {
     }
   },
   watch: {
-    '$route.query.keyword'() {
+    '$route.query'() {
       this.getSearch()
     }
   }

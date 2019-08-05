@@ -142,9 +142,7 @@ module.exports = {
   env: {
     BASE_URL,
     API_BASE_URL,
-    RECAPTCHA_KEY,
-    GOOGLE_APP_ID,
-    FACEBOOK_APP_ID
+    RECAPTCHA_KEY
   },
   build: {
     extend(config, ctx) {
