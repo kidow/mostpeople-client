@@ -106,7 +106,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.dir(err)
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     },
     onChange(value, selectedOptions) {

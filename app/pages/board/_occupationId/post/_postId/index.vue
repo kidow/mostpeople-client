@@ -35,9 +35,9 @@ import VueBreadcrumb from '~/components/Breadcrumb'
 import VueEditor from '~/components/Editor'
 import { mapGetters } from 'vuex'
 export default {
-  // validate({ params }) {
-  //   return /[0-9a-f]{32}/.test(params.postId)
-  // },
+  validate({ params }) {
+    return /[0-9a-f]{32}/.test(params.postId)
+  },
   components: {
     VueBreadcrumb,
     VueTable,
@@ -58,7 +58,12 @@ export default {
     action: null,
     likes: 0,
     views: 0,
-    isReply: false
+    isReply: false,
+    title: '',
+    content: '',
+    createdAt: '',
+    nickname: '',
+    profileUrl: ''
   }),
   methods: {
     onCommentPush(comment) {
@@ -122,8 +127,12 @@ export default {
       const { data } = await app.$axios(options)
       return {
         breadcrumbs: data.breadcrumbs,
-        dataSource: data.dataSource,
-        comments: data.comments || []
+        comments: data.comments,
+        title: data.title,
+        content: data.content,
+        createdAt: data.createdAt,
+        profileUrl: data.profileUrl,
+        nickname: data.nickname
       }
     } catch (err) {
       console.log(err)

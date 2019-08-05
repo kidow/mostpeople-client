@@ -180,7 +180,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.loading = false
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     }
   },

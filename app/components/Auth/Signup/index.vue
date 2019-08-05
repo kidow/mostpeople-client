@@ -108,7 +108,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     },
     async facebookSignup() {
@@ -141,7 +141,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
-        this.notifyError({ descriptions: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     },
     onChange(value, selectedOptions) {

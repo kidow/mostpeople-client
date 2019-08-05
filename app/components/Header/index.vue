@@ -74,7 +74,7 @@ export default {
         if (path === '/profile' || path === '/new') this.$router.push('/')
       } catch (err) {
         console.dir(err)
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     }
   },

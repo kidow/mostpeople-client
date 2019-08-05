@@ -112,7 +112,8 @@
               <a-list-item slot="renderItem" slot-scope="item">
                 <a-comment :author="item.author" :avatar="item.avatar">
                   <template slot="actions">
-                    <span v-for="(action, i) in item.actions" :key="i">{{action}}</span>
+                    <span>수정</span>
+                    <span>삭제</span>
                   </template>
                   <p slot="content">{{item.content}}</p>
                   <a-tooltip slot="datetime" :title="item.datetime">
@@ -222,7 +223,6 @@ export default {
     ],
     comments: [
       {
-        actions: ['수정', '삭제'],
         author: 'Han Solo',
         avatar:
           'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
@@ -231,7 +231,6 @@ export default {
         datetime: 'a day ago'
       },
       {
-        actions: ['수정', '삭제'],
         author: 'Han Solo',
         avatar:
           'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
@@ -352,7 +351,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.loading = false
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     },
     async changePassword() {
@@ -379,7 +378,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.loading = false
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     }
   },

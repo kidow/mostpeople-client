@@ -106,7 +106,7 @@ export default {
         this.messageSuccess()
         this.isEdit = false
       } catch (err) {
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
         console.log(err)
       }
     }

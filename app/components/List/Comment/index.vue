@@ -113,9 +113,11 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
+        this.loading.comment = false
       } catch (err) {
+        this.loading.comment = false
         console.log(err)
-        this.notifyError({ description: err.response.data.message })
+        this.notifyError(err.response.data.message)
       }
     },
     async replySubmit() {
