@@ -2,31 +2,34 @@
   <div>
     <a-list v-if="comments.length" :dataSource="comments" itemLayout="horizontal">
       <a-list-item slot="renderItem" slot-scope="item, index">
-        <a-comment
-          :content="item.content"
-          :datetime="$moment(item.createdAt).format('YYYY-MM-DD hh:mm:ss')"
-          :class="{ 'ant-comment-nested': !!item.parentId }"
-          v-if="!item.isEdit"
-        >
+        <a-comment :class="{ 'ant-comment-nested': !!item.parentId }" v-if="!item.isEdit">
+          <span
+            v-if="item.status === 1 || !item.parentId"
+            slot="datetime"
+          >{{ $moment(item.createdAt).format('YYYY-MM-DD hh:mm:ss') }}</span>
+          <div
+            slot="content"
+          >{{ item.status === 1 || !item.parentId ? item.content : '삭제된 댓글입니다.' }}</div>
           <span
             slot="author"
             @click="$router.push(`/profile/@${item.nickname}`)"
             style="font-size: 16px;"
+            v-if="item.status === 1 || !item.parentId"
           >{{ item.nickname }}</span>
           <a-avatar
             slot="avatar"
             :src="item.profileUrl"
             :alt="item.profileAlt"
-            v-if="item.profileUrl"
+            v-if="item.profileUrl && item.status === 1 || !item.parentId"
             @click="$router.push(`/profile/@${item.nickname}`)"
           />
           <a-avatar
-            v-else
+            v-else-if="!item.profileUrl && item.status === 1 || !item.parentId"
             icon="user"
             slot="avatar"
             @click="$router.push(`/profile/@${item.nickname}`)"
           />
-          <template slot="actions">
+          <template slot="actions" v-if="item.status === 1 || !item.parentId">
             <a-tooltip title="좋아요">
               <a-icon
                 type="like"
@@ -89,7 +92,7 @@
                 :disabled="!item.content"
                 htmlType="submit"
                 :loading="item.loading"
-                @click="item.isEdit ? editReply(item) : addReply(item)"
+                @click="item.isEdit ? editComment(item) : addReply(item)"
                 type="primary"
               >{{ item.isEdit ? '수정' : '등록' }}</a-button>
               <a-button style="margin-left: 8px" @click="item.isEdit = false">취소</a-button>
@@ -177,10 +180,6 @@ export default {
         this.notifyError(err.response.data.message)
       }
     },
-    async editComment(comment) {
-      if (!comment.isEdit) return (comment.isEdit = true)
-      this.loading.isEdit
-    },
     shareFacebook() {
       const { BASE_URL } = process.env
       const { path } = this.$route
@@ -223,13 +222,7 @@ export default {
       // this.dislikes = 0
       this.action = 'liked'
     },
-    async dislike() {
-      this.likeCount = 0
-      // this.dislikes = 1
-      this.action = 'disliked'
-    },
     async addReply(item) {
-      console.log('addReply: ', item)
       item.loading = true
       const options = {
         url: `/prt/comments/${this.$route.params.postId}`,
@@ -249,8 +242,25 @@ export default {
         item.loading = false
       }
     },
-    async editReply(item) {
-      console.log('editReply: ', item)
+    async editComment(item) {
+      item.loading = true
+      const options = {
+        url: `/prt/comments/${item.id}`,
+        method: 'put',
+        data: {
+          content: item.content
+        }
+      }
+      try {
+        await this.$axios(options)
+        item.loading = false
+        item.isEdit = false
+        this.messageSuccess('성공적으로 수정되었습니다')
+      } catch (err) {
+        item.loading = false
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
     }
   },
   computed: {
