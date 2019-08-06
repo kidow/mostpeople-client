@@ -110,7 +110,10 @@ module.exports = {
   },
   loading: { color: COLOR },
   css: ['ant-design-vue/dist/antd.css', '~/assets/scss/main.scss'],
-  plugins: ['@/plugins/antd-ui'],
+  plugins: [
+    '@/plugins/antd-ui',
+    { src: '~/plugins/vue-clipboard2.js', ssr: false }
+  ],
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/pwa',

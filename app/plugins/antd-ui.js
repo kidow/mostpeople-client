@@ -26,7 +26,7 @@ export default () => {
           })
         },
         messageSuccess(message) {
-          this.$message['success'](message || '성공적으로 적용하였습니다.')
+          this.$message['success'](message || '성공적으로 등록되었습니다.')
         }
       }
     })

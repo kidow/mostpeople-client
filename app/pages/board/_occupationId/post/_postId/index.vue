@@ -1,16 +1,80 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <h1>롤체 너무 꿀잼이다</h1>
+    <h1>{{ title }}</h1>
     <div class="user-meta">
-      <a-avatar icon="user" class="avatar" @click="$router.push('/profile/@kidow')" />
-      <span class="id" @click="$router.push('/profile/@kidow')">kidow</span>
+      <a-avatar
+        @click="$router.push(`/profile/@${nickname}`)"
+        v-if="profileUrl"
+        :src="profileUrl"
+        :alt="profileAlt"
+      />
+      <a-avatar v-else icon="user" class="avatar" @click="$router.push(`/profile/@${nickname}`)" />
+      <span class="id" @click="$router.push(`/profile/@${nickname}`)">{{ nickname }}</span>
       <a-divider type="vertical" />
-      <span class="date">2019-03-12 18:29:43</span>
+      <span class="date">{{ $moment(createdAt).format('YYYY-MM-DD hh:mm:ss' )}}</span>
     </div>
-    <vue-editor :readonly="true" value="<p>asdsfs</p>" />
+    <vue-editor :readonly="true" :value="content" />
 
-    <vue-comments-list :comments="comments" />
+    <div class="comment__header">
+      <span>댓글 {{ comments.length }}</span>
+      <a-divider type="vertical" />
+      <span class="pointer" :class="{ isLiked: !!isLiked }" @click="like">추천 {{ likeCount }}</span>
+      <a-divider type="vertical" />
+      <span>조회수 {{ views }}</span>
+      <a-divider type="vertical" />
+      <a-popover trigger="click">
+        <div slot="content">
+          <a-icon
+            type="facebook"
+            class="facebook"
+            style="font-size: 24px; cursor: pointer"
+            theme="filled"
+            @click="shareFacebook"
+          />
+          <a-icon
+            type="twitter"
+            class="twitter"
+            style="font-size: 24px; cursor: pointer"
+            @click="shareTwitter"
+          />
+          <a-icon
+            type="link"
+            class="link"
+            style="font-size: 24px; cursor: pointer"
+            @click="copyLink"
+          />
+        </div>
+        <span class="pointer">공유</span>
+      </a-popover>
+
+      <a-divider type="vertical" />
+      <template v-if="user.uuid === userId">
+        <span class="pointer" @click="$router.push(`/new?postId=${postId}`)">수정</span>
+        <a-divider type="vertical" />
+        <span class="pointer" @click="onDelete">삭제</span>
+        <a-divider type="vertical" />
+      </template>
+      <span class="pointer">신고</span>
+    </div>
+
+    <vue-comments-list
+      :comments="comments"
+      @add-comment="data => onCommentPush(data)"
+      @add-reply="(index, data) => onReplyPush(index, data)"
+      @remove-comment="index => removeComment(index)"
+    />
+    <!-- <div class="comment__container">
+      <div class="comment__header">
+        <span>댓글 0</span>
+        <a-divider type="vertical" />
+        <span style="cursor: pointer">추천 0</span>
+        <a-divider type="vertical" />
+        <span>조회수 0</span>
+        <a-divider type="vertical" />
+        <span style="cursor: pointer">신고</span>
+      </div>
+    </div>-->
 
     <!-- <vue-table :dataSource="dataSource" v-if="!$device.isMobile" />
     <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
@@ -48,75 +112,94 @@ export default {
     breadcrumbs: [],
     dataSource: [],
     comments: [],
-    comment: '',
-    reply: '',
-    loading: {
-      comment: false,
-      edit: false,
-      next: false
-    },
-    action: null,
-    likes: 0,
+    likeCount: 0,
     views: 0,
-    isReply: false,
+    isLiked: false,
+    isEdit: false,
     title: '',
     content: '',
     createdAt: '',
-    nickname: '',
-    profileUrl: ''
+    userId: '',
+    likeCount: 0,
+    profileUrl: '',
+    profileAlt: '',
+    postId: '',
+    nickname: ''
   }),
   methods: {
-    onCommentPush(comment) {
-      this.comments.push(comment)
+    onCommentPush(data) {
+      this.comments.push(data)
     },
-    async commentSubmit() {
-      this.loading.comment = true
+    onReplyPush(index, data) {
+      this.comments.splice(index + 1, 0, data)
+    },
+    removeComment(index) {
+      this.comments.splice(index, 1)
+    },
+    async like() {
       const options = {
-        url: `/prt/comments/${this.$route.params.postId}`,
-        method: 'post',
-        data: {
-          content: this.comment
-        }
+        url: `/prt/likes/${this.$route.params.postId}`,
+        method: 'post'
       }
       try {
         const { data } = await this.$axios(options)
-        this.loading.comment = false
-        this.comment = ''
+        if (data.addLike) {
+          this.likeCount++
+          this.isLiked = true
+        } else {
+          this.likeCount--
+          this.isLiked = false
+        }
       } catch (err) {
-        this.loading.comment = false
+        this.notifyError(err.response.data.message)
+        console.log(err)
       }
     },
-    async replySubmit() {
-      this.loading.reply = true
-
-      setTimeout(() => {
-        this.loading.reply = false
-        this.comments = [
-          {
-            author: 'Han Solo',
-            avatar:
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            content: this.value,
-            datetime: this.$moment().fromNow()
-          },
-          ...this.comments
-        ]
-        this.value = ''
-      }, 1000)
+    onDelete() {
+      const options = {
+        url: `/prt/posts/${this.$route.params.postId}`,
+        method: 'delete'
+      }
+      this.$confirm({
+        title: '정말 삭제하시겠습니까?',
+        content: '이 행동은 되돌릴 수 없습니다.',
+        async onOk() {
+          try {
+            await this.$axios(options)
+            this.successMessage('성공적으로 삭제되었습니다.')
+            this.$router.push('/')
+          } catch (err) {
+            console.log(err)
+            this.notifyError(err.response.data.message)
+          }
+        }
+      })
     },
-    async like() {
-      this.likes = 1
-      // this.dislikes = 0
-      this.action = 'liked'
+    shareFacebook() {
+      const { BASE_URL } = process.env
+      const { path } = this.$route
+      window.open(
+        `http://www.facebook.com/sharer/sharer.php?u=${BASE_URL}${path}`
+      )
     },
-    async dislike() {
-      this.likes = 0
-      // this.dislikes = 1
-      this.action = 'disliked'
+    shareTwitter() {
+      const { BASE_URL } = process.env
+      const { path } = this.$route
+      window.open(
+        `https://twitter.com/intent/tweet?text=TEXT&url=${BASE_URL}${path}`
+      )
+    },
+    async copyLink() {
+      try {
+        await this.$copyText(`${process.env.BASE_URL}${this.$route.path}`)
+        this.messageSuccess('성공적으로 복사되었습니다')
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   head: _ => ({
-    title: '롤체 너무 꿀잼이다 - 모스트피플'
+    // title: this.title ? `${this.title} - 모스트피플` : '모스트피플'
   }),
   async asyncData({ app, params }) {
     const options = {
@@ -131,8 +214,11 @@ export default {
         title: data.title,
         content: data.content,
         createdAt: data.createdAt,
+        postId: data.postId,
         profileUrl: data.profileUrl,
-        nickname: data.nickname
+        profileAlt: data.profileAlt,
+        nickname: data.nickname,
+        userId: data.userId
       }
     } catch (err) {
       console.log(err)
@@ -140,7 +226,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'auth/IS_LOGGED_IN'
+      isLoggedIn: 'auth/IS_LOGGED_IN',
+      user: 'auth/GET_USER'
     })
   }
 }
@@ -174,8 +261,30 @@ h1 {
   padding: 0;
 }
 .comment__header {
-  .recommend {
+  .pointer {
     cursor: pointer;
+    &.isLiked {
+      color: $brand-color;
+      transition: 0.3s;
+    }
+  }
+}
+.ant-divider {
+  margin: 0 4px;
+}
+.facebook {
+  &:hover {
+    color: #3b5998;
+  }
+}
+.twitter {
+  &:hover {
+    color: #1da1f2;
+  }
+}
+.link {
+  &:hover {
+    color: $oc-gray-9;
   }
 }
 </style>

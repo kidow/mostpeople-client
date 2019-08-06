@@ -1,23 +1,31 @@
 <template>
   <div>
-    <div class="comment__header">
-      <span>댓글 {{ comments.length }}</span>
-      <a-divider type="vertical" />
-      <span class="recommend">추천 {{ likes }}</span>
-      <a-divider type="vertical" />
-      <span>조회수 {{ views }}</span>
-      <a-divider type="vertical" />
-      <span class="recommend">신고</span>
-    </div>
     <a-list v-if="comments.length" :dataSource="comments" itemLayout="horizontal">
-      <a-list-item slot="renderItem" slot-scope="item">
+      <a-list-item slot="renderItem" slot-scope="item, index">
         <a-comment
-          :author="item.nickname"
-          :avatar="item.profileUrl"
           :content="item.content"
-          :datetime="item.createdAt"
-          :class="item.parentId"
+          :datetime="$moment(item.createdAt).format('YYYY-MM-DD hh:mm:ss')"
+          :class="{ 'ant-comment-nested': !!item.parentId }"
+          v-if="!item.isEdit"
         >
+          <span
+            slot="author"
+            @click="$router.push(`/profile/@${item.nickname}`)"
+            style="font-size: 16px;"
+          >{{ item.nickname }}</span>
+          <a-avatar
+            slot="avatar"
+            :src="item.profileUrl"
+            :alt="item.profileAlt"
+            v-if="item.profileUrl"
+            @click="$router.push(`/profile/@${item.nickname}`)"
+          />
+          <a-avatar
+            v-else
+            icon="user"
+            slot="avatar"
+            @click="$router.push(`/profile/@${item.nickname}`)"
+          />
           <template slot="actions">
             <a-tooltip title="좋아요">
               <a-icon
@@ -25,52 +33,85 @@
                 :theme="action === 'liked' ? 'filled' : 'outlined'"
                 @click="like"
               />
-              <span style="padding-left: '8px';cursor: 'auto'">{{ likes }}</span>
+              <span style="padding-left: 4px;cursor: 'auto'">{{ likeCount }}</span>
             </a-tooltip>
-            <span>수정</span>
-            <span>삭제</span>
-            <span @click="isReply = !isReply">답글</span>
+            <template v-if="item.userId === user.uuid">
+              <span @click="item.isEdit = true">수정</span>
+              <a-popconfirm
+                title="정말 삭제하시겠습니까?"
+                @confirm="removeComment(item.id, index)"
+                okText="예"
+                cancelText="아니오"
+              >
+                <span>삭제</span>
+              </a-popconfirm>
+              <span v-if="!item.parentId" @click="item.isReply = !item.isReply">답글</span>
+            </template>
           </template>
-          <a-comment v-if="isReply">
+          <!-- 답글 -->
+          <a-comment v-if="item.isReply" class="temp">
             <a-avatar
               slot="avatar"
-              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              alt="Han Solo"
+              :src="user.profileUrl"
+              :alt="user.profileAlt"
+              v-if="user.profileUrl"
             />
+            <a-avatar slot="avatar" v-else icon="user" />
             <div slot="content">
               <a-form-item>
-                <a-textarea :rows="4" v-model="reply"></a-textarea>
+                <a-textarea :rows="4" v-model="item.reply"></a-textarea>
               </a-form-item>
               <a-form-item>
                 <a-button
                   htmlType="submit"
-                  :loading="loading.reply"
-                  @click="replySubmit"
+                  :loading="item.loading"
+                  @click="replySubmit(item, index)"
                   type="primary"
-                >Add Comment</a-button>
+                >등록</a-button>
               </a-form-item>
             </div>
           </a-comment>
         </a-comment>
+        <a-comment v-else :class="{ 'ant-comment-nested': !!item.parentId }">
+          <a-avatar
+            slot="avatar"
+            :src="user.profileUrl"
+            :alt="user.profileAlt"
+            v-if="user.profileUrl"
+          />
+          <a-avatar v-else icon="user" slot="avatar" />
+          <div slot="content">
+            <a-form-item>
+              <a-textarea :disabled="!isLoggedIn" :rows="4" v-model="item.content" />
+            </a-form-item>
+            <a-form-item>
+              <a-button
+                :disabled="!item.content"
+                htmlType="submit"
+                :loading="item.loading"
+                @click="item.isEdit ? editReply(item) : addReply(item)"
+                type="primary"
+              >{{ item.isEdit ? '수정' : '등록' }}</a-button>
+              <a-button style="margin-left: 8px" @click="item.isEdit = false">취소</a-button>
+            </a-form-item>
+          </div>
+        </a-comment>
       </a-list-item>
     </a-list>
 
-    <a-comment v-if="isLoggedIn">
-      <a-avatar
-        slot="avatar"
-        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-        alt="Han Solo"
-      />
+    <a-comment>
+      <a-avatar slot="avatar" :src="user.profileUrl" :alt="user.profileAlt" v-if="user.profileUrl" />
+      <a-avatar v-else icon="user" slot="avatar" />
       <div slot="content">
         <a-form-item>
-          <a-textarea :rows="4" v-model="comment" />
+          <a-textarea :disabled="!isLoggedIn" :rows="4" v-model="comment" />
         </a-form-item>
         <a-form-item>
           <a-button
             :disabled="!comment"
             htmlType="submit"
             :loading="loading.comment"
-            @click="commentSubmit"
+            @click="addComment"
             type="primary"
           >등록</a-button>
         </a-form-item>
@@ -88,12 +129,11 @@ export default {
     reply: '',
     loading: {
       comment: false,
-      reply: false
+      edit: false
     },
     action: null,
-    likes: 0,
-    views: 0,
-    isReply: false
+    isReply: false,
+    likeCount: 0
   }),
   props: {
     comments: {
@@ -102,7 +142,7 @@ export default {
     }
   },
   methods: {
-    async commentSubmit() {
+    async addComment() {
       this.loading.comment = true
       const options = {
         url: `/prt/comments/${this.$route.params.postId}`,
@@ -114,44 +154,109 @@ export default {
       try {
         const { data } = await this.$axios(options)
         this.loading.comment = false
+        this.messageSuccess()
+        this.$emit('add-comment', data)
+        this.comment = ''
       } catch (err) {
         this.loading.comment = false
         console.log(err)
         this.notifyError(err.response.data.message)
       }
     },
-    async replySubmit() {
-      this.loading.reply = true
-
-      setTimeout(() => {
-        this.loading.reply = false
-        this.comments = [
-          {
-            author: 'Han Solo',
-            avatar:
-              'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            content: this.value,
-            datetime: this.$moment().fromNow()
-          },
-          ...this.comments
-        ]
-        this.value = ''
-      }, 1000)
+    async removeComment(id, index) {
+      const options = {
+        url: `/prt/comments/${id}`,
+        method: 'delete'
+      }
+      try {
+        await this.$axios(options)
+        this.$emit('remove-comment', index)
+        this.messageSuccess('성공적으로 삭제되었습니다')
+      } catch (err) {
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
+    },
+    async editComment(comment) {
+      if (!comment.isEdit) return (comment.isEdit = true)
+      this.loading.isEdit
+    },
+    shareFacebook() {
+      const { BASE_URL } = process.env
+      const { path } = this.$route
+      window.open(
+        `http://www.facebook.com/sharer/sharer.php?u=${BASE_URL}${path}`
+      )
+    },
+    shareTwitter() {
+      const { BASE_URL } = process.env
+      const { path } = this.$route
+      window.open(
+        `https://twitter.com/intent/tweet?text=TEXT&url=${BASE_URL}${path}`
+      )
+    },
+    async replySubmit(comment, index) {
+      comment.loading = true
+      const options = {
+        url: `/prt/comments/${this.$route.params.postId}`,
+        method: 'post',
+        data: {
+          content: comment.reply,
+          parentId: comment.id
+        }
+      }
+      try {
+        const { data } = await this.$axios(options)
+        comment.isReply = false
+        comment.reply = ''
+        this.messageSuccess()
+        this.$emit('add-reply', index, data)
+        comment.loading = false
+      } catch (err) {
+        comment.loading = false
+        this.notifyError(err.response.data.message)
+        console.log(err)
+      }
     },
     async like() {
-      this.likes = 1
+      this.likeCount = 1
       // this.dislikes = 0
       this.action = 'liked'
     },
     async dislike() {
-      this.likes = 0
+      this.likeCount = 0
       // this.dislikes = 1
       this.action = 'disliked'
+    },
+    async addReply(item) {
+      console.log('addReply: ', item)
+      item.loading = true
+      const options = {
+        url: `/prt/comments/${this.$route.params.postId}`,
+        method: 'post',
+        data: {
+          parentId: item.id,
+          content: item.reply
+        }
+      }
+      try {
+        const { data } = this.$axios(options)
+        item.isEdit = false
+        item.loading = false
+      } catch (err) {
+        console.log(err)
+        this.notifyError(err.response.data.message)
+        item.loading = false
+      }
+    },
+    async editReply(item) {
+      console.log('editReply: ', item)
     }
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'auth/IS_LOGGED_IN'
+      isLoggedIn: 'auth/IS_LOGGED_IN',
+      user: 'auth/GET_USER'
     })
   }
 }
@@ -164,6 +269,18 @@ export default {
 .comment__header {
   .recommend {
     cursor: pointer;
+  }
+}
+.facebook {
+  font-size: 16px;
+  &:hover {
+    color: #3b5998;
+  }
+}
+.twitter {
+  font-size: 16px;
+  &:hover {
+    color: #1da1f2;
   }
 }
 </style>
