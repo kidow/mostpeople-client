@@ -20,7 +20,7 @@
     <div style="height: 12px" />
     <a-input placeholder="제목" v-model="title" size="large" />
     <div style="height: 12px" />
-    <vue-editor @input="val => content = val" />
+    <vue-editor @input="val => content = val" :value="content" />
     <div style="height: 12px" />
     <a-button
       type="primary"
@@ -74,8 +74,8 @@ export default {
     }, 800),
     async onSubmit() {
       let options = {
-        url: '/prt/posts',
-        method: 'post',
+        url: `/prt/posts/${this.$route.parmas.postId}`,
+        method: 'put',
         data: {
           occupation: this.occupation,
           title: this.title,
@@ -97,15 +97,11 @@ export default {
       }
     }
   },
-  mounted() {
-    const { occupation } = this.$route.query
-    this.occupation = occupation
-  },
   components: {
     VueEditor
   },
   head: _ => ({
-    title: '새 글 - 모스트피플',
+    title: '글 수정 - 모스트피플',
     head: {
       script: [
         {
@@ -114,6 +110,29 @@ export default {
       ]
     }
   }),
-  middleware: ['isNotLoggedIn']
+  middleware: ['isNotLoggedIn'],
+  async asyncData({ app, redirect, params, route }) {
+    const options = {
+      url: `/prt/posts/${params.postId}`,
+      method: 'get'
+    }
+    try {
+      const { data } = await app.$axios(options)
+      if (data.isDeleted) return redirect('/')
+      if (!data.me) return redirect(route.path.slice(0, -5))
+
+      return {
+        occupation: data.occupation,
+        title: data.title,
+        boardType: data.boardType,
+        content: data.content
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  validate({ params }) {
+    return /[0-9a-f]{32}/.test(params.postId)
+  }
 }
 </script>

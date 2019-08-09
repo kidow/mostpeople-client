@@ -3,7 +3,7 @@
     <a-icon type="question-circle" />
     <div class="number">404</div>
     <h3>죄송합니다.</h3>
-    <h3>페이지를 찾을 수 없습니다.</h3>
+    <h3>해당 글은 삭제된 상태입니다.</h3>
     <a-button size="large" @click="$router.push('/')">홈으로</a-button>
   </div>
 </template>
@@ -11,7 +11,7 @@
 <script>
 export default {
   head: _ => ({
-    title: '죄송합니다. 페이지를 찾을 수 없습니다'
+    title: '죄송합니다. 해당 글은 삭제된 상태입니다.'
   })
 }
 </script>

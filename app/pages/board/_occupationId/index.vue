@@ -4,10 +4,14 @@
     <a-card :loading="loading" :title="`${korName}(이)란 무엇인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
-        <h1>{{ intro }}</h1>
+        <h1 v-if="intro">{{ intro }}</h1>
+        <div v-else style="color: #adb5bd">첫 소개를 작성해 보세요</div>
         <div style="display: flex; justify-content: space-between">
-          <span class="createdAt">{{ $moment(createdAt).format('YYYY-MM-DD hh:mm') }}</span>
-          <span class="author">- {{ nickname }} -</span>
+          <span
+            v-if="createdAt"
+            class="createdAt"
+          >{{ $moment(createdAt).format('YYYY-MM-DD hh:mm:ss') }}</span>
+          <span class="author" v-if="nickname">- {{ nickname }} -</span>
         </div>
       </template>
       <a-textarea
@@ -20,16 +24,11 @@
     </a-card>
     <a-tabs defaultActiveKey="1" @change="onChangeTab">
       <a-tab-pane tab="자유게시판" key="1">
-        <vue-table :dataSource="dataSource" v-if="!$device.isMobile" />
+        <vue-table :dataSource="dataSource" :columns="columns" v-if="!$device.isMobile" />
         <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
           <a-list-item @click="onClickList(item)" slot="renderItem" slot-scope="item">
             <a-list-item-meta :intro="item.createdAt">
               <a slot="title" :href="`${$route.path}/post/${item.uuid}`">{{item.title}}</a>
-              <a-avatar
-                slot="avatar"
-                shape="square"
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              />
             </a-list-item-meta>
           </a-list-item>
         </a-list>
@@ -46,50 +45,53 @@
 <script>
 import VueBreadcrumb from '~/components/Breadcrumb'
 import VueTable from '~/components/Table'
+import { mapGetters } from 'vuex'
 export default {
   validate({ params }) {
     return /[0-9]/g.test(params.occupationId)
   },
   data: _ => ({
     tab: '1',
-    korName: '프로게이머',
-    dataSource: [
-      {
-        uuid: 1,
-        title: '롤체 꿀잼',
-        author: 'kidow',
-        createdAt: '21:08',
-        viewCount: 1,
-        likeCount: 1
-      },
-      {
-        title: '백수가 암울한이유',
-        author: 'kidow',
-        createdAt: '21:08',
-        viewCount: 2,
-        likeCount: 1
-      }
-    ],
+    korName: '',
+    dataSource: [],
     loading: false,
     isEdit: false,
     intro: '',
-    breadcrumbs: [
-      {
-        url: '/board/1',
-        name: '관리직'
-      }
-    ],
+    breadcrumbs: [],
     createdAt: '',
-    nickname: ''
+    nickname: '',
+    columns: [
+      {
+        title: '제목',
+        dataIndex: 'title'
+      },
+      {
+        title: '글쓴이',
+        dataIndex: 'nickname'
+      },
+      {
+        title: '작성일',
+        dataIndex: 'createdAt'
+      },
+      {
+        title: '조회수',
+        dataIndex: 'viewCount'
+      },
+      {
+        title: '추천',
+        dataIndex: 'likeCount'
+      }
+    ]
   }),
   methods: {
     onChangeTab(tab) {
       this.tab = tab
     },
     onClickList({ uuid }) {
-      this.$router.push(`${this.$route.path}/post/${uuid}`)
+      this.$router.push(`/post/${uuid}`)
     },
     async onEdit() {
+      if (!this.isLoggedIn) return this.notifyWarning('로그인을 해주세요.')
       if (!this.isEdit) return (this.isEdit = true)
       if (!this.intro) return (this.isEdit = false)
       if (this.intro.length > 40)
@@ -102,10 +104,13 @@ export default {
         }
       }
       try {
+        this.loading = true
         await this.$axios(options)
-        this.messageSuccess()
+        this.loading = false
+        this.messageSuccess('성공적으로 수정되었습니다.')
         this.isEdit = false
       } catch (err) {
+        this.loading = false
         this.notifyError(err.response.data.message)
         console.log(err)
       }
@@ -125,7 +130,6 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      console.log(data.posts)
       return {
         intro: data.intro,
         korName: data.korName,
@@ -137,6 +141,11 @@ export default {
     } catch (err) {
       console.log(err)
     }
+  },
+  computed: {
+    ...mapGetters({
+      isLoggedIn: 'auth/IS_LOGGED_IN'
+    })
   }
 }
 </script>
@@ -154,19 +163,10 @@ export default {
     color: $oc-gray-9;
   }
 }
-.ant-tabs-content {
-  background: white;
-}
 .ant-input {
   font-size: 1rem;
   &::placeholder {
     font-size: 1rem;
   }
-}
-</style>
-
-<style lang="scss">
-.ant-tabs-extra-content {
-  max-width: 150px;
 }
 </style>

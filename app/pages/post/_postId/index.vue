@@ -17,11 +17,11 @@
     <vue-editor :readonly="true" :value="content" />
 
     <div class="comment__header">
-      <span>댓글 {{ comments.length }}</span>
+      <span>댓글 {{ comments.filter(comment => comment.status === 1).length }}</span>
       <a-divider type="vertical" />
       <span class="pointer" :class="{ isLiked: !!isLiked }" @click="like">추천 {{ likeCount }}</span>
       <a-divider type="vertical" />
-      <span>조회수 {{ views }}</span>
+      <span>조회수 {{ viewCount }}</span>
       <a-divider type="vertical" />
       <a-popover trigger="click">
         <div slot="content">
@@ -50,13 +50,18 @@
 
       <a-divider type="vertical" />
       <template v-if="user.uuid === userId">
-        <span class="pointer" @click="$router.push(`/new?postId=${postId}`)">수정</span>
+        <span class="pointer" @click="$router.push(`/post/${postId}/edit`)">수정</span>
         <a-divider type="vertical" />
         <span class="pointer" @click="onDelete">삭제</span>
         <a-divider type="vertical" />
       </template>
-      <span class="pointer">신고</span>
+      <a-popover trigger="click">
+        <div slot="content">준비 중입니다</div>
+        <span class="pointer">신고</span>
+      </a-popover>
     </div>
+
+    <a-modal title="정말 삭제하시겠습니까?" content="이 행동은 되돌릴 수 없습니다." v-model="visible" @ok="onDelete" />
 
     <vue-comments-list
       :comments="comments"
@@ -113,18 +118,18 @@ export default {
     dataSource: [],
     comments: [],
     likeCount: 0,
-    views: 0,
+    viewCount: 0,
     isLiked: false,
     isEdit: false,
     title: '',
     content: '',
     createdAt: '',
     userId: '',
-    likeCount: 0,
     profileUrl: '',
     profileAlt: '',
     postId: '',
-    nickname: ''
+    nickname: '',
+    visible: false
   }),
   methods: {
     onCommentPush(data) {
@@ -133,13 +138,16 @@ export default {
     onReplyPush(index, data) {
       this.comments.splice(index + 1, 0, data)
     },
-    removeComment(index) {
-      this.comments.splice(index, 1)
+    removeComment(item) {
+      item.status = 4
     },
     async like() {
       const options = {
         url: `/prt/likes/${this.$route.params.postId}`,
-        method: 'post'
+        method: 'post',
+        data: {
+          refType: 2
+        }
       }
       try {
         const { data } = await this.$axios(options)
@@ -158,19 +166,22 @@ export default {
     onDelete() {
       const options = {
         url: `/prt/posts/${this.$route.params.postId}`,
-        method: 'delete'
+        method: 'delete',
+        params: {
+          userId: this.user.uuid
+        }
       }
+      const that = this
       this.$confirm({
         title: '정말 삭제하시겠습니까?',
         content: '이 행동은 되돌릴 수 없습니다.',
         async onOk() {
           try {
-            await this.$axios(options)
-            this.successMessage('성공적으로 삭제되었습니다.')
-            this.$router.push('/')
+            await that.$axios(options)
+            that.$router.push('/')
           } catch (err) {
             console.log(err)
-            this.notifyError(err.response.data.message)
+            that.notifyError(err.response.data.message)
           }
         }
       })
@@ -190,24 +201,23 @@ export default {
       )
     },
     async copyLink() {
-      try {
-        await this.$copyText(`${process.env.BASE_URL}${this.$route.path}`)
-        this.messageSuccess('성공적으로 복사되었습니다')
-      } catch (err) {
-        console.log(err)
-      }
+      this.$copyText(`${process.env.BASE_URL}${this.$route.path}`)
+      this.messageSuccess('성공적으로 복사되었습니다')
     }
   },
-  head: _ => ({
-    // title: this.title ? `${this.title} - 모스트피플` : '모스트피플'
-  }),
-  async asyncData({ app, params }) {
+  head() {
+    return {
+      title: this.title ? `${this.title} - 모스트피플` : '모스트피플'
+    }
+  },
+  async asyncData({ app, params, redirect }) {
     const options = {
       url: `/posts/${params.postId}`,
       method: 'get'
     }
     try {
       const { data } = await app.$axios(options)
+      if (data.status !== 1) return redirect('/notfound')
       return {
         breadcrumbs: data.breadcrumbs,
         comments: data.comments,
@@ -218,7 +228,9 @@ export default {
         profileUrl: data.profileUrl,
         profileAlt: data.profileAlt,
         nickname: data.nickname,
-        userId: data.userId
+        userId: data.userId,
+        viewCount: data.viewCount,
+        likeCount: data.likeCount
       }
     } catch (err) {
       console.log(err)

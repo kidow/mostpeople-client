@@ -4,55 +4,54 @@
       <a-list-item slot="renderItem" slot-scope="item, index">
         <a-comment :class="{ 'ant-comment-nested': !!item.parentId }" v-if="!item.isEdit">
           <span
-            v-if="item.status === 1 || !item.parentId"
+            v-if="item.status === 1"
             slot="datetime"
           >{{ $moment(item.createdAt).format('YYYY-MM-DD hh:mm:ss') }}</span>
-          <div
-            slot="content"
-          >{{ item.status === 1 || !item.parentId ? item.content : '삭제된 댓글입니다.' }}</div>
+          <div slot="content">{{ item.status === 1 ? item.content : '삭제된 댓글입니다.' }}</div>
           <span
             slot="author"
             @click="$router.push(`/profile/@${item.nickname}`)"
             style="font-size: 16px;"
-            v-if="item.status === 1 || !item.parentId"
+            v-if="item.status === 1"
           >{{ item.nickname }}</span>
           <a-avatar
             slot="avatar"
             :src="item.profileUrl"
             :alt="item.profileAlt"
-            v-if="item.profileUrl && item.status === 1 || !item.parentId"
+            v-if="item.profileUrl && item.status === 1"
             @click="$router.push(`/profile/@${item.nickname}`)"
           />
           <a-avatar
-            v-else-if="!item.profileUrl && item.status === 1 || !item.parentId"
+            v-else-if="!item.profileUrl && item.status === 1"
             icon="user"
             slot="avatar"
             @click="$router.push(`/profile/@${item.nickname}`)"
           />
-          <template slot="actions" v-if="item.status === 1 || !item.parentId">
+          <template slot="actions" v-if="item.status === 1">
             <a-tooltip title="좋아요">
               <a-icon
                 type="like"
-                :theme="action === 'liked' ? 'filled' : 'outlined'"
-                @click="like"
+                :theme="item.isLiked ? 'filled' : 'outlined'"
+                @click="like(item)"
               />
-              <span style="padding-left: 4px;cursor: 'auto'">{{ likeCount }}</span>
+              <span style="padding-left: 4px;cursor: 'auto'">{{ item.likeCount }}</span>
             </a-tooltip>
             <template v-if="item.userId === user.uuid">
               <span @click="item.isEdit = true">수정</span>
               <a-popconfirm
                 title="정말 삭제하시겠습니까?"
-                @confirm="removeComment(item.id, index)"
-                okText="예"
+                @confirm="removeComment(item)"
+                okType="danger"
                 cancelText="아니오"
               >
+                <span slot="okText">예</span>
                 <span>삭제</span>
               </a-popconfirm>
               <span v-if="!item.parentId" @click="item.isReply = !item.isReply">답글</span>
             </template>
           </template>
           <!-- 답글 -->
-          <a-comment v-if="item.isReply" class="temp">
+          <a-comment v-if="item.isReply">
             <a-avatar
               slot="avatar"
               :src="user.profileUrl"
@@ -134,7 +133,6 @@ export default {
       comment: false,
       edit: false
     },
-    action: null,
     isReply: false,
     likeCount: 0
   }),
@@ -166,16 +164,19 @@ export default {
         this.notifyError(err.response.data.message)
       }
     },
-    async removeComment(id, index) {
+    async removeComment(item) {
+      item.loading = true
       const options = {
-        url: `/prt/comments/${id}`,
+        url: `/prt/comments/${item.id}`,
         method: 'delete'
       }
       try {
         await this.$axios(options)
-        this.$emit('remove-comment', index)
+        item.loading = false
+        this.$emit('remove-comment', item)
         this.messageSuccess('성공적으로 삭제되었습니다')
       } catch (err) {
+        item.loading = false
         console.log(err)
         this.notifyError(err.response.data.message)
       }
@@ -217,10 +218,27 @@ export default {
         console.log(err)
       }
     },
-    async like() {
-      this.likeCount = 1
-      // this.dislikes = 0
-      this.action = 'liked'
+    async like(item) {
+      const options = {
+        url: `/prt/likes/${item.uuid}`,
+        method: 'post',
+        data: {
+          refType: 3
+        }
+      }
+      try {
+        const { data } = await this.$axios(options)
+        if (data.addLike) {
+          item.likeCount++
+          item.isLiked = true
+        } else {
+          item.likeCount--
+          item.isLiked = false
+        }
+      } catch (err) {
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
     },
     async addReply(item) {
       item.loading = true

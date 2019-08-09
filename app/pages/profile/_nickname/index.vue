@@ -8,7 +8,8 @@
     >
       <a-tab-pane tab="기본 정보" key="1">
         <div style="display: flex; align-items: center; position: relative;">
-          <a-avatar alt="thumbnail" :src="profileUrl" size="large" />
+          <a-avatar alt="thumbnail" :src="profileUrl" v-if="profileUrl" size="large" />
+          <a-avatar alt="thumbnail" icon="user" v-else size="large" />
           <span
             style="font-size: 36px; margin-left: 8px; top: 7rem; left: 10rem; position: absolute"
           >{{ nickname }}</span>
@@ -20,32 +21,43 @@
         <div style="display: flex; align-items: center">
           <a-icon theme="filled" style="font-size: 1.5rem;" type="mail" />
           <nuxt-link
-            to="mailto:wcgo2ling@gmail.com"
+            :to="`mailto:${email}`"
             target="_blank"
             style="font-size: 1rem; margin-left: 8px"
-          >wcgo2ling@gmail.com</nuxt-link>
+          >{{ email }}</nuxt-link>
         </div>
-        <p
-          style="margin: 1rem 0; font-size: 1rem"
-        >Frontend Engineer@Laftel Inc. 개발을 재미있게 이것 저것 하는 개발자입니다.</p>
+        <p style="margin: 1rem 0; font-size: 1rem">{{ intro }}</p>
       </a-tab-pane>
 
       <a-tab-pane tab="활동" key="2">
-        <div style="font-size: 16px; line-height: 2.0">
+        <a-list itemLayout="vertical" size="large" :dataSource="skeleton" v-if="loading">
+          <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
+            <a-skeleton :loading="loading" active avatar>
+              <a-list-item-meta description="loading">
+                <a href="http" slot="title">tiel</a>
+                <a-avatar slot="avatar" src="lodign" />
+              </a-list-item-meta>
+            </a-skeleton>
+          </a-list-item>
+        </a-list>
+        <div style="font-size: 16px; line-height: 2.0" v-else>
           게시글
-          <vue-count-to style="font-weight: bold; font-size: 28px" :end-val="130" :duration="1500" />개
+          <vue-count-to
+            style="font-weight: bold; font-size: 28px"
+            :end-val="posts.length"
+            :duration="1500"
+          />개
           <div>
-            <a-list
-              itemLayout="vertical"
-              size="large"
-              :pagination="pagination"
-              :dataSource="listData"
-            >
+            <a-list itemLayout="vertical" size="large" :dataSource="posts">
               <a-list-item slot="renderItem" slot-scope="item" key="item.title">
-                <template slot="actions" v-for="{type, text} in actions">
-                  <span :key="type">
-                    <a-icon :type="type" style="margin-right: 8px" />
-                    {{text}}
+                <template slot="actions">
+                  <span>
+                    <a-icon type="like" style="margin: 0 8px" />
+                    {{ item.likeCount }}
+                    <a-icon type="message" style="margin: 0 8px" />
+                    {{ item.commentCount }}
+                    <a-icon type="eye" style="margin: 0 8px" />
+                    {{ item.viewCount }}
                   </span>
                 </template>
                 <img
@@ -53,34 +65,35 @@
                   width="272"
                   style="cursor: pointer"
                   alt="logo"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                  @click="$router.push(item.href)"
+                  v-if="item.thumbnailUrl"
+                  :src="item.thumbnailUrl"
+                  @click="$router.push(`/post/${item.uuid}`)"
                 />
                 <a-list-item-meta>
-                  <nuxt-link slot="title" :to="item.href">{{item.title}}</nuxt-link>
+                  <nuxt-link slot="title" :to="`/post/${item.uuid}`">{{item.title}}</nuxt-link>
                 </a-list-item-meta>
                 {{item.content}}
               </a-list-item>
             </a-list>
           </div>
         </div>
-        <div style="font-size: 16px">
+        <div style="font-size: 16px" v-if="comments.length">
           댓글
           <vue-count-to
             style="font-weight: bold; font-size: 28px; line-height: 2.0"
-            :end-val="10"
+            :end-val="comments.length"
             :duration="1500"
           />개
           <div>
-            <a-list class="comment-list" itemLayout="horizontal" :dataSource="data">
+            <a-list class="comment-list" itemLayout="horizontal" :dataSource="comments">
               <a-list-item slot="renderItem" slot-scope="item">
-                <a-comment :author="item.author" :avatar="item.avatar">
-                  <template slot="actions">
-                    <span v-for="(action, i) in item.actions" :key="i">{{action}}</span>
-                  </template>
+                <a-comment :author="item.title" :content="item.content">
                   <p slot="content">{{item.content}}</p>
-                  <a-tooltip slot="datetime" :title="item.datetime">
-                    <span>{{item.datetime}}</span>
+                  <a-tooltip
+                    slot="datetime"
+                    :title="$moment(item.datetime).format('YYYY-MM-DD hh:mm:ss')"
+                  >
+                    <span>{{$moment(item.datetime).fromNow()}}</span>
                   </a-tooltip>
                 </a-comment>
               </a-list-item>
@@ -93,15 +106,6 @@
 </template>
 
 <script>
-const listData = []
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://vue.ant.design/',
-    title: `ant design vue part ${i}`,
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
-  })
-}
 import VueCountTo from 'vue-count-to'
 export default {
   head: _ => ({
@@ -114,37 +118,8 @@ export default {
     VueCountTo
   },
   data: _ => ({
-    listData,
-    pagination: {
-      onChange: page => console.log(page),
-      pageSize: 5,
-      size: 'small'
-    },
-    actions: [
-      { type: 'like', text: '156' },
-      { type: 'message', text: '2' },
-      { type: 'eye', text: '156' }
-    ],
-    data: [
-      {
-        actions: ['신고'],
-        author: 'Han Solo',
-        avatar:
-          'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        content:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        datetime: 'a day ago'
-      },
-      {
-        actions: ['신고'],
-        author: 'Han Solo',
-        avatar:
-          'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        content:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        datetime: '2 days ago'
-      }
-    ],
+    posts: [],
+    comments: [],
     email: '',
     intro: '',
     nickname: '',
@@ -153,13 +128,16 @@ export default {
     facebookUrl: '',
     twitterUrl: '',
     timelineFetched: false,
-    loading: false
+    loading: false,
+    skeleton: [{}, {}, {}]
   }),
   methods: {
     goFacebook() {
+      if (!this.facebookUrl) return
       window.open(`https://facebook.com/${this.facebookUrl}`, '_blank')
     },
     goTwitter() {
+      if (!this.twitterUrl) return
       window.open(`https://twitter.com/${this.twitterUrl}`, '_blank')
     },
     tabChange(key) {
@@ -175,6 +153,9 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
+        console.log(data.posts)
+        this.posts = data.posts
+        this.comments = data.comments
         this.timelineFetched = true
         this.loading = false
       } catch (err) {
@@ -190,7 +171,7 @@ export default {
       method: 'get'
     }
     try {
-      const { data } = await this.$axios(options)
+      const { data } = await app.$axios(options)
       return {
         nickname: data.nickname,
         profileUrl: data.profileUrl,
@@ -207,19 +188,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.ant-tabs-content {
-  background: white;
-  border-top: 1px solid #e8e8e8;
-  border-right: 1px solid #e8e8e8;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-bottom: 1px solid #e8e8e8;
-  min-height: 200px;
-  padding: 1rem;
-}
-</style>
 
 <style lang="scss" scoped>
 @import '~/assets/scss/media.scss';
@@ -256,7 +224,7 @@ ul {
   margin-bottom: 6px;
 }
 
-.ant-avatar-lg {
+.ant-avatar {
   width: 10rem;
   height: 10rem;
   img {
@@ -282,5 +250,13 @@ ul {
     color: #3b5998;
   }
   margin-right: 0.5rem;
+}
+</style>
+
+<style lang="scss">
+.ant-avatar[data-v-70d93e5a] {
+  i {
+    font-size: 135px;
+  }
 }
 </style>

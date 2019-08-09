@@ -59,16 +59,27 @@
         </span>
         <span class="basic">
           <a-button
-            :disabled="!email || !nickname || !occupation"
+            :disabled="!email || !nickname"
             size="large"
             style="display: block; margin-top: 1.5rem"
             type="primary"
+            @click="changeProfile"
           >변경하기</a-button>
         </span>
       </a-tab-pane>
 
       <a-tab-pane tab="내 활동" key="2">
-        <div style="font-size: 16px; line-height: 2.0">
+        <a-list itemLayout="vertical" size="large" :dataSource="skeletonData" v-if="loading">
+          <a-list-item slot="renderItem" slot-scope="item, index" :key="index">
+            <a-skeleton :loading="loading" active avatar>
+              <a-list-item-meta description="loading">
+                <a slot="title" href="http">{{ 'titme' }}</a>
+                <a-avatar slot="avatar" src="loading" />
+              </a-list-item-meta>
+            </a-skeleton>
+          </a-list-item>
+        </a-list>
+        <div v-else style="font-size: 16px; line-height: 2.0">
           게시글
           <vue-count-to
             style="font-weight: bold; font-size: 28px"
@@ -76,12 +87,16 @@
             :duration="1500"
           />개
           <div>
-            <a-list itemLayout="vertical" size="large" :pagination="pagination" :dataSource="posts">
+            <a-list itemLayout="vertical" size="large" :dataSource="posts">
               <a-list-item slot="renderItem" slot-scope="item" key="item.title">
-                <template slot="actions" v-for="{type, text} in actions">
-                  <span :key="type">
-                    <a-icon :type="type" style="margin-right: 8px" />
-                    {{text}}
+                <template slot="actions">
+                  <span>
+                    <a-icon type="like" style="margin: 0 8px" />
+                    {{ item.likeCount }}
+                    <a-icon type="message" style="margin: 0 8px" />
+                    {{ item.commentCount }}
+                    <a-icon type="eye" style="margin: 0 8px" />
+                    {{ item.viewCount }}
                   </span>
                 </template>
                 <img
@@ -89,18 +104,19 @@
                   width="272"
                   style="cursor: pointer"
                   alt="logo"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                  @click="$router.push(item.href)"
+                  v-if="item.thumbnailUrl"
+                  :src="item.thumbnailUrl"
+                  @click="$router.push(`/post/${item.uuid}`)"
                 />
                 <a-list-item-meta>
-                  <nuxt-link slot="title" :to="item.href">{{item.title}}</nuxt-link>
+                  <nuxt-link slot="title" :to="`/post/${item.uuid}`">{{item.title}}</nuxt-link>
                 </a-list-item-meta>
                 {{item.content}}
               </a-list-item>
             </a-list>
           </div>
         </div>
-        <div style="font-size: 16px">
+        <div style="font-size: 16px" v-if="comments.length">
           댓글
           <vue-count-to
             style="font-weight: bold; font-size: 28px; line-height: 2.0"
@@ -109,16 +125,42 @@
           />개
           <div>
             <a-list class="comment-list" itemLayout="horizontal" :dataSource="comments">
-              <a-list-item slot="renderItem" slot-scope="item">
-                <a-comment :author="item.author" :avatar="item.avatar">
+              <a-list-item slot="renderItem" slot-scope="item, index">
+                <a-comment :author="item.title" :content="item.content" v-if="!item.isEdit">
                   <template slot="actions">
-                    <span>수정</span>
-                    <span>삭제</span>
+                    <span @click="item.isEdit = true">수정</span>
+                    <a-popconfirm
+                      title="정말 삭제하시겠습니까?"
+                      @confirm="removeComment(item, index)"
+                      okType="danger"
+                      cancelText="아니오"
+                    >
+                      <span slot="okText">예</span>
+                      <span>삭제</span>
+                    </a-popconfirm>
                   </template>
-                  <p slot="content">{{item.content}}</p>
-                  <a-tooltip slot="datetime" :title="item.datetime">
-                    <span>{{item.datetime}}</span>
+                  <a-tooltip
+                    slot="datetime"
+                    :title="$moment(item.createdAt).format('YYYY-MM-DD hh:mm:ss')"
+                  >
+                    <span>{{ $moment(item.createdAt).fromNow()}}</span>
                   </a-tooltip>
+                </a-comment>
+                <a-comment v-else>
+                  <div slot="content">
+                    <a-form-item>
+                      <a-textarea :rows="4" v-model="item.content"></a-textarea>
+                    </a-form-item>
+                    <a-form-item>
+                      <a-button
+                        :disabled="!item.content"
+                        htmlType="submit"
+                        :loading="item.loading"
+                        @click="editComment(item)"
+                        type="primary"
+                      >수정</a-button>
+                    </a-form-item>
+                  </div>
                 </a-comment>
               </a-list-item>
             </a-list>
@@ -172,9 +214,9 @@
         <h1 style="font-weight: bold;">탈퇴 안내</h1>
         <p class="desc">회원 탈퇴를 하시기 전에 안내 사항을 꼭 확인해주세요.</p>
         <ul>
-          <li>사용하고 계신 이메일(donghyunkim@gangmom.kr)은 탈퇴할 경우 재사용 및 복구가 불가능합니다.</li>
+          <li>사용하고 계신 이메일({{ email }})은 탈퇴할 경우 재사용 및 복구가 불가능합니다.</li>
           <li>탈퇴 후 회원정보 및 개인 서비스 이용기록은 모두 삭제됩니다.</li>
-          <li>작성한 게시글 및 댓글은 탈퇴 시 자동 삭제되지 않고 그대로 남아있습니다. 삭제를 원하는 게시글이 있다면 반드시 탈퇴 전 비공개 처리하거나 삭제하시기 바랍니다. 탈퇴 후에는 회원정보가 삭제되어 게시글 및 댓글 삭제가 불가능합니다.</li>
+          <li>작성한 게시글 및 댓글은 탈퇴 시 자동 삭제되지 않고 그대로 남아있습니다. 삭제를 원하는 게시글이 있다면 반드시 탈퇴 전 관리자에게 문의해서 처리하거나 삭제하시기 바랍니다. 탈퇴 후에는 회원정보가 삭제되어 게시글 및 댓글 삭제가 불가능합니다.</li>
         </ul>
         <div style="margin-bottom: 10px">
           <a-checkbox @change="e => checked = e.target.checked">안내 사항을 모두 확인하였으며, 이에 동의합니다.</a-checkbox>
@@ -194,15 +236,6 @@
 
 <script>
 import isLength from 'validator/lib/isLength'
-const posts = []
-for (let i = 0; i < 23; i++) {
-  posts.push({
-    href: 'https://vue.ant.design/',
-    title: `ant design vue part ${i}`,
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
-  })
-}
 import VueCountTo from 'vue-count-to'
 import { mapGetters } from 'vuex'
 export default {
@@ -210,35 +243,8 @@ export default {
     title: '내정보 - 모스트피플'
   }),
   data: _ => ({
-    posts,
-    pagination: {
-      onChange: page => console.log(page),
-      pageSize: 5,
-      size: 'small'
-    },
-    actions: [
-      { type: 'like', text: '156' },
-      { type: 'message', text: '2' },
-      { type: 'eye', text: '156' }
-    ],
-    comments: [
-      {
-        author: 'Han Solo',
-        avatar:
-          'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        content:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        datetime: 'a day ago'
-      },
-      {
-        author: 'Han Solo',
-        avatar:
-          'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        content:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        datetime: '2 days ago'
-      }
-    ],
+    posts: [],
+    comments: [],
     email: '',
     intro: '',
     password: '',
@@ -252,6 +258,7 @@ export default {
       email: false
     },
     occupation: '',
+    timelineFetched: false,
     options: [
       {
         value: 'professional',
@@ -295,7 +302,8 @@ export default {
       }
     ],
     facebookUrl: '',
-    twitterUrl: ''
+    twitterUrl: '',
+    skeletonData: [{}, {}, {}]
   }),
   methods: {
     resign() {
@@ -338,6 +346,7 @@ export default {
       else if (key === '6') this.$router.push('/new')
     },
     async getTimeline() {
+      if (this.timelineFetched) return
       this.loading = true
       const options = {
         url: '/prt/users/timeline',
@@ -345,6 +354,7 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
+        this.timelineFetched = true
         this.posts = data.posts
         this.comments = data.comments
         this.loading = false
@@ -353,6 +363,33 @@ export default {
         this.loading = false
         this.notifyError(err.response.data.message)
       }
+    },
+    async changeProfile() {
+      const options = {
+        url: '/prt/users',
+        method: 'put',
+        data: {
+          nickname: this.nickname,
+          korName: this.occupation,
+          facebookUrl: this.facebookUrl,
+          twitterUrl: this.twitterUrl,
+          intro: this.intro,
+          userId: this.user.uuid
+        }
+      }
+      const that = this
+      this.$confirm({
+        title: '변경하시겠습니까?',
+        async onOk() {
+          try {
+            await that.$axios(options)
+            that.messageSuccess()
+          } catch (err) {
+            console.log(err)
+            that.notifyError(err.response.data.message)
+          }
+        }
+      })
     },
     async changePassword() {
       this.loading = true
@@ -378,6 +415,43 @@ export default {
       } catch (err) {
         console.log(err)
         this.loading = false
+        this.notifyError(err.response.data.message)
+      }
+    },
+    async editComment(item) {
+      item.loading = true
+      const options = {
+        url: `/prt/comments/${item.id}`,
+        method: 'put',
+        data: {
+          content: item.content
+        }
+      }
+      try {
+        await this.$axios(options)
+        this.messageSuccess('성공적으로 수정되었습니다.')
+        item.loading = false
+        item.isEdit = false
+      } catch (err) {
+        item.loading = false
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
+    },
+    async removeComment(item, index) {
+      item.loading = true
+      const options = {
+        url: `/prt/comments/${item.id}`,
+        method: 'delete'
+      }
+      try {
+        await this.$axios(options)
+        item.loading = false
+        this.comments.splice(index, 1)
+        this.messageSuccess('성공적으로 삭제되었습니다')
+      } catch (err) {
+        item.loading = false
+        console.log(err)
         this.notifyError(err.response.data.message)
       }
     }
@@ -411,16 +485,18 @@ export default {
 </script>
 
 <style lang="scss">
-.ant-tabs-content {
-  background: white;
-  border-top: 1px solid #e8e8e8;
-  border-right: 1px solid #e8e8e8;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-bottom: 1px solid #e8e8e8;
-  min-height: 300px;
-  padding: 1rem;
+.ant-tabs-card {
+  .ant-tabs-content {
+    background: white;
+    border-top: 1px solid #e8e8e8;
+    border-right: 1px solid #e8e8e8;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom: 1px solid #e8e8e8;
+    min-height: 300px;
+    padding: 1rem;
+  }
 }
 </style>
 

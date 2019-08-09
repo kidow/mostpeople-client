@@ -58,7 +58,7 @@ export default {
   methods: {
     customRow({ occupationId, uuid }) {
       if (!uuid) return
-      const url = `/board/${occupationId}/post/${uuid}`
+      const url = `/post/${uuid}`
       return {
         on: {
           click: _ => this.$router.push(url)
