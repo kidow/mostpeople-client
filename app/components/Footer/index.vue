@@ -14,13 +14,14 @@
       </li>
       <li>
         <span class="separator">•</span>
-        <nuxt-link to="/marketing">광고문의</nuxt-link>
+        <nuxt-link to="/partnership">광고문의</nuxt-link>
       </li>
       <li>
         <span class="separator">•</span>
         <a>고객센터</a>
       </li>
     </ul>
+    <div class="copyright">Copyright ⓒ mostpeople. All rights reserved.</div>
   </footer>
 </template>
 
@@ -36,6 +37,7 @@ export default {
 
 footer {
   height: 150px;
+  color: $oc-gray-6;
   ul {
     padding: 0;
     margin: 0;
@@ -53,6 +55,9 @@ footer {
         }
       }
     }
+  }
+  .copyright {
+    margin-top: 1rem;
   }
 }
 </style>
