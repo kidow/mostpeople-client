@@ -1,20 +1,23 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <h1>{{ title }}</h1>
-    <div class="user-meta">
-      <a-avatar
-        @click="$router.push(`/profile/@${nickname}`)"
-        v-if="profileUrl"
-        :src="profileUrl"
-        :alt="profileAlt"
-      />
-      <a-avatar v-else icon="user" class="avatar" @click="$router.push(`/profile/@${nickname}`)" />
-      <span class="id" @click="$router.push(`/profile/@${nickname}`)">{{ nickname }}</span>
-      <a-divider type="vertical" />
-      <span class="date">{{ $moment(createdAt).format('YYYY-MM-DD hh:mm:ss' )}}</span>
-    </div>
-    <vue-editor :readonly="true" :value="content" />
+    <a-skeleton avatar :paragraph="{rows: 6}" active v-if="!mounted" />
+    <template v-else>
+      <h1>{{ title }}</h1>
+      <div class="user-meta">
+        <a-avatar
+          @click="$router.push(`/profile/@${nickname}`)"
+          v-if="profileUrl"
+          :src="profileUrl"
+          :alt="profileAlt"
+        />
+        <a-avatar v-else icon="user" class="avatar" @click="$router.push(`/profile/@${nickname}`)" />
+        <span class="id" @click="$router.push(`/profile/@${nickname}`)">{{ nickname }}</span>
+        <a-divider type="vertical" />
+        <span class="date">{{ $moment(createdAt).format('YYYY-MM-DD hh:mm:ss' )}}</span>
+      </div>
+      <vue-editor :readonly="true" :value="content" />
+    </template>
 
     <div class="comment__header">
       <span>댓글 {{ comments.filter(comment => comment.status === 1).length }}</span>
@@ -129,7 +132,8 @@ export default {
     profileAlt: '',
     postId: '',
     nickname: '',
-    visible: false
+    visible: false,
+    mounted: false
   }),
   methods: {
     onCommentPush(data) {
@@ -241,6 +245,9 @@ export default {
       isLoggedIn: 'auth/IS_LOGGED_IN',
       user: 'auth/GET_USER'
     })
+  },
+  mounted() {
+    this.mounted = true
   }
 }
 </script>
@@ -298,5 +305,9 @@ h1 {
   &:hover {
     color: $oc-gray-9;
   }
+}
+
+.ant-skeleton[data-v-28c03496] {
+  margin: 2rem 0;
 }
 </style>

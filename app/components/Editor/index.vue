@@ -48,7 +48,7 @@ export default {
             [{ list: 'ordered' }, { list: 'bullet' }],
             // [{ indent: '-1' }, { indent: '+1' }],
             // ['clean'],
-            ['link', 'image', 'video']
+            ['link', 'image']
           ]
         }
       }
@@ -88,21 +88,19 @@ export default {
     },
     async imageHandler() {
       const uploadImage = file => {
-        const payload = {
-          file,
-          path: 'lounges'
-        }
+        console.log('file: ', file)
         this.$store
-          .dispatch('action/UPLOAD_IMAGE', payload)
+          .dispatch('action/UPLOAD_IMAGE', file)
           .then(data => insert(data))
           .catch(err =>
-            this.$notify.error(
+            this.notifyError(
               '서버에 이미지를 업로드하지 못했습니다. 나중에 다시 시도해주세요.'
             )
           )
       }
 
       const insert = url => {
+        console.log('url: ', url)
         const value = url.location
         const range = this.quill.getSelection()
         this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER)
@@ -110,6 +108,7 @@ export default {
 
       const open = () => {
         const input = document.createElement('input')
+        input.accept = 'image/*'
         input.setAttribute('type', 'file')
         input.click()
 
@@ -117,7 +116,7 @@ export default {
           const file = input.files[0]
 
           if (/^image\//.test(file.type)) uploadImage(file)
-          else this.$notify.error('이미지 형식의 파일만 올려주세요.')
+          else this.notifyError('이미지 형식의 파일만 올려주세요.')
         }
       }
 

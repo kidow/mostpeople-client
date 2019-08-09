@@ -495,7 +495,7 @@ export default {
     border-bottom-left-radius: 4px;
     border-bottom: 1px solid #e8e8e8;
     min-height: 300px;
-    padding: 1rem;
+    padding: 1rem 2rem;
   }
 }
 </style>
