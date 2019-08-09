@@ -63,7 +63,7 @@
                 <img
                   slot="extra"
                   width="272"
-                  style="cursor: pointer"
+                  style="cursor: pointer; height: 150px"
                   alt="logo"
                   v-if="item.thumbnailUrl"
                   :src="item.thumbnailUrl"
@@ -87,8 +87,10 @@
           <div>
             <a-list class="comment-list" itemLayout="horizontal" :dataSource="comments">
               <a-list-item slot="renderItem" slot-scope="item">
-                <a-comment :author="item.title" :content="item.content">
-                  <p slot="content">{{item.content}}</p>
+                <a-comment :content="item.content">
+                  <span slot="author">
+                    <nuxt-link :to="`/post/${item.uuid}`">{{ item.title }}</nuxt-link>
+                  </span>
                   <a-tooltip
                     slot="datetime"
                     :title="$moment(item.datetime).format('YYYY-MM-DD hh:mm:ss')"

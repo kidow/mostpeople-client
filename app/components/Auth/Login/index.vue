@@ -39,19 +39,15 @@ export default {
     },
     async onSubmit() {
       this.loading = true
-      let options = {
-        url: '/auth/login',
-        method: 'post',
-        data: {
-          email: this.email,
-          password: this.password
-        }
+      let data = {
+        email: this.email,
+        password: this.password
       }
       try {
         const token = await this.$recaptcha.execute('login')
         if (!token) return
-        options.data.token = token
-        await this.$store.dispatch('auth/LOGIN', options.data)
+        data.token = token
+        await this.$store.dispatch('auth/LOGIN', data)
         this.redirectAfterLogin()
       } catch (err) {
         this.loading = false

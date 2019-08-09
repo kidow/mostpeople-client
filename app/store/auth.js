@@ -30,6 +30,9 @@ export const mutations = {
       nickname: '',
       status: null
     }
+  },
+  SAVE_PROFILE(state, profileUrl) {
+    state.user.profileUrl = profileUrl
   }
 }
 
@@ -68,7 +71,7 @@ export const actions = {
           }
         }
 
-        const { data } = await this.$axios(options)
+        await this.$axios(options)
         await dispatch('auth/ME')
         resolve()
       } catch (err) {

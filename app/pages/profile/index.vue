@@ -7,6 +7,23 @@
       @change="tabChange"
     >
       <a-tab-pane tab="기본 정보" key="1">
+        <a-upload
+          accept="image/*"
+          :action="uploadURL"
+          name="mostpeople"
+          :withCredentials="true"
+          :beforeUpload="file => beforeUpload(file)"
+          :showUploadList="false"
+          @change="fileChange"
+        >
+          <a-avatar
+            :src="user.profileUrl"
+            v-if="user.profileUrl"
+            :size="64"
+            style="cursor: pointer; margin-bottom: 1rem"
+          />
+          <a-avatar v-else :size="64" icon="user" style="cursor: pointer; margin-bottom: 1rem" />
+        </a-upload>
         <span class="basic">
           <label for="email">이메일</label>
           <a-input size="large" style="width: 300px;" id="email" v-model="email" disabled />
@@ -102,7 +119,7 @@
                 <img
                   slot="extra"
                   width="272"
-                  style="cursor: pointer"
+                  style="cursor: pointer; height: 150px"
                   alt="logo"
                   v-if="item.thumbnailUrl"
                   :src="item.thumbnailUrl"
@@ -126,7 +143,10 @@
           <div>
             <a-list class="comment-list" itemLayout="horizontal" :dataSource="comments">
               <a-list-item slot="renderItem" slot-scope="item, index">
-                <a-comment :author="item.title" :content="item.content" v-if="!item.isEdit">
+                <a-comment :content="item.content" v-if="!item.isEdit">
+                  <span slot="author">
+                    <nuxt-link :to="`/post/${item.uuid}`">{{ item.title }}</nuxt-link>
+                  </span>
                   <template slot="actions">
                     <span @click="item.isEdit = true">수정</span>
                     <a-popconfirm
@@ -454,6 +474,32 @@ export default {
         console.log(err)
         this.notifyError(err.response.data.message)
       }
+    },
+    beforeUpload(file) {
+      if (file.size / 1024 / 1024 / 1024 > 3) {
+        this.notifyError('이미지의 용량이 3MB를 초과합니다.')
+        return false
+      }
+
+      return true
+    },
+    async fileChange({ file }) {
+      if (!file.response) return
+      const options = {
+        url: `/prt/users/image`,
+        method: 'put',
+        data: {
+          imageId: file.response.imageId
+        }
+      }
+      try {
+        await this.$axios(options)
+        this.$store.commit('auth/SAVE_PROFILE', file.response.location)
+        this.messageSuccess()
+      } catch (err) {
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
     }
   },
   components: {
@@ -463,7 +509,10 @@ export default {
   computed: {
     ...mapGetters({
       user: 'auth/GET_USER'
-    })
+    }),
+    uploadURL() {
+      return `${process.env.API_BASE_URL}/prt/images`
+    }
   },
   mounted() {
     const {

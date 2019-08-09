@@ -88,7 +88,6 @@ export default {
     },
     async imageHandler() {
       const uploadImage = file => {
-        console.log('file: ', file)
         this.$store
           .dispatch('action/UPLOAD_IMAGE', file)
           .then(data => insert(data))
@@ -100,7 +99,6 @@ export default {
       }
 
       const insert = url => {
-        console.log('url: ', url)
         const value = url.location
         const range = this.quill.getSelection()
         this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER)
