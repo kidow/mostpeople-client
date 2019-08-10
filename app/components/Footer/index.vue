@@ -20,14 +20,61 @@
         <span class="separator">•</span>
         <a>고객센터</a>
       </li>
+      <li>
+        <span class="separator">•</span>
+        <a @click="visible = true">개선점</a>
+      </li>
     </ul>
+    <a-modal title="개선점을 알려주세요" :visible="visible" @cancel="visible = false" @ok="onSubmit">
+      <div
+        style="margin-bottom: 16px; word-break: keep-all;"
+      >현 서비스에 대해 개선했으면 하는 점이 있다면 알려주세요. 회원님의 소중한 의견이 서비스의 발전에 큰 도움이 될 것입니다.</div>
+      <a-textarea v-model="content" :rows="4" :placeholder="placeholder" :disabled="!isLoggedIn" />
+    </a-modal>
     <div class="copyright">Copyright ⓒ mostpeople. All rights reserved.</div>
   </footer>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'Footer'
+  name: 'Footer',
+  data: _ => ({
+    content: '',
+    visible: false,
+    loading: false
+  }),
+  methods: {
+    async onSubmit() {
+      if (!this.content) return
+      this.loading = true
+      const options = {
+        url: '/prt/improvements',
+        method: 'post',
+        data: {
+          content: this.content
+        }
+      }
+      try {
+        await this.$axios(options)
+        this.notifySuccess('소중한 의견을 내어 주셔서 감사합니다!')
+        this.visible = false
+        this.loading = false
+      } catch (err) {
+        this.loading = false
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      isLoggedIn: 'auth/IS_LOGGED_IN'
+    }),
+    placeholder() {
+      return this.isLoggedIn ? '개선점을 알려주세요' : '로그인이 필요합니다'
+    }
+  }
 }
 </script>
 
