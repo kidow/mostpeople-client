@@ -27,6 +27,10 @@
           >{{ email }}</nuxt-link>
         </div>
         <p style="margin: 1rem 0; font-size: 1rem">{{ intro }}</p>
+        <div class="form" v-if="korName">
+          <label for="occupation">직업</label>
+          <a-input :defaultValue="korName" style="width: 200px" id="occupation" read-only />
+        </div>
       </a-tab-pane>
 
       <a-tab-pane tab="활동" key="2">
@@ -40,7 +44,7 @@
             </a-skeleton>
           </a-list-item>
         </a-list>
-        <div style="font-size: 16px; line-height: 2.0" v-else>
+        <div style="font-size: 16px; line-height: 2.0" v-else-if="posts.length">
           게시글
           <vue-count-to
             style="font-weight: bold; font-size: 28px"
@@ -77,6 +81,7 @@
             </a-list>
           </div>
         </div>
+        <div v-else>활동 내역이 없습니다.</div>
         <div style="font-size: 16px" v-if="comments.length">
           댓글
           <vue-count-to
@@ -125,7 +130,7 @@ export default {
     email: '',
     intro: '',
     nickname: '',
-    occupation: '',
+    korName: '',
     profileUrl: '',
     facebookUrl: '',
     twitterUrl: '',
@@ -155,7 +160,6 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
-        console.log(data.posts)
         this.posts = data.posts
         this.comments = data.comments
         this.timelineFetched = true
@@ -180,7 +184,7 @@ export default {
         facebookUrl: data.facebookUrl,
         twitterUrl: data.twitterUrl,
         email: data.email,
-        occupation: data.occupation,
+        korName: data.korName,
         intro: data.intro
       }
     } catch (err) {
@@ -193,6 +197,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/scss/media.scss';
+@import '~/assets/scss/color.scss';
 
 .desc {
   font-size: 18px;
@@ -252,6 +257,14 @@ ul {
     color: #3b5998;
   }
   margin-right: 0.5rem;
+}
+
+.form {
+  label {
+    font-weight: 700;
+    margin-right: 8px;
+    font-size: 1rem;
+  }
 }
 </style>
 

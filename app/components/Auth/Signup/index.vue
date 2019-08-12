@@ -33,34 +33,44 @@
           block
           id="signup"
           :loading="loading"
-          @click="verifyEmail"
           html-type="submit"
           type="primary"
           size="large"
           :disabled="!code"
-        >이메일 인증</a-button>
+        >인증코드 확인</a-button>
       </form>
     </template>
 
     <template v-else>
       <form @submit.prevent="onSignup">
-        <a-input v-model="email" size="large" disabled />
+        <!-- <a-input v-model="email" size="large" disabled /> -->
+        <a-input v-model="email" size="large" />
         <div style="height: 12px" />
         <a-input v-model="nickname" placeholder="닉네임 (3 ~ 8자리)" size="large" />
         <div style="height: 12px" />
         <a-input v-model="password" placeholder="비밀번호 (8 ~ 20자리)" type="password" size="large" />
         <div style="height: 12px" />
-        <a-cascader
-          expandTrigger="hover"
+        <a-auto-complete
+          @select="onSelect"
           size="large"
-          :options="options"
-          :showSearch="{filter}"
-          @change="onChange"
+          @search="onSearch"
           placeholder="직업 (선택)"
-        />
+          :open="isOpen"
+          optionLabelProp="text"
+        >
+          <a-spin v-if="fetching" size="small" />
+          <template slot="dataSource">
+            <a-select-option
+              v-for="occupationId in dataSource"
+              :key="occupationId.uuid"
+              :text="occupationId.korName"
+            >{{ occupationId.korName }}</a-select-option>
+          </template>
+        </a-auto-complete>
         <div style="height: 12px" />
         <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
-          <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>에 동의합니다
+          <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>과
+          <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다.
         </a-checkbox>
         <div style="height: 12px" />
         <a-alert v-if="error" showIcon :message="error" type="error" banner />
@@ -69,7 +79,6 @@
           block
           id="signup"
           :loading="loading"
-          @click="onSignup"
           html-type="submit"
           size="large"
           :disabled="!email || !nickname || !password || !checked"
@@ -82,6 +91,7 @@
 <script>
 import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
+import debounce from 'lodash.debounce'
 export default {
   name: 'AuthSignup',
   methods: {
@@ -102,7 +112,7 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
-        this.codeConfirm = data.code
+        this.codeConfirm = data.authCode
         this.loading = false
         this.$emit('count')
       } catch (err) {
@@ -111,6 +121,27 @@ export default {
         this.notifyError(err.response.data.message)
       }
     },
+    onSearch: debounce(async function(name) {
+      if (!name) return
+      const options = {
+        url: '/occupations/search',
+        method: 'get',
+        params: { name }
+      }
+      try {
+        this.fetching = true
+        this.isOpen = false
+        const { data } = await this.$axios(options)
+        this.isOpen = true
+        this.fetching = false
+        this.dataSource = data
+      } catch (err) {
+        this.isOpen = false
+        console.log(err)
+        this.fetching = false
+        this.notifyError(err.response.data.message)
+      }
+    }, 800),
     async facebookSignup() {
       location.href = `${process.env.API_BASE_URL}/auth/facebook`
     },
@@ -118,10 +149,14 @@ export default {
       location.href = `${process.env.API_BASE_URL}/auth/google`
     },
     verifyEmail() {
-      if (this.code !== this.codeConfirm)
+      if (this.code != this.codeConfirm)
         return (this.error = '코드가 일치하지 않습니다')
       this.$emit('count')
       this.error = ''
+    },
+    onSelect(val) {
+      this.isOpen = false
+      this.occupationId = val
     },
     async onSignup() {
       this.error = ''
@@ -133,7 +168,8 @@ export default {
       const payload = {
         email: this.email,
         nickname: this.nickname,
-        password: this.password
+        password: this.password,
+        occupationId: this.occupationId
       }
       try {
         await this.$store.dispatch('auth/SIGN_UP', payload)
@@ -143,16 +179,6 @@ export default {
         console.log(err)
         this.notifyError(err.response.data.message)
       }
-    },
-    onChange(value, selectedOptions) {
-      this.occupation = value[0]
-      console.log(value, selectedOptions)
-    },
-    filter(inputValue, path) {
-      return path.some(
-        option =>
-          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-      )
     }
   },
   data: _ => ({
@@ -164,49 +190,10 @@ export default {
     nickname: '',
     password: '',
     checked: false,
-    occupation: '',
-    options: [
-      {
-        value: 'professional',
-        label: '전문직',
-        children: [
-          {
-            value: 'lawyer',
-            label: '변호사'
-          },
-          {
-            value: 'doctor',
-            label: '의사'
-          }
-        ]
-      },
-      {
-        value: 'student',
-        label: '학생',
-        children: [
-          {
-            value: 'elementary',
-            label: '초등학생'
-          },
-          {
-            value: 'middle',
-            label: '중학생'
-          },
-          {
-            value: 'high',
-            label: '고등학생'
-          },
-          {
-            value: 'university',
-            label: '대학생'
-          },
-          {
-            value: 'pregraduate',
-            label: '대학원생'
-          }
-        ]
-      }
-    ]
+    occupationId: '',
+    isOpen: false,
+    fetching: false,
+    dataSource: []
   }),
   props: {
     step: {

@@ -3,19 +3,29 @@
     <form @submit.prevent="socialSignUp">
       <a-input v-model="email" size="large" disabled />
       <div style="height: 12px" />
-      <a-input v-model="nickname" placeholder="닉네임 (4 ~ 8자리)" size="large" />
+      <a-input v-model="nickname" placeholder="닉네임 (3 ~ 8자리)" size="large" />
       <div style="height: 12px" />
-      <a-cascader
-        expandTrigger="hover"
+      <a-auto-complete
+        @select="onSelect"
         size="large"
-        :options="options"
-        :showSearch="{filter}"
-        @change="onChange"
+        @search="onSearch"
         placeholder="직업 (선택)"
-      />
+        :open="isOpen"
+        optionLabelProp="text"
+      >
+        <a-spin v-if="fetching" size="small" />
+        <template slot="dataSource">
+          <a-select-option
+            v-for="occupationId in dataSource"
+            :key="occupationId.uuid"
+            :text="occupationId.korName"
+          >{{ occupationId.korName }}</a-select-option>
+        </template>
+      </a-auto-complete>
       <div style="height: 12px" />
       <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
-        <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>에 동의합니다
+        <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>과
+        <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다
       </a-checkbox>
       <div style="height: 12px" />
       <a-alert v-if="error" showIcon :message="error" type="error" banner />
@@ -33,6 +43,7 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
 export default {
   layout: 'auth',
   mounted() {
@@ -40,55 +51,41 @@ export default {
   },
   data: _ => ({
     email: '',
-    occupation: '',
+    occupationId: '',
     nickname: '',
     checked: false,
     loading: false,
     error: '',
-    options: [
-      {
-        value: 'professional',
-        label: '전문직',
-        children: [
-          {
-            value: 'lawyer',
-            label: '변호사'
-          },
-          {
-            value: 'doctor',
-            label: '의사'
-          }
-        ]
-      },
-      {
-        value: 'student',
-        label: '학생',
-        children: [
-          {
-            value: 'elementary',
-            label: '초등학생'
-          },
-          {
-            value: 'middle',
-            label: '중학생'
-          },
-          {
-            value: 'high',
-            label: '고등학생'
-          },
-          {
-            value: 'university',
-            label: '대학생'
-          },
-          {
-            value: 'pregraduate',
-            label: '대학원생'
-          }
-        ]
-      }
-    ]
+    isOpen: false,
+    fetching: false,
+    dataSource: []
   }),
   methods: {
+    onSelect(val) {
+      this.isOpen = false
+      this.occupationId = val
+    },
+    onSearch: debounce(async function(name) {
+      if (!name) return
+      const options = {
+        url: '/occupations/search',
+        method: 'get',
+        params: { name }
+      }
+      try {
+        this.fetching = true
+        this.isOpen = false
+        const { data } = await this.$axios(options)
+        this.isOpen = true
+        this.fetching = false
+        this.dataSource = data
+      } catch (err) {
+        this.isOpen = false
+        console.log(err)
+        this.fetching = false
+        this.notifyError(err.response.data.message)
+      }
+    }, 800),
     async socialSignUp() {
       this.loading = true
       const options = {
@@ -97,7 +94,7 @@ export default {
         data: {
           email: this.email,
           nickname: this.nickname,
-          occupation: this.occupation
+          occupationId: this.occupationId
         }
       }
       try {
@@ -108,16 +105,6 @@ export default {
         console.dir(err)
         this.notifyError(err.response.data.message)
       }
-    },
-    onChange(value, selectedOptions) {
-      this.occupation = value[0]
-      console.log(value, selectedOptions)
-    },
-    filter(inputValue, path) {
-      return path.some(
-        option =>
-          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-      )
     }
   },
   head: _ => ({

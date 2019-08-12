@@ -24,7 +24,7 @@
     </a-card>
     <a-tabs defaultActiveKey="1" @change="onChangeTab">
       <a-tab-pane tab="자유게시판" key="1">
-        <vue-table :dataSource="dataSource" :columns="columns" v-if="!$device.isMobile" />
+        <vue-table :locale="{ emptyText: '글이 존재하지 않습니다'}" :dataSource="dataSource" :columns="columns" v-if="!$device.isMobile" />
         <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
           <a-list-item @click="onClickList(item)" slot="renderItem" slot-scope="item">
             <a-list-item-meta :intro="item.createdAt">
@@ -48,7 +48,7 @@ import VueTable from '~/components/Table'
 import { mapGetters } from 'vuex'
 export default {
   validate({ params }) {
-    return /[0-9]/g.test(params.occupationId)
+    return /0-9a-f]{32}/g.test(params.occupationId)
   },
   data: _ => ({
     tab: '1',

@@ -25,10 +25,11 @@
         <a @click="visible = true">개선점</a>
       </li>
     </ul>
+    <div style="margin-top: 8px">contact@mostpeople.kr</div>
     <a-modal title="개선점을 알려주세요" :visible="visible" @cancel="visible = false" @ok="onSubmit">
       <div
         style="margin-bottom: 16px; word-break: keep-all;"
-      >현 서비스에 대해 개선했으면 하는 점이 있다면 알려주세요. 회원님의 소중한 의견이 서비스의 발전에 큰 도움이 될 것입니다.</div>
+      >현 서비스에 대해 개선했으면 하는 점이나 버그가 있다면 알려주세요. 회원님의 소중한 의견이 서비스의 발전에 큰 도움이 될 것입니다.</div>
       <a-textarea v-model="content" :rows="4" :placeholder="placeholder" :disabled="!isLoggedIn" />
     </a-modal>
     <div class="copyright">Copyright ⓒ mostpeople. All rights reserved.</div>

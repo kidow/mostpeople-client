@@ -48,7 +48,7 @@ export default {
             [{ list: 'ordered' }, { list: 'bullet' }],
             // [{ indent: '-1' }, { indent: '+1' }],
             // ['clean'],
-            ['link', 'image']
+            ['link', 'image', 'video']
           ]
         }
       }

@@ -10,7 +10,8 @@ export const state = () => ({
     twitterUrl: '',
     intro: '',
     occupation: null,
-    profileUrl: ''
+    profileUrl: '',
+    korName: ''
   }
 })
 
@@ -50,8 +51,8 @@ export const actions = {
       }
 
       try {
-        const { data } = await this.$axios(options)
-        await dispatch('auth/ME', data.token)
+        await this.$axios(options)
+        await dispatch('auth/ME')
         resolve()
       } catch (err) {
         reject(err)
@@ -72,7 +73,7 @@ export const actions = {
         }
 
         await this.$axios(options)
-        await dispatch('auth/ME')
+        await dispatch('ME')
         resolve()
       } catch (err) {
         reject(err)

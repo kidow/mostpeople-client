@@ -5,7 +5,13 @@
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">인기 글</span>
         <nuxt-link to="/popular">더 보기</nuxt-link>
       </div>
-      <a-table size="small" :data="data" :customRow="customRow" :columns="columns"></a-table>
+      <a-table
+        size="small"
+        :data="data"
+        :customRow="customRow"
+        :locale="{ emptyText: '글이 존재하지 않습니다'}"
+        :columns="columns"
+      ></a-table>
       <!-- <vue-list-home :list="cards" /> -->
       <!-- <span>직업 수 워크넷 기준 6025개</span> -->
     </div>
@@ -28,8 +34,7 @@ export default {
     data: [],
     occupations: [
       {
-        uuid: 1,
-        title: '추가',
+        title: '신규',
         jobs: [
           {
             uuid: 50,
@@ -42,7 +47,6 @@ export default {
         ]
       },
       {
-        uuid: 2,
         title: '관리직',
         jobs: [
           {
@@ -98,7 +102,8 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      return { data }
+      console.log('data: ', data)
+      // return { data }
     } catch (err) {
       console.log(err)
     }

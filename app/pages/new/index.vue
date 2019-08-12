@@ -2,14 +2,21 @@
   <form @submit.prevent="onSubmit">
     <div style="display: flex;">
       <a-auto-complete
-        :dataSource="dataSource"
         @select="onSelect"
         size="large"
         @search="onSearch"
-        placeholder="검색"
+        placeholder="직업"
         :open="isOpen"
+        optionLabelProp="text"
       >
         <a-spin v-if="fetching" size="small" />
+        <template slot="dataSource">
+          <a-select-option
+            v-for="occupation in dataSource"
+            :key="occupation.uuid"
+            :text="occupation.korName"
+          >{{ occupation.korName }}</a-select-option>
+        </template>
       </a-auto-complete>
       <div style="width: 12px;" />
       <a-select @change="val => boardType = val" placeholder="게시판 선택" size="large">
@@ -37,7 +44,7 @@ import VueEditor from '~/components/Editor'
 import debounce from 'lodash.debounce'
 export default {
   data: _ => ({
-    occupation: '',
+    occupationId: '',
     title: '',
     boardType: '',
     content: '',
@@ -49,7 +56,7 @@ export default {
   methods: {
     onSelect(val) {
       this.isOpen = false
-      this.occupation = val
+      this.occupationId = val
     },
     onSearch: debounce(async function(name) {
       if (!name) return
@@ -77,7 +84,7 @@ export default {
         url: '/prt/posts',
         method: 'post',
         data: {
-          occupation: this.occupation,
+          occupationId: this.occupationId,
           title: this.title,
           content: this.content,
           boardType: this.boardType
@@ -98,8 +105,8 @@ export default {
     }
   },
   mounted() {
-    const { occupation } = this.$route.query
-    this.occupation = occupation
+    const { occupationId } = this.$route.query
+    if (occupationId) this.occupationId = occupationId
   },
   components: {
     VueEditor

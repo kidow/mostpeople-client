@@ -40,15 +40,25 @@
         </span>
         <span class="basic">
           <label for="job">직업</label>
-          <a-cascader
-            style="width: 300px; margin-bottom: 1.5rem"
-            expandTrigger="hover"
+          <a-auto-complete
+            @select="onSelect"
             size="large"
-            :options="options"
-            :showSearch="{filter}"
-            @change="onChange"
-            placeholder="직업"
-          />
+            @search="onSearch"
+            placeholder="검색"
+            :open="isOpen"
+            optionLabelProp="text"
+            style="margin-bottom: 24px"
+            :defaultValue="user.korName"
+          >
+            <a-spin v-if="fetching" size="small" />
+            <template slot="dataSource">
+              <a-select-option
+                v-for="occupation in dataSource"
+                :key="occupation.uuid"
+                :text="occupation.korName"
+              >{{ occupation.korName }}</a-select-option>
+            </template>
+          </a-auto-complete>
         </span>
         <span class="basic">
           <label for="facebook">페이스북</label>
@@ -96,7 +106,7 @@
             </a-skeleton>
           </a-list-item>
         </a-list>
-        <div v-else style="font-size: 16px; line-height: 2.0">
+        <div v-else-if="posts.length" style="font-size: 16px; line-height: 2.0">
           게시글
           <vue-count-to
             style="font-weight: bold; font-size: 28px"
@@ -133,6 +143,7 @@
             </a-list>
           </div>
         </div>
+        <div v-else>아직 활동하신게 없네요.</div>
         <div style="font-size: 16px" v-if="comments.length">
           댓글
           <vue-count-to
@@ -258,6 +269,7 @@
 import isLength from 'validator/lib/isLength'
 import VueCountTo from 'vue-count-to'
 import { mapGetters } from 'vuex'
+import debounce from 'lodash.debounce'
 export default {
   head: _ => ({
     title: '내정보 - 모스트피플'
@@ -277,55 +289,41 @@ export default {
       sms: false,
       email: false
     },
-    occupation: '',
+    occupationId: '',
     timelineFetched: false,
-    options: [
-      {
-        value: 'professional',
-        label: '전문직',
-        children: [
-          {
-            value: 'lawyer',
-            label: '변호사'
-          },
-          {
-            value: 'doctor',
-            label: '의사'
-          }
-        ]
-      },
-      {
-        value: 'student',
-        label: '학생',
-        children: [
-          {
-            value: 'elementary',
-            label: '초등학생'
-          },
-          {
-            value: 'middle',
-            label: '중학생'
-          },
-          {
-            value: 'high',
-            label: '고등학생'
-          },
-          {
-            value: 'university',
-            label: '대학생'
-          },
-          {
-            value: 'pregraduate',
-            label: '대학원생'
-          }
-        ]
-      }
-    ],
     facebookUrl: '',
     twitterUrl: '',
-    skeletonData: [{}, {}, {}]
+    skeletonData: [{}, {}, {}],
+    dataSource: [],
+    isOpen: false,
+    fetching: false
   }),
   methods: {
+    onSearch: debounce(async function(name) {
+      if (!name) return
+      const options = {
+        url: '/occupations/search',
+        method: 'get',
+        params: { name }
+      }
+      try {
+        this.fetching = true
+        this.isOpen = false
+        const { data } = await this.$axios(options)
+        this.isOpen = true
+        this.fetching = false
+        this.dataSource = data
+      } catch (err) {
+        this.isOpen = false
+        console.log(err)
+        this.fetching = false
+        this.notifyError(err.response.data.message)
+      }
+    }, 800),
+    onSelect(val) {
+      this.isOpen = false
+      this.occupationId = val
+    },
     resign() {
       this.$confirm({
         title: '경고',
@@ -350,16 +348,6 @@ export default {
           }
         }
       })
-    },
-    onChange(value, selectedOptions) {
-      this.occupation = value[0]
-      console.log(value, selectedOptions)
-    },
-    filter(inputValue, path) {
-      return path.some(
-        option =>
-          option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-      )
     },
     tabChange(key) {
       if (key === '2') this.getTimeline()
@@ -390,11 +378,11 @@ export default {
         method: 'put',
         data: {
           nickname: this.nickname,
-          korName: this.occupation,
+          occupationId: this.occupationId,
           facebookUrl: this.facebookUrl,
           twitterUrl: this.twitterUrl,
           intro: this.intro,
-          userId: this.user.uuid
+          uuid: this.user.uuid
         }
       }
       const that = this
@@ -403,7 +391,7 @@ export default {
         async onOk() {
           try {
             await that.$axios(options)
-            that.messageSuccess()
+            that.messageSuccess('성공적으로 변경되었습니다.')
           } catch (err) {
             console.log(err)
             that.notifyError(err.response.data.message)
@@ -519,14 +507,14 @@ export default {
       email,
       nickname,
       intro,
-      occupation,
       facebookUrl,
-      twitterUrl
+      twitterUrl,
+      occupationId
     } = this.user
     this.email = email
     this.nickname = nickname
     this.intro = intro
-    this.occupation = occupation
+    this.occupationId = occupationId
     this.facebookUrl = facebookUrl
     this.twitterUrl = twitterUrl
   }
