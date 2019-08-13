@@ -74,7 +74,15 @@
                   @click="$router.push(`/post/${item.uuid}`)"
                 />
                 <a-list-item-meta>
-                  <nuxt-link slot="title" :to="`/post/${item.uuid}`">{{item.title}}</nuxt-link>
+                  <template slot="title">
+                    <nuxt-link :to="`/post/${item.uuid}`">{{item.title}}</nuxt-link>
+                    <br />
+                    <nuxt-link
+                      class="post-korName"
+                      style="font-size: 12px: color: #adb5bd"
+                      :to="`/board/${item.occupationId}`"
+                    >{{ item.korName }}</nuxt-link>
+                  </template>
                 </a-list-item-meta>
                 {{item.content}}
               </a-list-item>
@@ -160,6 +168,7 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
+        console.log(data.posts)
         this.posts = data.posts
         this.comments = data.comments
         this.timelineFetched = true
@@ -264,6 +273,14 @@ ul {
     font-weight: 700;
     margin-right: 8px;
     font-size: 1rem;
+  }
+}
+
+.post-korName {
+  color: $oc-gray-6;
+  font-size: 12px;
+  &:hover {
+    color: $oc-gray-6;
   }
 }
 </style>

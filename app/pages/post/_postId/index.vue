@@ -221,7 +221,7 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      if (data.status !== 1) return redirect('/notfound')
+      if (data.status === 4) return redirect('/notfound')
       return {
         breadcrumbs: data.breadcrumbs,
         comments: data.comments,

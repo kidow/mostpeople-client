@@ -3,7 +3,7 @@
     <h1>
       <span>{{ $route.query.keyword }}</span>
       에 대한 검색 결과를
-      <vue-count-to :end-val="occupations.length + posts.length" :duration="1500"></vue-count-to>개를 찾았습니다.
+      <vue-count-to :end-val="occupations.length + posts.length + users.length" :duration="1500"></vue-count-to>개 찾았습니다.
     </h1>
     <a-divider />
     <div>
@@ -18,8 +18,8 @@
     <div style="margin-top: 20px">
       <nuxt-link
         v-for="occupation in occupations"
-        :key="occupation.id"
-        :to="`/board/${occupation.id}`"
+        :key="occupation.uuid"
+        :to="`/board/${occupation.uuid}`"
       >
         <a-tag>{{ occupation.korName }}</a-tag>
       </nuxt-link>
@@ -39,9 +39,31 @@
           </div>
           <div class="content">{{ post.content }}</div>
           <span class="occupation">
-            <nuxt-link :to="`/board/${post.occupationId}`">{{ post.occupation }}</nuxt-link>
+            <nuxt-link :to="`/board/${post.occupationId}`">{{ post.korName }}</nuxt-link>
           </span>
           <span class="date">{{ post.createdAt }}</span>
+        </div>
+      </div>
+    </div>
+    <a-divider />
+    <div>
+      <div class="category" style="margin-bottom: 20px">
+        유저
+        <span class="text">검색결과</span>
+        <vue-count-to :end-val="users.length" :duration="1500" />
+        <span class="text">개</span>
+      </div>
+      <div
+        v-for="user in users"
+        :key="user.uuid"
+        @click="$router.push(`/profile/@${user.nickname}`)"
+        class="users"
+      >
+        <a-avatar :src="user.profileUrl" v-if="user.profileUrl" />
+        <a-avatar icon="user" v-else />
+        <div style="margin-left: 10px;">
+          <div style="font-size: 18px">{{ user.nickname }}</div>
+          <div style="font-size: 11px">{{ user.korName }}</div>
         </div>
       </div>
     </div>
@@ -55,31 +77,15 @@ export default {
     VueCountTo
   },
   data: _ => ({
-    occupations: [
-      {
-        korName: '리그 오브 레전드',
-        id: 1
-      },
-      {
-        korName: 'TFT',
-        id: 2
-      }
-    ],
-    posts: [
-      {
-        uuid: '991bb977d7a14961851f19122084480a',
-        occupationId: 1,
-        title: '난 롤토체스 마음에 들던데',
-        content:
-          '칼바람 할때는 담배 피우다 존나 늦게오는 개새끼들 많았는데 롤토체스는 비흡연자들만 있는 클린한 게임임',
-        occupation: '리그 오브 레전드',
-        createdAt: '2019.07.24 21:43'
-      }
-    ]
+    occupations: [],
+    posts: [],
+    users: []
   }),
-  head: _ => ({
-    title: '검색 - 모스트피플'
-  }),
+  head() {
+    return {
+      title: `${this.$route.query.keyword} 검색 - 모스트피플`
+    }
+  },
   async asyncData({ query, app, redirect }) {
     if (!query.keyword) return redirect('/')
     const options = {
@@ -91,7 +97,8 @@ export default {
       const { data } = await app.$axios(options)
       return {
         occupations: data.occupations,
-        posts: data.posts
+        posts: data.posts,
+        users: data.users
       }
     } catch (err) {
       console.log(err)
@@ -110,6 +117,7 @@ export default {
         const { data } = await this.$axios(options)
         this.occupations = data.occupations
         this.posts = data.posts
+        this.users = data.users
       } catch (err) {
         console.log(err)
       }
@@ -168,6 +176,12 @@ export default {
           font-size: 12px;
         }
       }
+    }
+    .users {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin: 0 0 10px;
     }
   }
 }

@@ -173,14 +173,14 @@ div {
     font-size: 22px;
     font-weight: 500;
     color: $oc-green-8;
-    margin: 30px 0 20px 15px;
+    margin: 30px 15px 20px;
   }
   p {
     font-size: 16px;
     color: $oc-gray-8;
     line-height: 160%;
     word-break: keep-all;
-    margin-left: 15px;
+    margin: 0 15px;
   }
   ul {
     li {

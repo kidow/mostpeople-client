@@ -14,7 +14,10 @@
       </li>
       <li>
         <span class="separator">•</span>
-        <nuxt-link to="/partnership">광고문의</nuxt-link>
+        <a-tooltip placement="top" trigger="click" title="준비 중입니다">
+          <a>광고문의</a>
+        </a-tooltip>
+        <!-- <nuxt-link to="/partnership">광고문의</nuxt-link> -->
       </li>
       <li>
         <span class="separator">•</span>
@@ -26,7 +29,13 @@
       </li>
     </ul>
     <div style="margin-top: 8px">contact@mostpeople.kr</div>
-    <a-modal title="개선점을 알려주세요" :visible="visible" @cancel="visible = false" @ok="onSubmit">
+    <a-modal
+      title="개선점을 알려주세요"
+      :visible="visible"
+      @cancel="visible = false"
+      okText="전송"
+      @ok="onSubmit"
+    >
       <div
         style="margin-bottom: 16px; word-break: keep-all;"
       >현 서비스에 대해 개선했으면 하는 점이나 버그가 있다면 알려주세요. 회원님의 소중한 의견이 서비스의 발전에 큰 도움이 될 것입니다.</div>

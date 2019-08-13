@@ -21,7 +21,7 @@
       <div style="width: 12px;" />
       <a-select @change="val => boardType = val" placeholder="게시판 선택" size="large">
         <a-select-option value="1">자유게시판</a-select-option>
-        <a-select-option value="2" disabled>구직게시판</a-select-option>
+        <!-- <a-select-option value="2" disabled>구직게시판</a-select-option> -->
       </a-select>
     </div>
     <div style="height: 12px" />

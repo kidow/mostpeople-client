@@ -2,17 +2,21 @@
   <div class="board__container">
     <!-- <a-tree
       showIcon
-      v-for="(job, i) in jobs"
+      v-for="(occupation, i) in jobs"
       :key="i"
       class="draggable-tree"
       :treeData="job"
       defaultExpandAll
       @select="onSelect"
     />-->
-    <div class="board" v-for="occupation in occupations" :key="occupation.uuid">
-      <h4>{{ occupation.title }}</h4>
-      <div style="margin-left: 12px;" v-for="job in occupation.jobs" :key="job.uuid">
-        <nuxt-link :to="`/board/${job.uuid}`">{{ job.title }}</nuxt-link>
+    <div class="board" v-for="profession in professions" :key="profession.name">
+      <h4>{{ profession.name }}</h4>
+      <div
+        style="margin-left: 12px;"
+        v-for="occupation in profession.occupations"
+        :key="occupation.uuid"
+      >
+        <nuxt-link :to="`/board/${occupation.uuid}`">{{ occupation.korName }}</nuxt-link>
       </div>
     </div>
   </div>
@@ -22,7 +26,7 @@
 export default {
   name: 'Board',
   props: {
-    occupations: {
+    professions: {
       type: Array,
       default: _ => []
     }

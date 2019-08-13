@@ -7,59 +7,28 @@
       </div>
       <a-table
         size="small"
-        :data="data"
+        :data="posts"
         :customRow="customRow"
-        :locale="{ emptyText: '글이 존재하지 않습니다'}"
+        :locale="{ emptyText: '글이 존재하지 않습니다' }"
         :columns="columns"
       ></a-table>
-      <!-- <vue-list-home :list="cards" /> -->
-      <!-- <span>직업 수 워크넷 기준 6025개</span> -->
     </div>
     <div class="card__container">
       <div style="margin: 24px 0 8px">
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">게시판</span>
         <nuxt-link to="/new">새 글 등록</nuxt-link>
       </div>
-      <vue-board :occupations="occupations" />
+      <vue-board :professions="professions" />
     </div>
   </div>
 </template>
 
 <script>
-import VueTable from '~/components/Table'
 import VueBoard from '~/components/Board'
-import VueCard from '~/components/Card'
 export default {
   data: _ => ({
-    data: [],
-    occupations: [
-      {
-        title: '신규',
-        jobs: [
-          {
-            uuid: 50,
-            title: '유투버'
-          },
-          {
-            uuid: 51,
-            title: '스트리머'
-          }
-        ]
-      },
-      {
-        title: '관리직',
-        jobs: [
-          {
-            uuid: 52,
-            title: '국회의원'
-          },
-          {
-            uuid: 54,
-            title: 'CEO'
-          }
-        ]
-      }
-    ],
+    posts: [],
+    professions: [],
     columns: [
       {
         dataIndex: 'uuid'
@@ -91,8 +60,6 @@ export default {
     ]
   }),
   components: {
-    VueCard,
-    VueTable,
     VueBoard
   },
   async asyncData({ app }) {
@@ -102,14 +69,16 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      console.log('data: ', data)
-      // return { data }
+      return {
+        posts: data.posts,
+        professions: data.professions
+      }
     } catch (err) {
       console.log(err)
     }
   },
   methods: {
-    customRow({ occupationId, uuid }) {
+    customRow({ uuid }) {
       if (!uuid) return
       const url = `/post/${uuid}`
       return {

@@ -136,7 +136,13 @@
                   @click="$router.push(`/post/${item.uuid}`)"
                 />
                 <a-list-item-meta>
-                  <nuxt-link slot="title" :to="`/post/${item.uuid}`">{{item.title}}</nuxt-link>
+                  <template slot="title">
+                    <nuxt-link :to="`/post/${item.uuid}`">{{item.title}}</nuxt-link>
+                    <nuxt-link
+                      class="post-korName"
+                      :to="`/board/${item.occupationId}`"
+                    >{{ item.korName }}</nuxt-link>
+                  </template>
                 </a-list-item-meta>
                 {{item.content}}
               </a-list-item>
@@ -520,6 +526,19 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/scss/color.scss';
+
+.post-korName {
+  color: $oc-gray-6;
+  font-size: 12px;
+  &:hover {
+    color: $oc-gray-6;
+  }
+}
+</style>
+
 
 <style lang="scss">
 .ant-tabs-card {
