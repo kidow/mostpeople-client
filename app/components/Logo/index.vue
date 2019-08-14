@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link to="/">MostPeople</nuxt-link>
+  <nuxt-link to="/">MOSTPEOPLE</nuxt-link>
 </template>
 
 <script>
@@ -13,7 +13,7 @@ export default {
 
 a {
   color: $brand-color;
-  font-weight: bold;
+  font-weight: 300;
   font-size: 24px;
   &:hover {
     text-decoration: none;

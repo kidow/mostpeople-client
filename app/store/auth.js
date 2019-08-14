@@ -17,7 +17,8 @@ export const state = () => ({
 
 export const getters = {
   IS_LOGGED_IN: state => !!state.user.uuid,
-  GET_USER: state => state.user
+  GET_USER: state => state.user,
+  GET_EMAIL: state => state.email
 }
 
 export const mutations = {

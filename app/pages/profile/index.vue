@@ -261,9 +261,10 @@
         <a-button :disabled="!checked" size="large" type="danger" @click="resign">회원 탈퇴하기</a-button>
       </a-tab-pane>
       <a-tab-pane tab="알림 설정" key="5">
+        <div>아직 준비중이에요.</div>
         <span class="basic">
           <label for="email">이메일</label>
-          <a-switch v-model="alarm.email" />
+          <a-switch disabled v-model="alarm.email" />
         </span>
       </a-tab-pane>
       <a-tab-pane tab="새 글 등록" key="6"></a-tab-pane>
@@ -331,6 +332,7 @@ export default {
       this.occupationId = val
     },
     resign() {
+      const that = this
       this.$confirm({
         title: '경고',
         content: '정말로 탈퇴하시겠습니까?',
@@ -338,18 +340,19 @@ export default {
         cancelText: '아니오',
         okType: 'danger',
         async onOk() {
-          this.loading = true
+          that.loading = true
           const options = {
             url: '/prt/users',
             method: 'delete'
           }
           try {
-            await this.$axios(options)
-            this.loading = false
-            this.$store.commit('auth/CLEAR_USER')
-            this.$router.push('/')
+            await that.$axios(options)
+            that.loading = false
+            that.$store.commit('auth/CLEAR_USER')
+            that.$message.success('그동안 이용해주셔서 감사합니다.')
+            that.$router.push('/')
           } catch (err) {
-            this.loading = false
+            that.loading = false
             console.log(err)
           }
         }
