@@ -123,9 +123,11 @@
 <script>
 import VueCountTo from 'vue-count-to'
 export default {
-  head: _ => ({
-    title: '남의유저 - 모스트피플'
-  }),
+  head() {
+    return {
+      title: this.nickname ? `${this.nickname} - 모스트피플` : '모스트피플'
+    }
+  },
   validate({ params }) {
     return /@[a-z]/g.test(params.nickname)
   },

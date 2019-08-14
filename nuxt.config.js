@@ -2,7 +2,7 @@ const { NODE_ENV } = process.env
 const TITLE = '모스트피플'
 const DESCRIPTION = 'Most people have a job.'
 const IMAGE = ''
-const PUBLIC_LINK = 'https://www.born-hater.com'
+const PUBLIC_LINK = 'https://www.mostpeople.kr'
 const COLOR = '#41b883'
 const RECAPTCHA_KEY = '6LdDgq0UAAAAAAT2cDFE9gl-IPZPSHPd7mfbmPEa'
 const BASE_URL =
@@ -146,6 +146,25 @@ module.exports = {
     BASE_URL,
     API_BASE_URL,
     RECAPTCHA_KEY
+  },
+  sitemap: {
+    path: '/sitemap.xml',
+    hostname: PUBLIC_LINK,
+    cacheTime: 1000 * 60 * 15,
+    gzip: true,
+    generate: false,
+    exclude: ['/profile', '/profile/**'],
+    routes: async () => {
+      const axios = require('axios')
+      const api = `${API_BASE_URL}/event/sitemaps`
+
+      try {
+        const { data } = await axios.get(api)
+        return data
+      } catch (err) {
+        console.error('failed to generate sitemap.', err)
+      }
+    }
   },
   build: {
     extend(config, ctx) {
