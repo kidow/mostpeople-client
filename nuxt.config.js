@@ -167,27 +167,6 @@ module.exports = {
     }
   },
   build: {
-    extend(config, ctx) {
-      config.module.rules.push({
-        test: /\.less$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'less-loader',
-            options: {
-              modifyVars: {
-                'primary-color': COLOR,
-                'link-color': COLOR
-              }
-            }
-          }
-        ]
-      })
-    }
+    extend(config, ctx) {}
   }
 }
