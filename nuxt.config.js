@@ -4,7 +4,7 @@ const DESCRIPTION = 'Most people have a job.'
 const IMAGE = ''
 const PUBLIC_LINK = 'https://www.mostpeople.kr'
 const COLOR = '#41b883'
-const RECAPTCHA_KEY = '6LdDgq0UAAAAAAT2cDFE9gl-IPZPSHPd7mfbmPEa'
+const RECAPTCHA_KEY = '6LeqJrMUAAAAAOJbrYYGuDw0OpmpbtXaeRsimrGy'
 const BASE_URL =
   NODE_ENV === 'production'
     ? 'https://www.mostpeople.kr'
