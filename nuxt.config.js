@@ -47,20 +47,12 @@ module.exports = {
       { hid: 'keywords', name: 'keywords', content: '소셜' },
       { hid: 'image', name: 'image', content: IMAGE },
       {
-        name: 'naver-site-verification',
-        content: 'd1bbf42aae7787d3a852803c3d79616b8773515a'
-      },
-      {
-        name: 'google-site-verification',
-        content: 'cVjUGdgE8D4owrjBQ2mm4e968GSLsaXa-ZBwHh3wYzk'
-      },
-      {
         name: 'msapplication-TileColor',
         content: COLOR
       },
       {
         name: 'theme-color',
-        content: '#fff'
+        content: COLOR
       },
 
       // Open Graph
