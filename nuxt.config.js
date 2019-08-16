@@ -45,7 +45,7 @@ module.exports = {
       { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
       { name: 'apple-mobile-web-app-title', content: 'Born hater' },
       { hid: 'keywords', name: 'keywords', content: '소셜' },
-      { hid: 'image', name: 'image', content: IMAGE },
+      // { hid: 'image', name: 'image', content: IMAGE },
       {
         name: 'msapplication-TileColor',
         content: COLOR
@@ -63,7 +63,7 @@ module.exports = {
         property: 'og:description',
         content: DESCRIPTION
       },
-      { hid: 'og-image', property: 'og:image', content: IMAGE },
+      // { hid: 'og-image', property: 'og:image', content: IMAGE },
       { hid: 'og-type', property: 'og:type', content: 'article' },
       { hid: 'og-locale', property: 'og:locale', content: 'en_US' },
       { hid: 'og-image-width', property: 'og:image:width', content: '1200' },
@@ -84,7 +84,7 @@ module.exports = {
         property: 'twitter:description',
         content: DESCRIPTION
       },
-      { hid: 'twitter-image', property: 'twitter:image', content: IMAGE },
+      // { hid: 'twitter-image', property: 'twitter:image', content: IMAGE },
       {
         hid: 'twitter-domain',
         property: 'twitter:domain',
