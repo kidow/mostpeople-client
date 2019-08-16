@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /profile/
 
-Sitemap: https://www.mostpeople.kr/sitemap.xml
+Sitemap: https://mostpeople.kr/sitemap.xml

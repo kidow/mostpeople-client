@@ -2,13 +2,11 @@ const { NODE_ENV } = process.env
 const TITLE = '모스트피플'
 const DESCRIPTION = 'Most people have a job.'
 const IMAGE = ''
-const PUBLIC_LINK = 'https://www.mostpeople.kr'
+const PUBLIC_LINK = 'https://mostpeople.kr'
 const COLOR = '#41b883'
 const RECAPTCHA_KEY = '6LeqJrMUAAAAAOJbrYYGuDw0OpmpbtXaeRsimrGy'
 const BASE_URL =
-  NODE_ENV === 'production'
-    ? 'https://www.mostpeople.kr'
-    : 'http://localhost:3000'
+  NODE_ENV === 'production' ? 'https://mostpeople.kr' : 'http://localhost:3000'
 const API_BASE_URL =
   NODE_ENV === 'production'
     ? 'https://api.mostpeople.kr'
