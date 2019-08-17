@@ -3,6 +3,11 @@
     <a-button icon="facebook" size="large" id="facebook" block @click="facebookLogin">페이스북으로 로그인</a-button>
     <div style="height: 12px" />
     <a-button icon="google" size="large" id="google" block @click="googleLogin">구글로 로그인</a-button>
+    <div style="height: 12px" />
+    <button id="kakao" class="login-button" @click="kakaoLogin">
+      <img src="~/assets/icons/kakao.png" alt="kakao" />
+      카카오로 가입
+    </button>
     <a-divider>또는</a-divider>
     <form @submit.prevent="onSubmit">
       <a-input placeholder="이메일" v-model="email" size="large" />
@@ -55,11 +60,14 @@ export default {
         this.notifyError(err.response.data.message)
       }
     },
-    async facebookLogin() {
+    facebookLogin() {
       location.href = `${process.env.API_BASE_URL}/auth/facebook`
     },
-    async googleLogin() {
+    googleLogin() {
       location.href = `${process.env.API_BASE_URL}/auth/google`
+    },
+    kakaoLogin() {
+      location.href = `${process.env.API_BASE_URL}/auth/kakao`
     }
   },
   data: _ => ({
@@ -78,20 +86,50 @@ export default {
   background: white;
   box-shadow: $box-shadow-1;
   padding: 22px;
-  button {
-    color: white;
+  .login-button {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 0 15px;
+    cursor: pointer;
+    &:hover {
+      filter: brightness(0.9);
+    }
+    img {
+      width: 16px;
+      margin-right: 8px;
+    }
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   #facebook {
     background: #3b5998;
     border-color: #3b5998;
+    color: white;
+    &:hover {
+      filter: brightness(0.9);
+    }
   }
   #google {
     background: #db4437;
     border-color: #db4437;
+    color: white;
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+  #kakao {
+    background: #ffe812;
+    color: #000000;
   }
   #login {
     background: $brand-color;
     border-color: $brand-color;
+    color: white;
+    &:hover {
+      filter: brightness(0.9);
+    }
   }
 }
 </style>

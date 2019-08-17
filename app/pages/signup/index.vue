@@ -5,7 +5,7 @@
       <a-step title="이메일 인증" />
       <a-step title="기본 정보" />
     </a-steps>
-    <vue-auth-signup :step="step" @count="step += 1" />
+    <vue-auth-signup :step="step" @count="val => step = val" />
   </div>
 </template>
 

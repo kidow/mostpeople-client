@@ -4,6 +4,12 @@
       <a-button icon="facebook" size="large" id="facebook" block @click="facebookSignup">페이스북으로 가입</a-button>
       <div style="height: 12px" />
       <a-button icon="google" size="large" id="google" block @click="googleSignup">구글로 가입</a-button>
+      <div style="height: 12px" />
+      <button id="kakao" class="signup-button" @click="kakaoSignup">
+        <img src="~/assets/icons/kakao.png" alt="kakao" />
+        카카오로 가입
+      </button>
+      <!-- <a-button size="large" id="kakao" block @click="kakaoSignup">카카오로 가입</a-button> -->
       <a-divider>또는</a-divider>
       <form @submit.prevent="submitEmail">
         <a-input placeholder="이메일" v-model="email" size="large" />
@@ -38,6 +44,8 @@
           size="large"
           :disabled="!code"
         >인증코드 확인</a-button>
+        <div style="height: 12px" />
+        <a-button block id="resend" type="primary" size="large" @click="$emit('count', 0)">다시 보내기</a-button>
       </form>
     </template>
 
@@ -114,7 +122,7 @@ export default {
         const { data } = await this.$axios(options)
         this.codeConfirm = data.authCode
         this.loading = false
-        this.$emit('count')
+        this.$emit('count', 1)
       } catch (err) {
         this.loading = false
         console.log(err)
@@ -142,16 +150,20 @@ export default {
         this.notifyError(err.response.data.message)
       }
     }, 800),
-    async facebookSignup() {
+    facebookSignup() {
       location.href = `${process.env.API_BASE_URL}/auth/facebook`
     },
-    async googleSignup() {
+    googleSignup() {
       location.href = `${process.env.API_BASE_URL}/auth/google`
+    },
+    kakaoSignup() {
+      alert('이메일 수집에 꼭 동의해주세요.')
+      location.href = `${process.env.API_BASE_URL}/auth/kakao`
     },
     verifyEmail() {
       if (this.code != this.codeConfirm)
         return (this.error = '코드가 일치하지 않습니다')
-      this.$emit('count')
+      this.$emit('count', 2)
       this.error = ''
     },
     onSelect(val) {
@@ -212,18 +224,52 @@ export default {
   background: white;
   box-shadow: $box-shadow-1;
   padding: 22px;
-  button {
-    color: white;
+  .signup-button {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 0 15px;
+    cursor: pointer;
+    &:hover {
+      filter: brightness(0.9);
+    }
+    img {
+      width: 16px;
+      margin-right: 8px;
+    }
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   #facebook {
     background: #3b5998;
     border-color: #3b5998;
+    color: white;
+    &:hover {
+      filter: brightness(0.9);
+    }
   }
   #google {
     background: #db4437;
     border-color: #db4437;
+    color: white;
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+  #kakao {
+    background: #ffde00;
+    color: black;
   }
   #signup {
+    background: $brand-color;
+    border-color: $brand-color;
+    color: white;
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+  #resend {
     background: $brand-color;
     border-color: $brand-color;
   }
