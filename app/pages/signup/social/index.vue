@@ -3,7 +3,7 @@
     <form @submit.prevent="socialSignUp">
       <a-input v-model="email" size="large" disabled />
       <div style="height: 12px" />
-      <a-input v-model="nickname" placeholder="닉네임 (3 ~ 8자리)" size="large" />
+      <a-input v-model="nickname" placeholder="닉네임 (3 ~ 10자리)" size="large" />
       <div style="height: 12px" />
       <a-auto-complete
         @select="onSelect"
@@ -44,6 +44,8 @@
 
 <script>
 import debounce from 'lodash.debounce'
+import isEmail from 'validator/lib/isEmail'
+import isLength from 'validator/lib/isLength'
 export default {
   layout: 'auth',
   mounted() {
@@ -87,6 +89,10 @@ export default {
       }
     }, 800),
     async socialSignUp() {
+      this.error = ''
+      if (!isEmail(this.email)) return (this.error = '이메일 형식이 아닙니다')
+      if (!isLength(this.nickname, { min: 3, max: 10 }))
+        return (this.error = '닉네임은 3 ~ 10자리로 입력해주세요')
       this.loading = true
       const options = {
         url: '/auth/signup/social',
@@ -99,6 +105,7 @@ export default {
       }
       try {
         await this.$axios(options)
+        this.messageSuccess('가입을 환영합니다')
         this.$router.push('/')
       } catch (err) {
         this.loading = false

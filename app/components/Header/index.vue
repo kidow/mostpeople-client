@@ -27,7 +27,7 @@
         <div slot="title" @click="$router.push('/')">모스트피플</div>
         <div>
           <h3>인증</h3>
-          <template v-if="isLoggedIn">
+          <template v-if="!isLoggedIn">
             <nuxt-link to="/login">로그인</nuxt-link>
             <nuxt-link to="/signup">회원가입</nuxt-link>
           </template>

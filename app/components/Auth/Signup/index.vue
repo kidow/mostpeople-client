@@ -9,7 +9,6 @@
         <img src="~/assets/icons/kakao.png" alt="kakao" />
         카카오로 가입
       </button>
-      <!-- <a-button size="large" id="kakao" block @click="kakaoSignup">카카오로 가입</a-button> -->
       <a-divider>또는</a-divider>
       <form @submit.prevent="submitEmail">
         <a-input placeholder="이메일" v-model="email" size="large" />
@@ -54,7 +53,7 @@
         <!-- <a-input v-model="email" size="large" disabled /> -->
         <a-input v-model="email" size="large" />
         <div style="height: 12px" />
-        <a-input v-model="nickname" placeholder="닉네임 (3 ~ 8자리)" size="large" />
+        <a-input v-model="nickname" placeholder="닉네임 (3 ~ 10자리)" size="large" />
         <div style="height: 12px" />
         <a-input v-model="password" placeholder="비밀번호 (8 ~ 20자리)" type="password" size="large" />
         <div style="height: 12px" />
@@ -157,7 +156,7 @@ export default {
       location.href = `${process.env.API_BASE_URL}/auth/google`
     },
     kakaoSignup() {
-      alert('이메일 수집에 꼭 동의해주세요.')
+      alert('(선택) 카카오계정(이메일)에 꼭 동의해주세요.')
       location.href = `${process.env.API_BASE_URL}/auth/kakao`
     },
     verifyEmail() {
@@ -172,8 +171,8 @@ export default {
     },
     async onSignup() {
       this.error = ''
-      if (!isLength(this.nickname, { min: 3, max: 8 }))
-        return (this.error = '닉네임은 3 ~ 8자리로 입력해주세요')
+      if (!isLength(this.nickname, { min: 3, max: 10 }))
+        return (this.error = '닉네임은 3 ~ 10자리로 입력해주세요')
       if (!isLength(this.password, { min: 8, max: 20 }))
         return (this.error = '비밀번호는 8 ~ 20자리로 입력해주세요')
       this.loading = true
@@ -185,6 +184,7 @@ export default {
       }
       try {
         await this.$store.dispatch('auth/SIGN_UP', payload)
+        this.messageSuccess('가입을 환영합니다')
         this.$router.push('/')
       } catch (err) {
         this.loading = false
