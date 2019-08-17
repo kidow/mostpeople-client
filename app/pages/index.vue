@@ -16,7 +16,7 @@
     <div class="card__container">
       <div style="margin: 24px 0 8px">
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">게시판</span>
-        <nuxt-link to="/new">새 글 등록</nuxt-link>
+        <nuxt-link to="/new">새 글</nuxt-link>
       </div>
       <vue-board :professions="professions" />
     </div>

@@ -99,7 +99,10 @@ module.exports = {
     ]
   },
   loading: { color: COLOR },
-  css: ['ant-design-vue/dist/antd.css', '~/assets/scss/main.scss'],
+  css: [
+    { src: 'ant-design-vue/dist/antd.less', lang: 'less' },
+    '~/assets/scss/main.scss'
+  ],
   plugins: [
     '@/plugins/antd-ui',
     { src: '~/plugins/vue-clipboard2.js', ssr: false }
@@ -157,6 +160,12 @@ module.exports = {
     }
   },
   build: {
-    extend(config, ctx) {}
+    extend(config, { loaders }) {
+      loaders.less.javascriptEnabled = true
+      loaders.less.modifyVars = {
+        'primary-color': COLOR,
+        'link-color': COLOR
+      }
+    }
   }
 }

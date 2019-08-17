@@ -267,7 +267,7 @@
           <a-switch disabled v-model="alarm.email" />
         </span>
       </a-tab-pane>
-      <a-tab-pane tab="새 글 등록" key="6"></a-tab-pane>
+      <a-tab-pane tab="새 글" key="6"></a-tab-pane>
     </a-tabs>
   </div>
 </template>

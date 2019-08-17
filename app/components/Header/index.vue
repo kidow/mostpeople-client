@@ -39,7 +39,7 @@
         <div>
           <h3>메뉴</h3>
           <nuxt-link to="/popular">인기글 보기</nuxt-link>
-          <nuxt-link to="/new">새 글 등록</nuxt-link>
+          <nuxt-link to="/new">새 글</nuxt-link>
         </div>
         <div>
           <h3>모스트피플</h3>
