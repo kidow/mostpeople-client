@@ -6,13 +6,18 @@
     <div style="height: 12px" />
     <button id="kakao" class="login-button" @click="kakaoLogin">
       <img src="~/assets/icons/kakao.png" alt="kakao" />
-      카카오로 가입
+      카카오로 로그인
+    </button>
+    <div style="height: 12px" />
+    <button id="naver" class="login-button" @click="naverLogin">
+      <img src="~/assets/icons/naver.png" alt="naver" />
+      네이버로 로그인
     </button>
     <a-divider>또는</a-divider>
     <form @submit.prevent="onSubmit">
       <a-input placeholder="이메일" v-model="email" size="large" />
       <div style="height: 12px" />
-      <a-input placeholder="패스워드" type="password" v-model="password" size="large" />
+      <a-input placeholder="비밀번호" type="password" v-model="password" size="large" />
       <div style="height: 12px" />
       <div style="text-align: right">
         <nuxt-link to="/forgot">비밀번호 찾기</nuxt-link>
@@ -22,6 +27,7 @@
         block
         id="login"
         :disabled="!email || !password"
+        :class="{ disabled: !email || !password }"
         :loading="loading"
         type="primary"
         html-type="submit"
@@ -68,6 +74,9 @@ export default {
     },
     kakaoLogin() {
       location.href = `${process.env.API_BASE_URL}/auth/kakao`
+    },
+    naverLogin() {
+      location.href = `${process.env.API_BASE_URL}/auth/naver`
     }
   },
   data: _ => ({
@@ -121,7 +130,11 @@ export default {
   }
   #kakao {
     background: #ffe812;
-    color: #000000;
+    color: black;
+  }
+  #naver {
+    background: #3eaf0e;
+    color: white;
   }
   #login {
     background: $brand-color;

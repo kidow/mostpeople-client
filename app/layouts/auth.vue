@@ -8,7 +8,7 @@
           <nuxt-link target="_blank" to="/terms">이용약관</nuxt-link>
           <a-divider type="vertical" />
           <nuxt-link target="_blank" to="/privacy">개인정보처리방침</nuxt-link>
-          <p style="margin: 12px 0;">© 2019 Mostpeople All rights reserved.</p>
+          <p style="margin: 12px 0;">© 2019 mostpeople All rights reserved.</p>
         </div>
       </a-col>
       <a-col :md="8" :sm="6" :xs="2" />

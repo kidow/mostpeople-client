@@ -1,7 +1,8 @@
 const { NODE_ENV } = process.env
 const TITLE = '모스트피플'
 const DESCRIPTION = 'Most people have a job.'
-const IMAGE = ''
+const IMAGE =
+  'https://mostpeople.s3.ap-northeast-2.amazonaws.com/mostpeople-logo.png'
 const PUBLIC_LINK = 'https://mostpeople.kr'
 const COLOR = '#27ae60'
 const RECAPTCHA_KEY = '6LeqJrMUAAAAAOJbrYYGuDw0OpmpbtXaeRsimrGy'
@@ -43,7 +44,7 @@ module.exports = {
       { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
       { name: 'apple-mobile-web-app-title', content: 'Born hater' },
       { hid: 'keywords', name: 'keywords', content: '소셜' },
-      // { hid: 'image', name: 'image', content: IMAGE },
+      { hid: 'image', name: 'image', content: IMAGE },
       {
         name: 'msapplication-TileColor',
         content: COLOR
@@ -61,7 +62,7 @@ module.exports = {
         property: 'og:description',
         content: DESCRIPTION
       },
-      // { hid: 'og-image', property: 'og:image', content: IMAGE },
+      { hid: 'og-image', property: 'og:image', content: IMAGE },
       { hid: 'og-type', property: 'og:type', content: 'article' },
       { hid: 'og-locale', property: 'og:locale', content: 'en_US' },
       { hid: 'og-image-width', property: 'og:image:width', content: '1200' },
@@ -82,7 +83,7 @@ module.exports = {
         property: 'twitter:description',
         content: DESCRIPTION
       },
-      // { hid: 'twitter-image', property: 'twitter:image', content: IMAGE },
+      { hid: 'twitter-image', property: 'twitter:image', content: IMAGE },
       {
         hid: 'twitter-domain',
         property: 'twitter:domain',
@@ -95,6 +96,10 @@ module.exports = {
         rel: 'stylesheet',
         href:
           'https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700&display=swap&subset=korean'
+      },
+      {
+        rel: 'manifest',
+        href: '/site.webmanifest'
       }
     ]
   },

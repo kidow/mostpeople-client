@@ -136,13 +136,6 @@ export default {
     color: white;
     background: $brand-color;
     border-color: $brand-color;
-    &.disabled {
-      opacity: 0.8;
-      &:hover {
-        background: $brand-color;
-        color: white;
-      }
-    }
   }
 }
 </style>

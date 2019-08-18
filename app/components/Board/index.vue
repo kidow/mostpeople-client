@@ -1,14 +1,5 @@
 <template>
   <div class="board__container">
-    <!-- <a-tree
-      showIcon
-      v-for="(occupation, i) in jobs"
-      :key="i"
-      class="draggable-tree"
-      :treeData="job"
-      defaultExpandAll
-      @select="onSelect"
-    />-->
     <div class="board" v-for="profession in professions" :key="profession.name">
       <h4>{{ profession.name }}</h4>
       <div

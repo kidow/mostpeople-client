@@ -9,6 +9,11 @@
         <img src="~/assets/icons/kakao.png" alt="kakao" />
         카카오로 가입
       </button>
+      <div style="height: 12px" />
+      <button id="naver" class="signup-button" @click="naverSignup">
+        <img src="~/assets/icons/naver.png" alt="naver" />
+        네이버로 가입
+      </button>
       <a-divider>또는</a-divider>
       <form @submit.prevent="submitEmail">
         <a-input placeholder="이메일" v-model="email" size="large" />
@@ -19,6 +24,7 @@
           block
           id="signup"
           :disabled="!email"
+          :class="{ disabled: !email }"
           :loading="loading"
           html-type="submit"
           type="primary"
@@ -42,9 +48,10 @@
           type="primary"
           size="large"
           :disabled="!code"
+          :class="{ disabled: !code }"
         >인증코드 확인</a-button>
         <div style="height: 12px" />
-        <a-button block id="resend" type="primary" size="large" @click="$emit('count', 0)">다시 보내기</a-button>
+        <a-button block id="signup" type="primary" size="large" @click="$emit('count', 0)">다시 보내기</a-button>
       </form>
     </template>
 
@@ -89,6 +96,7 @@
           html-type="submit"
           size="large"
           :disabled="!email || !nickname || !password || !checked"
+          :class="{ disabled: !email || !nickname || !password || !checked }"
         >가입하기</a-button>
       </form>
     </template>
@@ -158,6 +166,9 @@ export default {
     kakaoSignup() {
       alert('(선택) 카카오계정(이메일)에 꼭 동의해주세요.')
       location.href = `${process.env.API_BASE_URL}/auth/kakao`
+    },
+    naverSignup() {
+      location.href = `${process.env.API_BASE_URL}/auth/naver`
     },
     verifyEmail() {
       if (this.code != this.codeConfirm)
@@ -260,6 +271,10 @@ export default {
   #kakao {
     background: #ffde00;
     color: black;
+  }
+  #naver {
+    background: #3eaf0e;
+    color: white;
   }
   #signup {
     background: $brand-color;
