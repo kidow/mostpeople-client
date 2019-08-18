@@ -21,7 +21,9 @@
       </li>
       <li>
         <span class="separator">•</span>
-        <a>고객센터</a>
+        <a-tooltip placement="top" trigger="click" title="준비 중입니다">
+          <a>고객센터</a>
+        </a-tooltip>
       </li>
       <li>
         <span class="separator">•</span>

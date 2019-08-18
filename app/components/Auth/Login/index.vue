@@ -133,7 +133,7 @@ export default {
     color: black;
   }
   #naver {
-    background: #3eaf0e;
+    background: #11ce00;
     color: white;
   }
   #login {
