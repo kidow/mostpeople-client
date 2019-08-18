@@ -3,7 +3,7 @@ const TITLE = '모스트피플'
 const DESCRIPTION = 'Most people have a job.'
 const IMAGE = ''
 const PUBLIC_LINK = 'https://mostpeople.kr'
-const COLOR = '#41b883'
+const COLOR = '#27ae60'
 const RECAPTCHA_KEY = '6LeqJrMUAAAAAOJbrYYGuDw0OpmpbtXaeRsimrGy'
 const BASE_URL =
   NODE_ENV === 'production' ? 'https://mostpeople.kr' : 'http://localhost:3000'
