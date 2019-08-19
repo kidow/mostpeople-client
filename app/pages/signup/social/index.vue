@@ -1,44 +1,51 @@
 <template>
-  <div class="auth__box">
-    <form @submit.prevent="socialSignUp">
-      <a-input v-model="email" size="large" disabled />
-      <div style="height: 12px" />
-      <a-input v-model="nickname" placeholder="닉네임 (3 ~ 10자리)" size="large" />
-      <div style="height: 12px" />
-      <a-auto-complete
-        @select="onSelect"
-        size="large"
-        @search="onSearch"
-        placeholder="직업 (선택)"
-        :open="isOpen"
-        optionLabelProp="text"
-      >
-        <a-spin v-if="fetching" size="small" />
-        <template slot="dataSource">
-          <a-select-option
-            v-for="occupationId in dataSource"
-            :key="occupationId.uuid"
-            :text="occupationId.korName"
-          >{{ occupationId.korName }}</a-select-option>
-        </template>
-      </a-auto-complete>
-      <div style="height: 12px" />
-      <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
-        <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>과
-        <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다
-      </a-checkbox>
-      <div style="height: 12px" />
-      <a-alert v-if="error" showIcon :message="error" type="error" banner />
-      <div style="height: 12px" v-if="error" />
-      <a-button
-        block
-        id="signup"
-        :loading="loading"
-        html-type="submit"
-        size="large"
-        :disabled="!email || !nickname || !checked"
-      >가입하기</a-button>
-    </form>
+  <div class="signup__container">
+    <a-steps :current="2" v-if="!$device.isMobile">
+      <a-step title="가입 수단" />
+      <a-step title="이메일 인증" />
+      <a-step title="기본 정보" />
+    </a-steps>
+    <div class="auth__box">
+      <form @submit.prevent="socialSignUp">
+        <a-input v-model="email" size="large" disabled />
+        <div style="height: 12px" />
+        <a-input v-model="nickname" placeholder="닉네임 (3 ~ 10자리)" size="large" />
+        <div style="height: 12px" />
+        <a-auto-complete
+          @select="onSelect"
+          size="large"
+          @search="onSearch"
+          placeholder="직업 (선택)"
+          :open="isOpen"
+          optionLabelProp="text"
+        >
+          <a-spin v-if="fetching" size="small" />
+          <template slot="dataSource">
+            <a-select-option
+              v-for="occupationId in dataSource"
+              :key="occupationId.uuid"
+              :text="occupationId.korName"
+            >{{ occupationId.korName }}</a-select-option>
+          </template>
+        </a-auto-complete>
+        <div style="height: 12px" />
+        <a-checkbox :checked="checked" @change="e => this.checked = e.target.checked">
+          <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>과
+          <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다
+        </a-checkbox>
+        <div style="height: 12px" />
+        <a-alert v-if="error" showIcon :message="error" type="error" banner />
+        <div style="height: 12px" v-if="error" />
+        <a-button
+          block
+          id="signup"
+          :loading="loading"
+          html-type="submit"
+          size="large"
+          :disabled="!email || !nickname || !checked"
+        >가입하기</a-button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -144,5 +151,11 @@ export default {
     background: $brand-color;
     border-color: $brand-color;
   }
+}
+</style>
+
+<style lang="scss" scoped>
+.ant-steps {
+  padding-bottom: 1rem;
 }
 </style>
