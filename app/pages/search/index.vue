@@ -83,7 +83,61 @@ export default {
   }),
   head() {
     return {
-      title: `${this.$route.query.keyword} 검색 - 모스트피플`
+      title: `${this.$route.query.keyword} 검색 - 모스트피플`,
+      meta: [
+        // Open Graph
+        { hid: 'og-type', property: 'og:type', content: 'website' },
+        {
+          hid: 'og-site_name',
+          property: 'og:site_name',
+          content: '모스트피플'
+        },
+        {
+          hid: 'og-title',
+          property: 'og:title',
+          content: `${this.$route.query.keywore} 검색 - 모스트피플`
+        },
+        {
+          hid: 'og-title',
+          property: 'og:title',
+          content: `검색 결과를 총 ${this.occupations.length +
+            this.posts.length +
+            this.users.length}개 찾았습니다.`
+        },
+        {
+          hid: 'og-url',
+          property: 'og:url',
+          content: process.env.BASE_URL + this.$route.path
+        },
+        // Twitter
+        {
+          hid: 'twitter-site',
+          property: 'twitter:site',
+          content: '@모스트피플'
+        },
+        {
+          hid: 'twitter-card',
+          property: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          hid: 'twitter-title',
+          property: 'twitter:title',
+          content: '모스트피플'
+        },
+        {
+          hid: 'twitter-description',
+          property: 'twitter:description',
+          content: `검색 결과를 총 ${this.occupations.length +
+            this.posts.length +
+            this.users.length}개 찾았습니다.`
+        },
+        {
+          hid: 'twitter-domain',
+          property: 'twitter:domain',
+          content: process.env.BASE_URL + this.$route.path
+        }
+      ]
     }
   },
   async asyncData({ query, app, redirect }) {

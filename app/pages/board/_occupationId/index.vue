@@ -127,7 +127,57 @@ export default {
   },
   head() {
     return {
-      title: this.korName ? `${this.korName} - 모스트피플` : '모스트피플'
+      title: this.korName ? `${this.korName} - 모스트피플` : '모스트피플',
+      meta: [
+        // Open Graph
+        { hid: 'og-type', property: 'og:type', content: 'website' },
+        {
+          hid: 'og-site_name',
+          property: 'og:site_name',
+          content: '모스트피플'
+        },
+        {
+          hid: 'og-title',
+          property: 'og:title',
+          content: `${this.korName} - 모스트피플`
+        },
+        {
+          hid: 'og-description',
+          property: 'og:description',
+          content: this.intro
+        },
+        {
+          hid: 'og-url',
+          property: 'og:url',
+          content: process.env.BASE_URL + this.$route.path
+        },
+        // Twitter
+        {
+          hid: 'twitter-site',
+          property: 'twitter:site',
+          content: '@모스트피플'
+        },
+        {
+          hid: 'twitter-card',
+          property: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          hid: 'twitter-title',
+          property: 'twitter:title',
+          content: '모스트피플'
+        },
+        {
+          hid: 'twitter-description',
+          property: 'twitter:description',
+          content: this.intro
+        },
+        {
+          hid: 'twitter-domain',
+          property: 'twitter:domain',
+          content: process.env.BASE_URL + this.$route.path
+        }
+      ]
     }
   },
   async asyncData({ params, app }) {

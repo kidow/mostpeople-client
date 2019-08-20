@@ -133,7 +133,9 @@ export default {
     postId: '',
     nickname: '',
     visible: false,
-    mounted: false
+    mounted: false,
+    thumbnailUrl: '',
+    pretext: ''
   }),
   methods: {
     onCommentPush(data) {
@@ -211,7 +213,64 @@ export default {
   },
   head() {
     return {
-      title: this.title ? `${this.title} - 모스트피플` : '모스트피플'
+      title: this.title ? `${this.title} - 모스트피플` : '모스트피플',
+      meta: [
+        // Open Graph
+        { hid: 'og-type', property: 'og:type', content: 'website' },
+        {
+          hid: 'og-site_name',
+          property: 'og:site_name',
+          content: '모스트피플'
+        },
+        { hid: 'og-title', property: 'og:title', content: this.title },
+        {
+          hid: 'og-description',
+          property: 'og-description',
+          content: this.pretext
+        },
+        { hid: 'og-image', property: 'og:image', content: this.thumbnailUrl },
+        {
+          hid: 'og-url',
+          property: 'og:url',
+          content: process.env.BASE_URL + this.$route.path
+        },
+        {
+          hid: 'og-image-alt',
+          property: 'og:image:alt',
+          content: '###mostpeople###'
+        },
+        // Twitter
+        {
+          hid: 'twitter-site',
+          property: 'twitter:site',
+          content: '@모스트피플'
+        },
+        {
+          hid: 'twitter-card',
+          property: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          hid: 'twitter-title',
+          property: 'twitter:title',
+          content: '모스트피플'
+        },
+        {
+          hid: 'twitter-description',
+          property: 'twitter:description',
+          content: this.pretext
+        },
+        {
+          hid: 'twitter-image',
+          property: 'twitter:image',
+          content: this.thumbnailUrl
+        },
+        {
+          hid: 'twitter-domain',
+          property: 'twitter:domain',
+          content: process.env.BASE_URL + this.$route.path
+        }
+      ]
     }
   },
   async asyncData({ app, params, redirect }) {
@@ -234,7 +293,9 @@ export default {
         nickname: data.nickname,
         userId: data.userId,
         viewCount: data.viewCount,
-        likeCount: data.likeCount
+        likeCount: data.likeCount,
+        thumbnailUrl: data.thumbnailUrl,
+        pretext: data.pretext
       }
     } catch (err) {
       console.log(err)
