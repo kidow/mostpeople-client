@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <a-card :loading="loading" :title="`${korName}(이)란 무엇인가요?`">
+    <a-card :loading="loading" :title="`${korName}(은)는 무슨 직업인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
         <h1 v-if="intro">{{ intro }}</h1>
@@ -10,7 +10,7 @@
           <span
             v-if="createdAt"
             class="createdAt"
-          >{{ $moment(createdAt).format('YYYY-MM-DD hh:mm:ss') }}</span>
+          >{{ $moment(createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss') }}</span>
           <span class="author" v-if="nickname">- {{ nickname }} -</span>
         </div>
       </template>

@@ -106,9 +106,9 @@
                   </span>
                   <a-tooltip
                     slot="datetime"
-                    :title="$moment(item.datetime).format('YYYY-MM-DD hh:mm:ss')"
+                    :title="$moment(item.datetime).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss')"
                   >
-                    <span>{{$moment(item.datetime).fromNow()}}</span>
+                    <span>{{$moment(item.datetime).add(9, 'hour').fromNow()}}</span>
                   </a-tooltip>
                 </a-comment>
               </a-list-item>

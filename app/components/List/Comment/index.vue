@@ -6,7 +6,7 @@
           <span
             v-if="item.status === 1"
             slot="datetime"
-          >{{ $moment(item.createdAt).format('YYYY-MM-DD hh:mm:ss') }}</span>
+          >{{ $moment(item.createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss') }}</span>
           <div slot="content">{{ item.status === 1 ? item.content : '삭제된 댓글입니다.' }}</div>
           <span
             slot="author"

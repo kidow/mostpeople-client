@@ -14,7 +14,7 @@
         <a-avatar v-else icon="user" class="avatar" @click="$router.push(`/profile/@${nickname}`)" />
         <span class="id" @click="$router.push(`/profile/@${nickname}`)">{{ nickname }}</span>
         <a-divider type="vertical" />
-        <span class="date">{{ $moment(createdAt).format('YYYY-MM-DD hh:mm:ss' )}}</span>
+        <span class="date">{{ $moment(createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss' )}}</span>
       </div>
       <vue-editor :readonly="true" :value="content" />
     </template>
