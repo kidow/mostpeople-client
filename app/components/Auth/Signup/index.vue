@@ -247,7 +247,7 @@ export default {
     padding: 0 15px;
     cursor: pointer;
     &:hover {
-      filter: brightness(0.9);
+      filter: brightness(0.95);
     }
     img {
       width: 16px;
@@ -256,35 +256,33 @@ export default {
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   #facebook {
-    background: #3b5998;
-    border-color: #3b5998;
-    color: white;
+    color: #3b5998;
     &:hover {
-      filter: brightness(0.9);
+      filter: brightness(0.95);
+      border-color: #d9d9d9;
     }
   }
   #google {
-    background: #db4437;
-    border-color: #db4437;
-    color: white;
+    color: #db4437;
     &:hover {
-      filter: brightness(0.9);
+      filter: brightness(0.95);
+      border-color: #d9d9d9;
     }
   }
   #kakao {
-    background: #ffde00;
     color: black;
+    border: 1px solid #d9d9d9;
   }
   #naver {
-    background: #11ce00;
-    color: white;
+    color: #11ce00;
+    border: 1px solid #d9d9d9;
   }
   #signup {
     background: $brand-color;
     border-color: $brand-color;
     color: white;
     &:hover {
-      filter: brightness(0.9);
+      filter: brightness(0.95);
     }
   }
   #resend {

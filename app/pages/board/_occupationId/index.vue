@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <a-card :loading="loading" :title="`${korName}(은)는 무슨 직업인가요?`">
+    <a-card :loading="loading" :title="`${korName}(은)는 어떤 직업인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
         <h1 v-if="intro">{{ intro }}</h1>
@@ -37,7 +37,9 @@
             </a-list-item-meta>
           </a-list-item>
         </a-list>
+        <a-pagination :total="total" v-model="currentPage" style="margin-top: 24px" />
       </a-tab-pane>
+
       <!-- <a-tab-pane tab="구직게시판" key="2">준비중입니다.</a-tab-pane> -->
       <a-button
         slot="tabBarExtraContent"
@@ -86,7 +88,9 @@ export default {
         title: '추천',
         dataIndex: 'likeCount'
       }
-    ]
+    ],
+    total: 0,
+    currentPage: 1
   }),
   methods: {
     onChangeTab(tab) {
