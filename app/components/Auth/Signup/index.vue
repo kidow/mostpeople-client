@@ -31,6 +31,9 @@
           size="large"
         >이메일로 가입</a-button>
       </form>
+      <div style="padding: 1rem 1rem 0; text-align: center">
+        <nuxt-link to="/login">이미 계정이 있으신가요?</nuxt-link>
+      </div>
     </template>
 
     <template v-else-if="step === 1">

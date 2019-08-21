@@ -41,7 +41,7 @@
       <!-- <a-tab-pane tab="구직게시판" key="2">준비중입니다.</a-tab-pane> -->
       <a-button
         slot="tabBarExtraContent"
-        @click="$router.push(`/new?occupation=${$route.params.occupationId}`)"
+        @click="$router.push(`/new?occupationId=${$route.params.occupationId}`)"
       >새 글</a-button>
     </a-tabs>
   </div>

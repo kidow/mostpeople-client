@@ -8,6 +8,7 @@
         placeholder="직업"
         :open="isOpen"
         optionLabelProp="text"
+        :defaultValue="occupationId ? korName : ''"
       >
         <a-spin v-if="fetching" size="small" />
         <template slot="dataSource">
@@ -31,7 +32,7 @@
     <div style="height: 12px" />
     <a-button
       type="primary"
-      :disabled="!title || !content || !occupation || !boardType"
+      :disabled="!title || !content || !occupationId || !boardType"
       :loading="loading"
       size="large"
       html-type="submit"
@@ -51,7 +52,8 @@ export default {
     dataSource: [],
     loading: false,
     fetching: false,
-    isOpen: false
+    isOpen: false,
+    korName: ''
   }),
   methods: {
     onSelect(val) {
@@ -98,15 +100,16 @@ export default {
         const { data } = await this.$axios(options)
         this.$router.push(`/post/${data.postId}`)
       } catch (err) {
+        console.log('err:', err)
         this.notifyError(err.response.data.message)
-        console.log(err)
         this.loading = false
       }
-    }
+    },
+    async getOccupation() {}
   },
   mounted() {
     const { occupationId } = this.$route.query
-    if (occupationId) this.occupationId = occupationId
+    if (occupationId && /[0-9a-f]{32}/g.test(occupationId)) this.getOccupation()
   },
   components: {
     VueEditor
@@ -121,6 +124,21 @@ export default {
       ]
     }
   }),
-  middleware: ['isNotLoggedIn']
+  middleware: ['isNotLoggedIn'],
+  async asyncData({ app, query }) {
+    const options = {
+      url: `/occupations/${query.occupationId}`,
+      method: 'get'
+    }
+    try {
+      const { data } = await app.$axios(options)
+      return {
+        occupationId: data.uuid,
+        korName: data.korName
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 </script>
