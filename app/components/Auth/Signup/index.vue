@@ -1,16 +1,22 @@
 <template>
   <div class="auth__box">
     <template v-if="step === 0">
-      <a-button icon="facebook" size="large" id="facebook" block @click="facebookSignup">페이스북으로 가입</a-button>
+      <button class="signup-button" @click="facebookSignup">
+        <img src="~/assets/icons/facebook.png" alt="facebook" />
+        페이스북으로 가입
+      </button>
       <div style="height: 12px" />
-      <a-button icon="google" size="large" id="google" block @click="googleSignup">구글로 가입</a-button>
+      <button class="signup-button" @click="googleSignup">
+        <img src="~/assets/icons/google.png" alt="google" />
+        구글로 가입
+      </button>
       <div style="height: 12px" />
-      <button id="kakao" class="signup-button" @click="kakaoSignup">
+      <button class="signup-button" @click="kakaoSignup">
         <img src="~/assets/icons/kakao.png" alt="kakao" />
         카카오로 가입
       </button>
       <div style="height: 12px" />
-      <button id="naver" class="signup-button" @click="naverSignup">
+      <button class="signup-button" @click="naverSignup">
         <img src="~/assets/icons/naver.png" alt="naver" />
         네이버로 가입
       </button>
@@ -245,6 +251,8 @@ export default {
     border-radius: 4px;
     font-size: 16px;
     padding: 0 15px;
+    color: rgba(0, 0, 0, 0.65);
+    border: 1px solid #d9d9d9;
     cursor: pointer;
     &:hover {
       filter: brightness(0.95);
@@ -254,28 +262,6 @@ export default {
       margin-right: 8px;
     }
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  }
-  #facebook {
-    color: #3b5998;
-    &:hover {
-      filter: brightness(0.95);
-      border-color: #d9d9d9;
-    }
-  }
-  #google {
-    color: #db4437;
-    &:hover {
-      filter: brightness(0.95);
-      border-color: #d9d9d9;
-    }
-  }
-  #kakao {
-    color: black;
-    border: 1px solid #d9d9d9;
-  }
-  #naver {
-    color: #11ce00;
-    border: 1px solid #d9d9d9;
   }
   #signup {
     background: $brand-color;
