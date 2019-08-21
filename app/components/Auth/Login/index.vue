@@ -61,7 +61,9 @@ export default {
         password: this.password
       }
       try {
+        console.log(1)
         const token = await this.$recaptcha.execute('login')
+        console.log('token: ', token)
         if (!token) return
         data.token = token
         await this.$store.dispatch('auth/LOGIN', data)
@@ -69,7 +71,7 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
-        this.notifyError(err.response.data.message)
+        // this.notifyError(err.response.data.message)
       }
     },
     facebookLogin() {

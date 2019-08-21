@@ -90,7 +90,8 @@ export default {
       }
     ],
     total: 0,
-    currentPage: 1
+    currentPage: 1,
+    pageLoading: false
   }),
   methods: {
     onChangeTab(tab) {
@@ -123,6 +124,26 @@ export default {
         this.notifyError(err.response.data.message)
         console.log(err)
       }
+    },
+    async getData() {
+      this.pageLoading = true
+      const options = {
+        url: `/occupations/${this.$route.params.occupationId}`,
+        method: 'get',
+        params: this.$route.query
+      }
+      try {
+        const { data } = await this.$axios(options)
+        this.posts = data.posts
+        this.total = data.total
+      } catch (err) {
+        console.log(err)
+        this.notifyError(err.response.data.message)
+      }
+    },
+    updateQuerystring(payload) {
+      const query = Object.assign({}, this.$route.query, payload)
+      this.$router.push({ query })
     }
   },
   components: {
@@ -197,7 +218,8 @@ export default {
         nickname: data.nickname,
         createdAt: data.createdAt,
         breadcrumbs: data.breadcrumbs,
-        dataSource: data.posts
+        dataSource: data.posts,
+        total: data.total
       }
     } catch (err) {
       console.log(err)
@@ -207,6 +229,14 @@ export default {
     ...mapGetters({
       isLoggedIn: 'auth/IS_LOGGED_IN'
     })
+  },
+  watch: {
+    currentPage() {
+      this.updateQuerystring({ offset: 20 * (this.currentPage - 1) })
+    },
+    '$route.query'() {
+      this.getData()
+    }
   }
 }
 </script>

@@ -42,7 +42,7 @@ module.exports = {
       { 'http-equiv': 'pragma', content: 'no-cache' },
       { name: 'apple-mobile-web-app-capable', content: 'yes' },
       { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
-      { name: 'apple-mobile-web-app-title', content: 'Born hater' },
+      { name: 'apple-mobile-web-app-title', content: 'mostpeople' },
       { hid: 'keywords', name: 'keywords', content: '소셜' },
       { hid: 'image', name: 'image', content: IMAGE },
       {
@@ -70,7 +70,7 @@ module.exports = {
       {
         hid: 'og-image-alt',
         property: 'og:image:alt',
-        content: '###BORNHATER###'
+        content: '###MOSTPEOPLE###'
       },
       { hid: 'og-url', property: 'og:url', content: PUBLIC_LINK },
 

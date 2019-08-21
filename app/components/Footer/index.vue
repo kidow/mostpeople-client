@@ -31,6 +31,7 @@
       </li>
     </ul>
     <div style="margin-top: 8px">contact@mostpeople.kr</div>
+    <div style="margin-top: 8px">외주 제작 의뢰받습니다. wcgo2ling@gmail.com</div>
     <a-modal
       title="개선점을 알려주세요"
       :visible="visible"
