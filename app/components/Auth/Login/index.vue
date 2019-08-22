@@ -61,9 +61,9 @@ export default {
         password: this.password
       }
       try {
-        const token = await this.$recaptcha.execute('login')
-        if (!token) return
-        data.token = token
+        // const token = await this.$recaptcha.execute('login')
+        // if (!token) return
+        // data.token = token
         await this.$store.dispatch('auth/LOGIN', data)
         this.redirectAfterLogin()
       } catch (err) {

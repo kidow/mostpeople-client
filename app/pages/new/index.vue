@@ -94,9 +94,9 @@ export default {
       }
       try {
         this.loading = true
-        const token = await this.$recaptcha.execute('social')
-        if (!token) return
-        options.data.token = token
+        // const token = await this.$recaptcha.execute('social')
+        // if (!token) return
+        // options.data.token = token
         const { data } = await this.$axios(options)
         this.$router.push(`/post/${data.postId}`)
       } catch (err) {
