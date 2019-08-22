@@ -170,7 +170,6 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
-        console.log(data.posts)
         this.posts = data.posts
         this.comments = data.comments
         this.timelineFetched = true

@@ -9,7 +9,7 @@ export const state = () => ({
     facebookUrl: '',
     twitterUrl: '',
     intro: '',
-    occupation: null,
+    occupationId: '',
     profileUrl: '',
     korName: ''
   }
@@ -28,9 +28,17 @@ export const mutations = {
   CLEAR_USER(state) {
     state.user = {
       id: null,
+      uuid: null,
       email: '',
       nickname: '',
-      status: null
+      status: null,
+      providerId: null,
+      facebookUrl: '',
+      twitterUrl: '',
+      intro: '',
+      occupationId: '',
+      profileUrl: '',
+      korName: ''
     }
   },
   SAVE_PROFILE(state, profileUrl) {

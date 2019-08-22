@@ -104,12 +104,7 @@ export default {
         this.notifyError(err ? err.response.data.message : '')
         this.loading = false
       }
-    },
-    async getOccupation() {}
-  },
-  mounted() {
-    const { occupationId } = this.$route.query
-    if (occupationId && /[0-9a-f]{32}/g.test(occupationId)) this.getOccupation()
+    }
   },
   components: {
     VueEditor
@@ -126,6 +121,7 @@ export default {
   }),
   middleware: ['isNotLoggedIn'],
   async asyncData({ app, query }) {
+    if (!query.occupationId || !/[0-9a-f]{32}/g.test(query.occupationId)) return
     const options = {
       url: `/occupations/${query.occupationId}`,
       method: 'get'
