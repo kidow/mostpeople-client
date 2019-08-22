@@ -14,11 +14,11 @@
       <img src="~/assets/icons/kakao.png" alt="kakao" />
       카카오로 로그인
     </button>
-    <div style="height: 12px" />
+    <!-- <div style="height: 12px" />
     <button class="login-button" @click="OAuthLogin('/auth/naver')">
       <img src="~/assets/icons/naver.png" alt="naver" />
       네이버로 로그인
-    </button>
+    </button>-->
     <a-divider>또는</a-divider>
     <form @submit.prevent="onSubmit">
       <a-input placeholder="이메일" v-model="email" size="large" />
