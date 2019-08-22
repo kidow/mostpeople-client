@@ -7,7 +7,9 @@
         v-for="occupation in profession.occupations"
         :key="occupation.uuid"
       >
-        <nuxt-link :to="`/board/${occupation.uuid}`">{{ occupation.korName }}</nuxt-link>
+        <a-badge dot :count="profession.postsCount">
+          <nuxt-link :to="`/board/${occupation.uuid}`">{{ occupation.korName }}</nuxt-link>
+        </a-badge>
       </div>
     </div>
   </div>
