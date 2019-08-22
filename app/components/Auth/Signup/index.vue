@@ -1,22 +1,22 @@
 <template>
   <div class="auth__box">
     <template v-if="step === 0">
-      <button class="signup-button" @click="facebookSignup">
+      <button class="signup-button" @click="OAuthSignup('/auth/facebook')">
         <img src="~/assets/icons/facebook.png" alt="facebook" />
         페이스북으로 가입
       </button>
       <div style="height: 12px" />
-      <button class="signup-button" @click="googleSignup">
+      <button class="signup-button" @click="OAuthSignup('/auth/google')">
         <img src="~/assets/icons/google.png" alt="google" />
         구글로 가입
       </button>
       <div style="height: 12px" />
-      <button class="signup-button" @click="kakaoSignup">
+      <button class="signup-button" @click="OAuthSignup('/auth/kakao')">
         <img src="~/assets/icons/kakao.png" alt="kakao" />
         카카오로 가입
       </button>
       <div style="height: 12px" />
-      <button class="signup-button" @click="naverSignup">
+      <button class="signup-button" @click="OAuthSignup('/auth/naver')">
         <img src="~/assets/icons/naver.png" alt="naver" />
         네이버로 가입
       </button>
@@ -166,18 +166,10 @@ export default {
         this.notifyError(err.response.data.message)
       }
     }, 800),
-    facebookSignup() {
-      location.href = `${process.env.API_BASE_URL}/auth/facebook`
-    },
-    googleSignup() {
-      location.href = `${process.env.API_BASE_URL}/auth/google`
-    },
-    kakaoSignup() {
-      alert('(선택) 카카오계정(이메일)에 꼭 동의해주세요.')
-      location.href = `${process.env.API_BASE_URL}/auth/kakao`
-    },
-    naverSignup() {
-      location.href = `${process.env.API_BASE_URL}/auth/naver`
+    OAuthSignup(url) {
+      if (url === '/auth/kakao')
+        alert('(선택) 카카오계정(이메일)에 꼭 동의해주세요.')
+      location.href = `${process.env.API_BASE_URL}${url}`
     },
     verifyEmail() {
       if (this.code != this.codeConfirm)

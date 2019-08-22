@@ -100,8 +100,8 @@ export default {
         const { data } = await this.$axios(options)
         this.$router.push(`/post/${data.postId}`)
       } catch (err) {
-        console.log('err:', err)
-        this.notifyError(err.response.data.message)
+        console.log(err)
+        this.notifyError(err ? err.response.data.message : '')
         this.loading = false
       }
     },

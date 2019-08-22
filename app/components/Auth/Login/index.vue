@@ -1,21 +1,21 @@
 <template>
   <div class="auth__box">
-    <button class="login-button" @click="facebookLogin">
+    <button class="login-button" @click="OAuthLogin('/auth/facebook')">
       <img src="~/assets/icons/facebook.png" alt="facebook" />
       페이스북으로 로그인
     </button>
     <div style="height: 12px" />
-    <button class="login-button" @click="googleLogin">
+    <button class="login-button" @click="OAuthLogin('/auth/google')">
       <img src="~/assets/icons/google.png" alt="google" />
       구글로 로그인
     </button>
     <div style="height: 12px" />
-    <button class="login-button" @click="kakaoLogin">
+    <button class="login-button" @click="OAuthLogin('/auth/kakao')">
       <img src="~/assets/icons/kakao.png" alt="kakao" />
       카카오로 로그인
     </button>
     <div style="height: 12px" />
-    <button class="login-button" @click="naverLogin">
+    <button class="login-button" @click="OAuthLogin('/auth/naver')">
       <img src="~/assets/icons/naver.png" alt="naver" />
       네이버로 로그인
     </button>
@@ -61,9 +61,7 @@ export default {
         password: this.password
       }
       try {
-        console.log(1)
         const token = await this.$recaptcha.execute('login')
-        console.log('token: ', token)
         if (!token) return
         data.token = token
         await this.$store.dispatch('auth/LOGIN', data)
@@ -71,27 +69,21 @@ export default {
       } catch (err) {
         this.loading = false
         console.log(err)
-        // this.notifyError(err.response.data.message)
+        this.notifyError(err ? err.response.data.message : '')
       }
     },
-    facebookLogin() {
-      location.href = `${process.env.API_BASE_URL}/auth/facebook`
-    },
-    googleLogin() {
-      location.href = `${process.env.API_BASE_URL}/auth/google`
-    },
-    kakaoLogin() {
-      location.href = `${process.env.API_BASE_URL}/auth/kakao`
-    },
-    naverLogin() {
-      location.href = `${process.env.API_BASE_URL}/auth/naver`
+    OAuthLogin(url) {
+      location.href = `${process.env.API_BASE_URL}${url}`
     }
   },
   data: _ => ({
     email: '',
     password: '',
     loading: false
-  })
+  }),
+  mounted() {
+    this.$recaptcha.init()
+  }
 }
 </script>
 
@@ -113,6 +105,7 @@ export default {
     cursor: pointer;
     color: rgba(0, 0, 0, 0.65);
     border: 1px solid #d9d9d9;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     &:hover {
       filter: brightness(0.95);
     }
@@ -120,7 +113,6 @@ export default {
       width: 16px;
       margin-right: 8px;
     }
-    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   #login {
     background: $brand-color;
