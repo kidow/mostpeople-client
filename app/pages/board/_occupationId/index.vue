@@ -33,7 +33,7 @@
         <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
           <a-list-item @click="onClickList(item)" slot="renderItem" slot-scope="item">
             <a-list-item-meta :intro="item.createdAt">
-              <a slot="title" :href="`${$route.path}/post/${item.uuid}`">{{item.title}}</a>
+              <a slot="title" :href="`/post/${item.uuid}`">{{item.title}}</a>
             </a-list-item-meta>
           </a-list-item>
         </a-list>

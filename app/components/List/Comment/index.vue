@@ -11,7 +11,7 @@
           <span
             slot="author"
             @click="$router.push(`/profile/@${item.nickname}`)"
-            style="font-size: 16px;"
+            style="font-size: 16px; cursor: pointer"
             v-if="item.status === 1"
           >{{ item.nickname }}</span>
           <a-avatar
@@ -67,6 +67,7 @@
                 <a-button
                   htmlType="submit"
                   :loading="item.loading"
+                  :disabled="!item.reply"
                   @click="replySubmit(item, index)"
                   type="primary"
                 >등록</a-button>
@@ -106,9 +107,14 @@
       <a-avatar v-else icon="user" slot="avatar" />
       <div slot="content">
         <a-form-item>
-          <a-textarea :disabled="!isLoggedIn" :rows="4" v-model="comment" />
+          <a-textarea
+            :placeholder="isLoggedIn ? '': '로그인이 필요합니다'"
+            :disabled="!isLoggedIn"
+            :rows="4"
+            v-model="comment"
+          />
         </a-form-item>
-        <a-form-item>
+        <a-form-item v-if="isLoggedIn">
           <a-button
             :disabled="!comment"
             htmlType="submit"

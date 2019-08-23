@@ -4,7 +4,7 @@
       <vue-logo />
       <a-input-search placeholder="통합검색" size="large" @search="onSearch" />
       <span v-if="!isLoggedIn" class="text">
-        <nuxt-link to="/login">로그인</nuxt-link>
+        <nuxt-link :to="`/login?redirect=${$route.fullPath}`">로그인</nuxt-link>
         <a-divider type="vertical" />
         <nuxt-link to="/signup">회원가입</nuxt-link>
       </span>
@@ -19,7 +19,7 @@
         <a-icon type="menu" @click="visible = true" />
         <vue-logo />
         <a-icon type="user" v-if="isLoggedIn" @click="$router.push('/profile')" />
-        <a-icon type="login" v-else @click="$router.push('/login')" />
+        <a-icon type="login" v-else @click="$router.push(`/login?redirect=${$route.fullPath}`)" />
       </div>
       <div style="height: 4px" />
       <a-input-search placeholder="통합검색" @search="onSearch" />

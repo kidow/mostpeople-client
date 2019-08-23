@@ -3,28 +3,35 @@
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <a-skeleton avatar :paragraph="{rows: 6}" active v-if="!mounted" />
     <template v-else>
-      <h1>{{ title }}</h1>
+      <h1>{{ post.title }}</h1>
       <div class="user-meta">
         <a-avatar
-          @click="$router.push(`/profile/@${nickname}`)"
-          v-if="profileUrl"
-          :src="profileUrl"
-          :alt="profileAlt"
+          @click="$router.push(`/profile/@${post.nickname}`)"
+          v-if="post.profileUrl"
+          :src="post.profileUrl"
+          :alt="post.profileAlt"
         />
-        <a-avatar v-else icon="user" class="avatar" @click="$router.push(`/profile/@${nickname}`)" />
-        <span class="id" @click="$router.push(`/profile/@${nickname}`)">{{ nickname }}</span>
+        <a-avatar
+          v-else
+          icon="user"
+          class="avatar"
+          @click="$router.push(`/profile/@${post.nickname}`)"
+        />
+        <span class="id" @click="$router.push(`/profile/@${post.nickname}`)">{{ post.nickname }}</span>
         <a-divider type="vertical" />
-        <span class="date">{{ $moment(createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss' )}}</span>
+        <span
+          class="date"
+        >{{ $moment(post.createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss' )}}</span>
       </div>
-      <vue-editor :readonly="true" :value="content" />
+      <vue-editor :readonly="true" :value="post.content" />
     </template>
 
     <div class="comment__header">
       <span>댓글 {{ comments.filter(comment => comment.status === 1).length }}</span>
       <a-divider type="vertical" />
-      <span class="pointer" :class="{ isLiked: !!isLiked }" @click="like">추천 {{ likeCount }}</span>
+      <span class="pointer" :class="{ isLiked: !!isLiked }" @click="like">추천 {{ post.likeCount }}</span>
       <a-divider type="vertical" />
-      <span>조회수 {{ viewCount }}</span>
+      <span>조회수 {{ post.viewCount }}</span>
       <a-divider type="vertical" />
       <a-popover trigger="click">
         <div slot="content">
@@ -52,8 +59,8 @@
       </a-popover>
 
       <a-divider type="vertical" />
-      <template v-if="user.uuid === userId">
-        <span class="pointer" @click="$router.push(`/post/${postId}/edit`)">수정</span>
+      <template v-if="user.uuid === post.userId">
+        <span class="pointer" @click="$router.push(`${$route.path}/edit`)">수정</span>
         <a-divider type="vertical" />
         <span class="pointer" @click="onDelete">삭제</span>
         <a-divider type="vertical" />
@@ -120,22 +127,10 @@ export default {
     breadcrumbs: [],
     dataSource: [],
     comments: [],
-    likeCount: 0,
-    viewCount: 0,
     isLiked: false,
-    isEdit: false,
-    title: '',
-    content: '',
-    createdAt: '',
-    userId: '',
-    profileUrl: '',
-    profileAlt: '',
-    postId: '',
-    nickname: '',
     visible: false,
     mounted: false,
-    thumbnailUrl: '',
-    pretext: ''
+    post: {}
   }),
   methods: {
     onCommentPush(data) {
@@ -158,10 +153,10 @@ export default {
       try {
         const { data } = await this.$axios(options)
         if (data.addLike) {
-          this.likeCount++
+          this.post.likeCount++
           this.isLiked = true
         } else {
-          this.likeCount--
+          this.post.likeCount--
           this.isLiked = false
         }
       } catch (err) {
@@ -213,7 +208,7 @@ export default {
   },
   head() {
     return {
-      title: this.title ? `${this.title} - 모스트피플` : '모스트피플',
+      title: this.post.title ? `${this.post.title} - 모스트피플` : '모스트피플',
       meta: [
         // Open Graph
         { hid: 'og-type', property: 'og:type', content: 'website' },
@@ -222,13 +217,17 @@ export default {
           property: 'og:site_name',
           content: '모스트피플'
         },
-        { hid: 'og-title', property: 'og:title', content: this.title },
+        { hid: 'og-title', property: 'og:title', content: this.post.title },
         {
           hid: 'og-description',
           property: 'og-description',
-          content: this.pretext
+          content: this.post.lpretext
         },
-        { hid: 'og-image', property: 'og:image', content: this.thumbnailUrl },
+        {
+          hid: 'og-image',
+          property: 'og:image',
+          content: this.post.thumbnailUrl
+        },
         {
           hid: 'og-url',
           property: 'og:url',
@@ -258,12 +257,12 @@ export default {
         {
           hid: 'twitter-description',
           property: 'twitter:description',
-          content: this.pretext
+          content: this.post.pretext
         },
         {
           hid: 'twitter-image',
           property: 'twitter:image',
-          content: this.thumbnailUrl
+          content: this.post.thumbnailUrl
         },
         {
           hid: 'twitter-domain',
@@ -284,18 +283,7 @@ export default {
       return {
         breadcrumbs: data.breadcrumbs,
         comments: data.comments,
-        title: data.title,
-        content: data.content,
-        createdAt: data.createdAt,
-        postId: data.postId,
-        profileUrl: data.profileUrl,
-        profileAlt: data.profileAlt,
-        nickname: data.nickname,
-        userId: data.userId,
-        viewCount: data.viewCount,
-        likeCount: data.likeCount,
-        thumbnailUrl: data.thumbnailUrl,
-        pretext: data.pretext
+        post: data.post
       }
     } catch (err) {
       console.log(err)

@@ -237,6 +237,7 @@ export default {
   box-shadow: $box-shadow-1;
   padding: 22px;
   .signup-button {
+    background: white;
     width: 100%;
     height: 40px;
     border: none;
