@@ -55,9 +55,6 @@ import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
 export default {
   layout: 'auth',
-  mounted() {
-    this.email = this.$route.query.email
-  },
   data: _ => ({
     email: '',
     occupationId: '',
@@ -124,7 +121,19 @@ export default {
   head: _ => ({
     title: '소셜 가입 - 모스트피플'
   }),
-  middleware: ['isLoggedIn']
+  middleware: ['isLoggedIn'],
+  async asyncData({ app }) {
+    const options = {
+      url: `/auth/email`,
+      method: 'get'
+    }
+    try {
+      const { data } = await app.$axios(options)
+      return { email: data.email }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 </script>
 
