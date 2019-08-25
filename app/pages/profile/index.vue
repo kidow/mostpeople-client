@@ -150,6 +150,7 @@
           </div>
         </div>
         <div v-else>아직 활동하신게 없네요.</div>
+        <a-divider v-if="posts.length && comments.length" />
         <div style="font-size: 16px" v-if="comments.length">
           댓글
           <vue-count-to

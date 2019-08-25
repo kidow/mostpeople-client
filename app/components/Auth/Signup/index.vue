@@ -128,9 +128,7 @@ export default {
         url: '/auth/email',
         method: 'post',
         data: {
-          email: this.email
-        },
-        params: {
+          email: this.email,
           type: 'verify'
         }
       }

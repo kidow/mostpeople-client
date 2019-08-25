@@ -7,7 +7,7 @@
     </a-steps>
     <div class="auth__box">
       <form @submit.prevent="socialSignUp">
-        <a-input v-model="email" size="large" disabled />
+        <a-input v-model="email" size="large" :disabled="!emailVerified" />
         <div style="height: 12px" />
         <a-input v-model="nickname" placeholder="닉네임 (3 ~ 10자리)" size="large" />
         <div style="height: 12px" />
@@ -64,7 +64,8 @@ export default {
     error: '',
     isOpen: false,
     fetching: false,
-    dataSource: []
+    dataSource: [],
+    emailVerified: false
   }),
   methods: {
     onSelect(val) {
@@ -104,10 +105,12 @@ export default {
         data: {
           email: this.email,
           nickname: this.nickname,
-          occupationId: this.occupationId
+          occupationId: this.occupationId,
+          emailVerified: this.emailVerified
         }
       }
       try {
+        console.log(options.data)
         await this.$axios(options)
         this.messageSuccess('가입을 환영합니다')
         this.$router.push('/')
@@ -129,7 +132,10 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      return { email: data.email }
+      return {
+        email: data.email,
+        emailVerified: !!data.emailVerified
+      }
     } catch (err) {
       console.log(err)
     }

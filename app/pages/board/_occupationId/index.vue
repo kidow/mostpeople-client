@@ -205,13 +205,14 @@ export default {
       ]
     }
   },
-  async asyncData({ params, app }) {
+  async asyncData({ params, app, redirect }) {
     const options = {
       url: `/occupations/${params.occupationId}`,
       method: 'get'
     }
     try {
       const { data } = await app.$axios(options)
+      if (!data.korName) return redirect('/')
       return {
         intro: data.intro,
         korName: data.korName,

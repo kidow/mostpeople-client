@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /profile/
+Disallow: /notfound/
 
 Sitemap: https://mostpeople.kr/sitemap.xml

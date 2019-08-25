@@ -90,6 +90,7 @@
           </div>
         </div>
         <div v-else>활동 내역이 없습니다.</div>
+        <a-divider v-if="posts.length && comments.length" />
         <div style="font-size: 16px" v-if="comments.length">
           댓글
           <vue-count-to
@@ -181,13 +182,14 @@ export default {
       }
     }
   },
-  async asyncData({ app, params }) {
+  async asyncData({ app, params, redirect }) {
     const options = {
       url: `/users/${params.nickname.slice(1)}`,
       method: 'get'
     }
     try {
       const { data } = await app.$axios(options)
+      if (!data.email) redirect('/')
       return {
         nickname: data.nickname,
         profileUrl: data.profileUrl,
