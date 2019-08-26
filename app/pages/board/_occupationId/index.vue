@@ -1,21 +1,21 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <a-card :loading="loading" :title="`${korName}(은)는 어떤 직업인가요?`">
+    <a-card :loading="loading" :title="`${occupation.korName}(은)는 어떤 직업인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
-        <h1 v-if="intro">{{ intro }}</h1>
+        <h1 v-if="occupation.intro">{{ occupation.intro }}</h1>
         <div v-else style="color: #adb5bd">첫 소개를 작성해 보세요</div>
         <div style="display: flex; justify-content: space-between">
           <span
-            v-if="createdAt"
+            v-if="occupation.createdAt"
             class="createdAt"
-          >{{ $moment(createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss') }}</span>
-          <span class="author" v-if="nickname">- {{ nickname }} -</span>
+          >{{ $moment(occupation.createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss') }}</span>
+          <span class="author" v-if="occupation.nickname">- {{ occupation.nickname }} -</span>
         </div>
       </template>
       <a-textarea
-        v-model="intro"
+        v-model="occupation.intro"
         v-else
         placeholder="한 줄 요약"
         @keyup.enter="onEdit"
@@ -37,7 +37,12 @@
             </a-list-item-meta>
           </a-list-item>
         </a-list>
-        <a-pagination :total="total" v-model="currentPage" style="margin-top: 24px" />
+        <a-pagination
+          :total="total"
+          :size="$device.isMobile ? 'small' : ''"
+          v-model="currentPage"
+          style="margin-top: 24px"
+        />
       </a-tab-pane>
 
       <!-- <a-tab-pane tab="구직게시판" key="2">준비중입니다.</a-tab-pane> -->
@@ -59,14 +64,11 @@ export default {
   },
   data: _ => ({
     tab: '1',
-    korName: '',
     dataSource: [],
+    occupation: {},
     loading: false,
     isEdit: false,
-    intro: '',
     breadcrumbs: [],
-    createdAt: '',
-    nickname: '',
     columns: [
       {
         title: '제목',
@@ -103,14 +105,14 @@ export default {
     async onEdit() {
       if (!this.isLoggedIn) return this.notifyWarning('로그인을 해주세요.')
       if (!this.isEdit) return (this.isEdit = true)
-      if (!this.intro) return (this.isEdit = false)
-      if (this.intro.length > 40)
-        return this.notifyWarning({ intro: '40자 이하로 작성해주세요' })
+      if (!this.occupation.intro) return (this.isEdit = false)
+      if (this.occupation.intro.length > 40)
+        return this.notifyWarning('40자 이하로 작성해주세요')
       const options = {
         url: `/prt/introductions/${this.$route.params.occupationId}`,
         method: 'put',
         data: {
-          intro: this.intro
+          intro: this.occupation.intro
         }
       }
       try {
@@ -152,7 +154,9 @@ export default {
   },
   head() {
     return {
-      title: this.korName ? `${this.korName} - 모스트피플` : '모스트피플',
+      title: this.occupation.korName
+        ? `${this.occupation.korName} - 모스트피플`
+        : '모스트피플',
       meta: [
         // Open Graph
         { hid: 'og-type', property: 'og:type', content: 'website' },
@@ -164,12 +168,12 @@ export default {
         {
           hid: 'og-title',
           property: 'og:title',
-          content: `${this.korName} - 모스트피플`
+          content: `${this.occupation.korName} - 모스트피플`
         },
         {
           hid: 'og-description',
           property: 'og:description',
-          content: this.intro
+          content: this.occupation.intro
         },
         {
           hid: 'og-url',
@@ -195,7 +199,7 @@ export default {
         {
           hid: 'twitter-description',
           property: 'twitter:description',
-          content: this.intro
+          content: this.occupation.intro
         },
         {
           hid: 'twitter-domain',
@@ -212,14 +216,11 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      if (!data.korName) return redirect('/')
+      if (!data.occupation.korName) return redirect('/')
       return {
-        intro: data.intro,
-        korName: data.korName,
-        nickname: data.nickname,
-        createdAt: data.createdAt,
         breadcrumbs: data.breadcrumbs,
         dataSource: data.posts,
+        occupation: data.occupation,
         total: data.total
       }
     } catch (err) {

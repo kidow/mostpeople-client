@@ -6,6 +6,7 @@
     :loading="loading"
     :customRow="customRow"
     :locale="{ emptyText: '글이 존재하지 않습니다' }"
+    :pagination="false"
   />
 </template>
 

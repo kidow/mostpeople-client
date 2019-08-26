@@ -3,7 +3,14 @@
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <div style="height: 24px" />
     <a-input-search placeholder="검색" @search="onSearch" style="width: 200px; margin-bottom: 24px" />
-    <a-table :locale="{ emptyText: '글이 존재하지 않습니다'}" size="small" :data="data" :loading="loading" :customRow="customRow" :columns="columns"></a-table>
+    <a-table
+      :locale="{ emptyText: '글이 존재하지 않습니다'}"
+      size="small"
+      :data="data"
+      :loading="loading"
+      :customRow="customRow"
+      :columns="columns"
+    ></a-table>
     <a-pagination :total="total" v-model="currentPage" style="margin-top: 24px" />
   </div>
 </template>
