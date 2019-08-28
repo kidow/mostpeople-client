@@ -129,8 +129,8 @@ export default {
     try {
       const { data } = await app.$axios(options)
       return {
-        occupationId: data.uuid,
-        korName: data.korName
+        occupationId: data.occupation.uuid,
+        korName: data.occupation.korName
       }
     } catch (err) {
       console.log(err)
