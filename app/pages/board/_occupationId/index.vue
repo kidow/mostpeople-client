@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <a-card :loading="loading" :title="`${occupation.korName}(은)는 어떤 직업인가요?`">
+    <a-card :loading="loading.edit" :title="`${occupation.korName}(은)는 어떤 직업인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
         <h1 v-if="occupation.intro">{{ occupation.intro }}</h1>
@@ -30,13 +30,38 @@
           :columns="columns"
           v-if="!$device.isMobile"
         />
-        <a-list itemLayout="horizontal" :dataSource="dataSource" v-else>
+        <div class="list__container" v-else>
+          <div
+            class="list__item"
+            v-for="item in dataSource"
+            :key="item.uuid"
+            @click="$router.push(`/post/${item.uuid}`)"
+          >
+            <div class="item__img" v-if="item.thumbnailUrl">
+              <img :src="item.thumbnailUrl" alt="thumb" />
+            </div>
+            <div class="item__left">
+              <div class="item__title">{{ item.title }}</div>
+              <div class="item__desc">
+                <span class="item__nickname">{{ item.nickname }}</span>
+                <span class="item__dot">·</span>
+                <span class="item__date">{{ item.createdAt }}</span>
+                <span class="item__dot">·</span>
+                <span class="item__viewCount">조회 {{ item.viewCount }}</span>
+              </div>
+            </div>
+            <div class="item__right">
+              <div class="item__commentCount">{{ item.commentCount }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- <a-list :dataSource="dataSource" :loading="loading.page" v-else>
           <a-list-item @click="onClickList(item)" slot="renderItem" slot-scope="item">
             <a-list-item-meta :intro="item.createdAt">
               <a slot="title" :href="`/post/${item.uuid}`">{{item.title}}</a>
             </a-list-item-meta>
           </a-list-item>
-        </a-list>
+        </a-list>-->
         <a-pagination
           :total="total"
           :size="$device.isMobile ? 'small' : ''"
@@ -66,7 +91,10 @@ export default {
     tab: '1',
     dataSource: [],
     occupation: {},
-    loading: false,
+    loading: {
+      edit: false,
+      page: false
+    },
     isEdit: false,
     breadcrumbs: [],
     columns: [
@@ -92,15 +120,11 @@ export default {
       }
     ],
     total: 0,
-    currentPage: 1,
-    pageLoading: false
+    currentPage: 1
   }),
   methods: {
     onChangeTab(tab) {
       this.tab = tab
-    },
-    onClickList({ uuid }) {
-      this.$router.push(`/post/${uuid}`)
     },
     async onEdit() {
       if (!this.isLoggedIn) return this.notifyWarning('로그인을 해주세요.')
@@ -116,19 +140,19 @@ export default {
         }
       }
       try {
-        this.loading = true
+        this.loading.edit = true
         await this.$axios(options)
-        this.loading = false
+        this.loading.edit = false
         this.messageSuccess('성공적으로 수정되었습니다.')
         this.isEdit = false
       } catch (err) {
-        this.loading = false
+        this.loading.edit = false
         this.notifyError(err.response.data.message)
         console.log(err)
       }
     },
     async getData() {
-      this.pageLoading = true
+      this.loading.page = true
       const options = {
         url: `/occupations/${this.$route.params.occupationId}`,
         method: 'get',
@@ -136,9 +160,11 @@ export default {
       }
       try {
         const { data } = await this.$axios(options)
+        this.loading.page = false
         this.posts = data.posts
         this.total = data.total
       } catch (err) {
+        this.loading.page = false
         console.log(err)
         this.notifyError(err.response.data.message)
       }
@@ -260,6 +286,45 @@ export default {
   font-size: 1rem;
   &::placeholder {
     font-size: 1rem;
+  }
+}
+
+.list__container {
+  background: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  .list__item {
+    padding: 10px;
+    display: flex;
+    border-bottom: 1px solid $oc-gray-1;
+    .item__img {
+      margin-right: 10px;
+      img {
+        width: 40px;
+      }
+    }
+    .item__left {
+      flex: 1;
+      .item__title {
+        font-size: 16px;
+      }
+      .item__desc {
+        font-size: 13px;
+        color: $oc-gray-5;
+      }
+    }
+    .item__right {
+      width: 40px;
+      margin-left: 10px;
+      .item__commentCount {
+        border: 1px solid #e8e8e8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        padding: 10px;
+      }
+    }
   }
 }
 </style>

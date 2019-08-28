@@ -8,11 +8,26 @@
         @search="onSearch"
         placeholder="검색"
         :open="isOpen"
+        optionLabelProp="text"
+        :defaultValue="korName"
       >
         <a-spin v-if="fetching" size="small" />
+        <template slot="dataSource">
+          <a-select-option
+            v-for="occupation in dataSource"
+            :key="occupation.uuid"
+            :text="occupation.korName"
+          >{{ occupation.korName }}</a-select-option>
+        </template>
       </a-auto-complete>
       <div style="width: 12px;" />
-      <a-select @change="val => boardType = val" placeholder="게시판 선택" size="large">
+      <a-select
+        @change="val => boardType = val"
+        placeholder="게시판 선택"
+        size="large"
+        :defaultValue="boardType"
+        optionLabelProp="text"
+      >
         <a-select-option value="1">자유게시판</a-select-option>
         <a-select-option value="2" disabled>구직게시판</a-select-option>
       </a-select>
@@ -24,7 +39,7 @@
     <div style="height: 12px" />
     <a-button
       type="primary"
-      :disabled="!title || !content || !occupation || !boardType"
+      :disabled="!title || !content || !occupationId || !boardType"
       :loading="loading"
       size="large"
       html-type="submit"
@@ -35,21 +50,23 @@
 <script>
 import VueEditor from '~/components/Editor'
 import debounce from 'lodash.debounce'
+import { mapGetters } from 'vuex'
 export default {
   data: _ => ({
-    occupation: '',
+    occupationId: '',
     title: '',
     boardType: '',
     content: '',
     dataSource: [],
     loading: false,
     fetching: false,
-    isOpen: false
+    isOpen: false,
+    korName: ''
   }),
   methods: {
     onSelect(val) {
       this.isOpen = false
-      this.occupation = val
+      this.occupationId = val
     },
     onSearch: debounce(async function(name) {
       if (!name) return
@@ -74,22 +91,25 @@ export default {
     }, 800),
     async onSubmit() {
       let options = {
-        url: `/prt/posts/${this.$route.parmas.postId}`,
+        url: `/prt/posts/${this.$route.params.postId}`,
         method: 'put',
         data: {
-          occupation: this.occupation,
+          occupationId: this.occupationId,
           title: this.title,
           content: this.content,
           boardType: this.boardType
+        },
+        params: {
+          userId: this.user.uuid
         }
       }
       try {
         this.loading = true
-        const token = await this.$recaptcha.execute('social')
-        if (!token) return
-        options.data.token = token
-        const { data } = await this.$axios(options)
-        this.$router.push(`/post/${data.postId}`)
+        // const token = await this.$recaptcha.execute('social')
+        // if (!token) return
+        // options.data.token = token
+        await this.$axios(options)
+        this.$router.push(`/post/${this.$route.params.postId}`)
       } catch (err) {
         this.notifyError(err.response.data.message)
         console.log(err)
@@ -118,14 +138,15 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
-      if (data.isDeleted) return redirect('/')
+      if (data.isDeleted) return redirect('/notfound')
       if (!data.me) return redirect(route.path.slice(0, -5))
 
       return {
-        occupation: data.occupation,
+        occupationId: data.occupationId,
         title: data.title,
         boardType: data.boardType,
-        content: data.content
+        content: data.content,
+        korName: data.korName
       }
     } catch (err) {
       console.log(err)
@@ -133,6 +154,11 @@ export default {
   },
   validate({ params }) {
     return /[0-9a-f]{32}/.test(params.postId)
+  },
+  computed: {
+    ...mapGetters({
+      user: 'auth/GET_USER'
+    })
   }
 }
 </script>
