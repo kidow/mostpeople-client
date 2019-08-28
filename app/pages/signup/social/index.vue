@@ -110,10 +110,9 @@ export default {
         }
       }
       try {
-        console.log(options.data)
         await this.$axios(options)
         this.messageSuccess('가입을 환영합니다')
-        this.$router.push('/')
+        this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
         this.loading = false
         console.dir(err)

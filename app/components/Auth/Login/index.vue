@@ -73,7 +73,9 @@ export default {
       }
     },
     OAuthLogin(url) {
-      location.href = `${process.env.API_BASE_URL}${url}`
+      const { query } = this.$route
+      const redirect = query.redirect ? `?redirect=${query.redirect}` : ''
+      location.href = `${process.env.API_BASE_URL}${url}${redirect}`
     }
   },
   data: _ => ({
