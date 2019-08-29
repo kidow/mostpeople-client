@@ -24,44 +24,8 @@
     </a-card>
     <a-tabs defaultActiveKey="1" @change="onChangeTab">
       <a-tab-pane tab="자유게시판" key="1">
-        <vue-table
-          :locale="{ emptyText: '글이 존재하지 않습니다'}"
-          :dataSource="dataSource"
-          :columns="columns"
-          v-if="!$device.isMobile"
-        />
-        <div class="list__container" v-else>
-          <div
-            class="list__item"
-            v-for="item in dataSource"
-            :key="item.uuid"
-            @click="$router.push(`/post/${item.uuid}`)"
-          >
-            <div class="item__img" v-if="item.thumbnailUrl">
-              <img :src="item.thumbnailUrl" alt="thumb" />
-            </div>
-            <div class="item__left">
-              <div class="item__title">{{ item.title }}</div>
-              <div class="item__desc">
-                <span class="item__nickname">{{ item.nickname }}</span>
-                <span class="item__dot">·</span>
-                <span class="item__date">{{ item.createdAt }}</span>
-                <span class="item__dot">·</span>
-                <span class="item__viewCount">조회 {{ item.viewCount }}</span>
-              </div>
-            </div>
-            <div class="item__right">
-              <div class="item__commentCount">{{ item.commentCount }}</div>
-            </div>
-          </div>
-        </div>
-        <!-- <a-list :dataSource="dataSource" :loading="loading.page" v-else>
-          <a-list-item @click="onClickList(item)" slot="renderItem" slot-scope="item">
-            <a-list-item-meta :intro="item.createdAt">
-              <a slot="title" :href="`/post/${item.uuid}`">{{item.title}}</a>
-            </a-list-item-meta>
-          </a-list-item>
-        </a-list>-->
+        <vue-table :dataSource="dataSource" :columns="columns" v-if="!$device.isMobile" />
+        <vue-list-post-mobile v-else :posts="dataSource" />
         <a-pagination
           :total="total"
           :size="$device.isMobile ? 'small' : ''"
@@ -82,6 +46,7 @@
 <script>
 import VueBreadcrumb from '~/components/Breadcrumb'
 import VueTable from '~/components/Table'
+import VueListPostMobile from '~/components/List/Post/Mobile'
 import { mapGetters } from 'vuex'
 export default {
   validate({ params }) {
@@ -176,7 +141,8 @@ export default {
   },
   components: {
     VueTable,
-    VueBreadcrumb
+    VueBreadcrumb,
+    VueListPostMobile
   },
   head() {
     return {
@@ -286,45 +252,6 @@ export default {
   font-size: 1rem;
   &::placeholder {
     font-size: 1rem;
-  }
-}
-
-.list__container {
-  background: white;
-  border: 1px solid #e8e8e8;
-  border-radius: 4px;
-  .list__item {
-    padding: 10px;
-    display: flex;
-    border-bottom: 1px solid $oc-gray-1;
-    .item__img {
-      margin-right: 10px;
-      img {
-        width: 40px;
-      }
-    }
-    .item__left {
-      flex: 1;
-      .item__title {
-        font-size: 16px;
-      }
-      .item__desc {
-        font-size: 13px;
-        color: $oc-gray-5;
-      }
-    }
-    .item__right {
-      width: 40px;
-      margin-left: 10px;
-      .item__commentCount {
-        border: 1px solid #e8e8e8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        padding: 10px;
-      }
-    }
   }
 }
 </style>

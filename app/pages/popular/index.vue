@@ -3,23 +3,21 @@
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <div style="height: 24px" />
     <a-input-search placeholder="검색" @search="onSearch" style="width: 200px; margin-bottom: 24px" />
-    <a-table
-      :locale="{ emptyText: '글이 존재하지 않습니다'}"
-      size="small"
-      :data="data"
-      :loading="loading"
-      :customRow="customRow"
-      :columns="columns"
-    ></a-table>
+    <vue-table :dataSource="data" :columns="columns" v-if="!$device.isMobile" />
+    <vue-list-post-mobile v-else :posts="data" />
     <a-pagination :total="total" v-model="currentPage" style="margin-top: 24px" />
   </div>
 </template>
 
 <script>
+import VueTable from '~/components/Table'
 import VueBreadcrumb from '~/components/Breadcrumb'
+import VueListPostMobile from '~/components/List/Post/Mobile'
 export default {
   components: {
-    VueBreadcrumb
+    VueBreadcrumb,
+    VueListPostMobile,
+    VueTable
   },
   data: _ => ({
     breadcrumbs: [
