@@ -40,7 +40,7 @@ module.exports = {
       { name: 'apple-mobile-web-app-capable', content: 'yes' },
       { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
       { name: 'apple-mobile-web-app-title', content: 'mostpeople' },
-      { hid: 'keywords', name: 'keywords', content: '소셜' },
+      { hid: 'keywords', name: 'keywords', content: 'social' },
       { hid: 'image', name: 'image', content: IMAGE },
       {
         name: 'msapplication-TileColor',
@@ -72,7 +72,7 @@ module.exports = {
       { hid: 'og-url', property: 'og:url', content: PUBLIC_LINK },
 
       // Twiiter
-      { hid: 'twitter-site', property: 'twitter:site', content: '@bornhater' },
+      { hid: 'twitter-site', property: 'twitter:site', content: '@mostpeople' },
       { hid: 'twitter-card', property: 'twitter:card', content: 'summary' },
       { hid: 'twitter-title', property: 'twitter:title', content: TITLE },
       {

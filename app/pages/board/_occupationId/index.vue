@@ -82,6 +82,10 @@ export default {
       {
         title: '추천',
         dataIndex: 'likeCount'
+      },
+      {
+        title: '댓글',
+        dataIndex: 'commentCount'
       }
     ],
     total: 0,

@@ -7,7 +7,7 @@
     </a-steps>
     <div class="auth__box">
       <form @submit.prevent="socialSignUp">
-        <a-input v-model="email" size="large" :disabled="!emailVerified" />
+        <a-input v-model="email" size="large" :disabled="emailVerified" placeholder="이메일" />
         <div style="height: 12px" />
         <a-input v-model="nickname" placeholder="닉네임 (3 ~ 10자리)" size="large" />
         <div style="height: 12px" />
@@ -124,13 +124,14 @@ export default {
     title: '소셜 가입 - 모스트피플'
   }),
   middleware: ['isLoggedIn'],
-  async asyncData({ app }) {
+  async asyncData({ app, redirect }) {
     const options = {
       url: `/auth/email`,
       method: 'get'
     }
     try {
       const { data } = await app.$axios(options)
+      if (!data) return redirect('/')
       return {
         email: data.email,
         emailVerified: !!data.emailVerified
