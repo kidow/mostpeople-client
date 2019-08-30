@@ -111,6 +111,7 @@ export default {
       }
       try {
         await this.$axios(options)
+        this.$store.dispatch('auth/ME')
         this.messageSuccess('가입을 환영합니다')
         this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
