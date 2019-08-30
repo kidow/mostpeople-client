@@ -132,6 +132,7 @@ export default {
     }
     try {
       const { data } = await app.$axios(options)
+      console.log(data)
       if (!data) return redirect('/')
       return {
         email: data.email,
