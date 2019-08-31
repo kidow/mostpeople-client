@@ -10,11 +10,11 @@
         <img src="~/assets/icons/google.png" alt="google" />
         구글로 가입
       </button>
-      <div style="height: 12px" />
+      <!-- <div style="height: 12px" />
       <button class="signup-button" @click="OAuthSignup('/auth/kakao')">
         <img src="~/assets/icons/kakao.png" alt="kakao" />
         카카오로 가입
-      </button>
+      </button>-->
       <!-- <div style="height: 12px" />
       <button class="signup-button" @click="OAuthSignup('/auth/naver')">
         <img src="~/assets/icons/naver.png" alt="naver" />

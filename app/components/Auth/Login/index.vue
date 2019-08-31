@@ -9,11 +9,11 @@
       <img src="~/assets/icons/google.png" alt="google" />
       구글로 로그인
     </button>
-    <div style="height: 12px" />
+    <!-- <div style="height: 12px" />
     <button class="login-button" @click="OAuthLogin('/auth/kakao')">
       <img src="~/assets/icons/kakao.png" alt="kakao" />
       카카오로 로그인
-    </button>
+    </button>-->
     <!-- <div style="height: 12px" />
     <button class="login-button" @click="OAuthLogin('/auth/naver')">
       <img src="~/assets/icons/naver.png" alt="naver" />

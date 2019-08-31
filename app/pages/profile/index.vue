@@ -308,7 +308,7 @@ export default {
   }),
   methods: {
     onSearch: debounce(async function(name) {
-      if (!name) return
+      if (!name) return (this.occupationId = '')
       const options = {
         url: '/occupations/search',
         method: 'get',
@@ -395,12 +395,14 @@ export default {
           uuid: this.user.uuid
         }
       }
+      console.log(this.occupationId)
       const that = this
       this.$confirm({
         title: '변경하시겠습니까?',
         async onOk() {
           try {
             await that.$axios(options)
+            that.$store.dispatch('auth/ME')
             that.messageSuccess('성공적으로 변경되었습니다.')
           } catch (err) {
             console.log(err)

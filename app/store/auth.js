@@ -61,7 +61,7 @@ export const actions = {
 
       try {
         await this.$axios(options)
-        await dispatch('auth/ME')
+        await dispatch('ME')
         resolve()
       } catch (err) {
         reject(err)
