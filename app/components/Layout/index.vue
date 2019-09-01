@@ -1,11 +1,11 @@
 <template>
   <a-locale-provider :locale="locale">
     <a-row>
-      <a-col :lg="3" :sm="2" :xs="1" />
-      <a-col :lg="18" :sm="20" :xs="22">
+      <a-col :lg="lg" :sm="2" :xs="1" />
+      <a-col :lg="24 - (lg * 2)" :sm="20" :xs="22">
         <slot />
       </a-col>
-      <a-col :lg="3" :sm="2" :xs="1" />
+      <a-col :lg="lg" :sm="2" :xs="1" />
     </a-row>
   </a-locale-provider>
 </template>
@@ -16,6 +16,13 @@ export default {
   name: 'Layout',
   data: _ => ({
     locale: koKR
-  })
+  }),
+  computed: {
+    lg() {
+      const { path } = this.$route
+      if (path.indexOf('/post') > -1) return 5
+      else return 3
+    }
+  }
 }
 </script>
