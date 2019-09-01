@@ -27,11 +27,11 @@ export default {
     loading: false
   }),
   methods: {
-    customRow({ uuid }) {
+    customRow({ uuid, title }) {
       if (!uuid) return
       return {
         on: {
-          click: _ => this.$router.push(`/post/${uuid}`)
+          click: _ => this.$router.push(`/post/${this.$titleUrl(title, uuid)}`)
         }
       }
     }

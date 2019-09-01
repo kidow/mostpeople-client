@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position: relative">
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
     <a-skeleton avatar :paragraph="{rows: 6}" active v-if="!mounted" />
     <template v-else>
@@ -104,6 +104,29 @@
         </a-list-item-meta>
       </a-list-item>
     </a-list>-->
+    <div class="left__sticker">
+      <a-affix :offsetTop="32" class="in__sticker">
+        <a-button size="large" icon="heart" shape="circle" @click="like" />
+        <div class="heart__count" :class="{ liked: !!post.likeCount }">{{ post.likeCount }}</div>
+        <a-button size="large" shape="circle" @click="shareFacebook">
+          <a-icon type="facebook" theme="filled" />
+        </a-button>
+        <a-button
+          size="large"
+          icon="twitter"
+          shape="circle"
+          style="margin-top: 0.5rem"
+          @click="shareTwitter"
+        />
+        <a-button
+          size="large"
+          icon="link"
+          shape="circle"
+          style="margin-top: 0.5rem"
+          @click="copyLink"
+        />
+      </a-affix>
+    </div>
   </div>
 </template>
 
@@ -115,7 +138,9 @@ import VueEditor from '~/components/Editor'
 import { mapGetters } from 'vuex'
 export default {
   validate({ params }) {
-    return /[0-9a-f]{32}/.test(params.postId)
+    const sliceParams = paramsId =>
+      paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
+    return /[0-9a-f]{32}/.test(sliceParams(params.postId))
   },
   components: {
     VueBreadcrumb,
@@ -144,7 +169,7 @@ export default {
     },
     async like() {
       const options = {
-        url: `/prt/likes/${this.$route.params.postId}`,
+        url: `/prt/likes/${this.$sliceParams(this.$route.params.postId)}`,
         method: 'post',
         data: {
           refType: 2
@@ -166,7 +191,7 @@ export default {
     },
     onDelete() {
       const options = {
-        url: `/prt/posts/${this.$route.params.postId}`,
+        url: `/prt/posts/${this.$sliceParams(this.$route.params.postId)}`,
         method: 'delete',
         params: {
           userId: this.user.uuid
@@ -273,8 +298,10 @@ export default {
     }
   },
   async asyncData({ app, params, redirect }) {
+    const sliceParams = paramsId =>
+      paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
     const options = {
-      url: `/posts/${params.postId}`,
+      url: `/posts/${sliceParams(params.postId)}`,
       method: 'get'
     }
     try {
@@ -304,6 +331,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/scss/color.scss';
+@import '~/assets/scss/media.scss';
 
 h1 {
   margin-top: 0.5em;
@@ -330,6 +358,7 @@ h1 {
   padding: 0;
 }
 .comment__header {
+  padding-top: 4rem;
   .pointer {
     cursor: pointer;
     &.isLiked {
@@ -359,5 +388,26 @@ h1 {
 
 .ant-skeleton[data-v-28c03496] {
   margin: 2rem 0;
+}
+.left__sticker {
+  @include media('<sticker') {
+    display: none;
+  }
+  position: absolute;
+  width: 4rem;
+  left: -5rem;
+  top: 0;
+  text-align: center;
+  .in__sticker {
+    padding: 0.5rem;
+    div {
+      .heart__count {
+        &.liked {
+          color: $brand-color;
+        }
+        margin: 0.5rem 0 1rem;
+      }
+    }
+  }
 }
 </style>

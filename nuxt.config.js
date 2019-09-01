@@ -107,7 +107,8 @@ module.exports = {
   ],
   plugins: [
     '@/plugins/antd-ui',
-    { src: '~/plugins/vue-clipboard2.js', ssr: false }
+    { src: '~/plugins/vue-clipboard2', ssr: false },
+    { src: '~/plugins/vue-custom', ssr: true }
   ],
   modules: [
     '@nuxtjs/axios',

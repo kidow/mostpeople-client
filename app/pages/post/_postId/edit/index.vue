@@ -90,8 +90,9 @@ export default {
       }
     }, 800),
     async onSubmit() {
+      const postId = this.$sliceParams(this.$route.params.postId)
       let options = {
-        url: `/prt/posts/${this.$route.params.postId}`,
+        url: `/prt/posts/${postId}`,
         method: 'put',
         data: {
           occupationId: this.occupationId,
@@ -109,7 +110,8 @@ export default {
         // if (!token) return
         // options.data.token = token
         await this.$axios(options)
-        this.$router.push(`/post/${this.$route.params.postId}`)
+        this.messageSuccess('성공적으로 수정되었습니다')
+        this.$router.push(`/post/${postId}`)
       } catch (err) {
         this.notifyError(err.response.data.message)
         console.log(err)
@@ -132,8 +134,10 @@ export default {
   }),
   middleware: ['isNotLoggedIn'],
   async asyncData({ app, redirect, params, route }) {
+    const sliceParams = paramsId =>
+      paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
     const options = {
-      url: `/prt/posts/${params.postId}`,
+      url: `/prt/posts/${sliceParams(params.postId)}`,
       method: 'get'
     }
     try {
@@ -153,7 +157,9 @@ export default {
     }
   },
   validate({ params }) {
-    return /[0-9a-f]{32}/.test(params.postId)
+    const sliceParams = paramsId =>
+      paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
+    return /[0-9a-f]{32}/.test(sliceParams(params.postId))
   },
   computed: {
     ...mapGetters({

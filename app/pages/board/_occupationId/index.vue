@@ -37,7 +37,7 @@
       <!-- <a-tab-pane tab="구직게시판" key="2">준비중입니다.</a-tab-pane> -->
       <a-button
         slot="tabBarExtraContent"
-        @click="$router.push(`/new?occupationId=${$route.params.occupationId}`)"
+        @click="$router.push(`/new?occupationId=${$sliceParams($route.params.occupationId)}`)"
       >새 글</a-button>
     </a-tabs>
   </div>
@@ -50,7 +50,9 @@ import VueListPostMobile from '~/components/List/Post/Mobile'
 import { mapGetters } from 'vuex'
 export default {
   validate({ params }) {
-    return /[0-9a-f]{32}/g.test(params.occupationId)
+    const sliceParams = paramsId =>
+      paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
+    return /[0-9a-f]{32}/g.test(sliceParams(params.occupationId))
   },
   data: _ => ({
     tab: '1',
@@ -102,7 +104,9 @@ export default {
       if (this.occupation.intro.length > 40)
         return this.notifyWarning('40자 이하로 작성해주세요')
       const options = {
-        url: `/prt/introductions/${this.$route.params.occupationId}`,
+        url: `/prt/introductions/${this.$sliceParams(
+          this.$route.params.occupationId
+        )}`,
         method: 'put',
         data: {
           intro: this.occupation.intro
@@ -122,8 +126,12 @@ export default {
     },
     async getData() {
       this.loading.page = true
+      const sliceParams = paramsId =>
+        paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
       const options = {
-        url: `/occupations/${this.$route.params.occupationId}`,
+        url: `/occupations/${this.$sliceParams(
+          this.$route.params.occupationId
+        )}`,
         method: 'get',
         params: this.$route.query
       }
@@ -206,8 +214,10 @@ export default {
     }
   },
   async asyncData({ params, app, redirect }) {
+    const sliceParams = paramsId =>
+      paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
     const options = {
-      url: `/occupations/${params.occupationId}`,
+      url: `/occupations/${sliceParams(params.occupationId)}`,
       method: 'get'
     }
     try {

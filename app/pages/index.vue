@@ -5,13 +5,8 @@
         <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">인기 글</span>
         <nuxt-link to="/popular">더 보기</nuxt-link>
       </div>
-      <a-table
-        size="small"
-        :data="posts"
-        :customRow="customRow"
-        :locale="{ emptyText: '글이 존재하지 않습니다' }"
-        :columns="columns"
-      ></a-table>
+      <vue-table :dataSource="posts" :columns="columns" v-if="!$device.isMobile" />
+      <vue-list-post-mobile v-else :posts="posts" />
     </div>
     <div class="card__container">
       <div style="margin: 24px 0 8px">
@@ -24,6 +19,8 @@
 </template>
 
 <script>
+import VueTable from '~/components/Table'
+import VueListPostMobile from '~/components/List/Post/Mobile'
 import VueBoard from '~/components/Board'
 export default {
   data: _ => ({
@@ -60,7 +57,9 @@ export default {
     ]
   }),
   components: {
-    VueBoard
+    VueBoard,
+    VueTable,
+    VueListPostMobile
   },
   async asyncData({ app }) {
     const options = {
@@ -75,17 +74,6 @@ export default {
       }
     } catch (err) {
       console.log(err)
-    }
-  },
-  methods: {
-    customRow({ uuid }) {
-      if (!uuid) return
-      const url = `/post/${uuid}`
-      return {
-        on: {
-          click: _ => this.$router.push(url)
-        }
-      }
     }
   }
 }

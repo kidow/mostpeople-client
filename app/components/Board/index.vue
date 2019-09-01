@@ -8,7 +8,9 @@
         :key="occupation.uuid"
       >
         <a-badge dot :count="profession.postsCount">
-          <nuxt-link :to="`/board/${occupation.uuid}`">{{ occupation.korName }}</nuxt-link>
+          <nuxt-link
+            :to="`/board/${$titleUrl(occupation.korName, occupation.uuid)}`"
+          >{{ occupation.korName }}</nuxt-link>
         </a-badge>
       </div>
     </div>
