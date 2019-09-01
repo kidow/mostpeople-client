@@ -105,7 +105,7 @@
       </a-list-item>
     </a-list>-->
     <div class="left__sticker">
-      <a-affix :offsetTop="32" class="in__sticker">
+      <a-affix :offsetTop="48" class="in__sticker">
         <a-button size="large" icon="heart" shape="circle" @click="like" />
         <div class="heart__count" :class="{ liked: !!post.likeCount }">{{ post.likeCount }}</div>
         <a-button size="large" shape="circle" @click="shareFacebook">
