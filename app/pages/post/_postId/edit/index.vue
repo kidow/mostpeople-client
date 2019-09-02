@@ -111,7 +111,7 @@ export default {
         // options.data.token = token
         await this.$axios(options)
         this.messageSuccess('성공적으로 수정되었습니다')
-        this.$router.push(`/post/${postId}`)
+        this.$router.push(`/post/${this.$titleUrl(this.title, postId)}`)
       } catch (err) {
         this.notifyError(err.response.data.message)
         console.log(err)

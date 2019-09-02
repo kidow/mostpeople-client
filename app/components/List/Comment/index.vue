@@ -29,12 +29,10 @@
           />
           <template slot="actions" v-if="item.status === 1">
             <a-tooltip title="좋아요">
-              <a-icon
-                type="like"
-                :theme="item.isLiked ? 'filled' : 'outlined'"
-                @click="like(item)"
-              />
-              <span style="padding-left: 4px;cursor: 'auto'">{{ item.likeCount }}</span>
+              <template @click="like(item)">
+                <a-icon type="like" :theme="item.isLiked ? 'filled' : 'outlined'" />
+                <span style="padding-left: 4px;cursor: 'auto'">{{ item.likeCount }}</span>
+              </template>
             </a-tooltip>
             <template v-if="item.userId === user.uuid">
               <span @click="item.isEdit = true">수정</span>
@@ -152,7 +150,7 @@ export default {
     async addComment() {
       this.loading.comment = true
       const options = {
-        url: `/prt/comments/${this.$route.params.postId}`,
+        url: `/prt/comments/${this.$sliceParams(this.$route.params.postId)}`,
         method: 'post',
         data: {
           content: this.comment
@@ -204,7 +202,7 @@ export default {
     async replySubmit(comment, index) {
       comment.loading = true
       const options = {
-        url: `/prt/comments/${this.$route.params.postId}`,
+        url: `/prt/comments/${this.$sliceParams(this.$route.params.postId)}`,
         method: 'post',
         data: {
           content: comment.reply,
@@ -226,7 +224,7 @@ export default {
     },
     async like(item) {
       const options = {
-        url: `/prt/likes/${item.uuid}`,
+        url: `/prt/likes/${this.$sliceParams(item.uuid)}`,
         method: 'post',
         data: {
           refType: 3
@@ -249,7 +247,7 @@ export default {
     async addReply(item) {
       item.loading = true
       const options = {
-        url: `/prt/comments/${this.$route.params.postId}`,
+        url: `/prt/comments/${this.$sliceParams(this.$route.params.postId)}`,
         method: 'post',
         data: {
           parentId: item.id,

@@ -17,11 +17,21 @@
           class="avatar"
           @click="$router.push(`/profile/@${post.nickname}`)"
         />
-        <span class="id" @click="$router.push(`/profile/@${post.nickname}`)">{{ post.nickname }}</span>
-        <a-divider type="vertical" />
-        <span
-          class="date"
-        >{{ $moment(post.createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss' )}}</span>
+        <div class="user-info">
+          <div class="info-head">
+            <span
+              class="info-nickname"
+              @click="$router.push(`/profile/@${post.nickname}`)"
+            >{{ post.nickname }}</span>
+            <span class="dot" v-if="post.occupation">·</span>
+            <span class="info-occupation">{{ post.occupation }}</span>
+          </div>
+          <div class="info-body">
+            <span
+              class="date"
+            >{{ $moment(post.createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss' )}}</span>
+          </div>
+        </div>
       </div>
       <vue-editor :readonly="true" :value="post.content" />
     </template>
@@ -341,17 +351,33 @@ h1 {
 .user-meta {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
-  .id {
+  margin-bottom: 40px;
+  .user-info {
     margin-left: 10px;
-    font-size: 20px;
+    .info-head {
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      .info-nickname {
+        cursor: pointer;
+      }
+      .dot {
+        margin: 0 4px;
+        color: $oc-gray-3;
+      }
+      .info-occupation {
+        font-size: 12px;
+        color: $oc-gray-6;
+      }
+    }
+    .info-body {
+      .date {
+        color: $oc-gray-5;
+      }
+    }
   }
-  .avatar,
-  .id {
+  .avatar {
     cursor: pointer;
-  }
-  .date {
-    color: $oc-gray-5;
   }
 }
 .ant-list-item {

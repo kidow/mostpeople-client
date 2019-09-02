@@ -4,14 +4,18 @@
     <a-card :loading="loading.edit" :title="`${occupation.korName}(은)는 어떤 직업인가요?`">
       <span class="edit-button" slot="extra" @click="onEdit">수정</span>
       <template v-if="!isEdit">
-        <h1 v-if="occupation.intro">{{ occupation.intro }}</h1>
+        <h1 style="margin-bottom: 2rem" v-if="occupation.intro">{{ occupation.intro }}</h1>
         <div v-else style="color: #adb5bd">첫 소개를 작성해 보세요</div>
         <div style="display: flex; justify-content: space-between">
           <span
             v-if="occupation.createdAt"
             class="createdAt"
           >{{ $moment(occupation.createdAt).add(9, 'hour').format('YYYY-MM-DD hh:mm:ss') }}</span>
-          <span class="author" v-if="occupation.nickname">- {{ occupation.nickname }} -</span>
+          <span
+            style="cursor: pointer"
+            v-if="occupation.nickname"
+            @click="$router.push(`/profile/@${occupation.nickname}`)"
+          >- {{ occupation.nickname }} -</span>
         </div>
       </template>
       <a-textarea
