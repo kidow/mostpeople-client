@@ -6,7 +6,7 @@
       </nuxt-link>
     </a-breadcrumb-item>
     <a-breadcrumb-item v-for="item in breadcrumbs" :key="item.name">
-      <nuxt-link :to="item.url">{{ item.name }}</nuxt-link>
+      <nuxt-link :to="item.page + $titleUrl(item.name, item.uuid)">{{ item.name }}</nuxt-link>
     </a-breadcrumb-item>
   </a-breadcrumb>
 </template>

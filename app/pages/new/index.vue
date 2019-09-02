@@ -98,7 +98,8 @@ export default {
         // if (!token) return
         // options.data.token = token
         const { data } = await this.$axios(options)
-        this.$router.push(`/post/${data.postId}`)
+        this.messageSuccess('글이 작성되었습니다')
+        this.$router.push(`/post/${this.$titleUrl(this.title, data.postId)}`)
       } catch (err) {
         console.log(err)
         this.notifyError(err ? err.response.data.message : '')
