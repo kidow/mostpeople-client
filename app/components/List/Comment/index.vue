@@ -185,20 +185,6 @@ export default {
         this.notifyError(err.response.data.message)
       }
     },
-    shareFacebook() {
-      const { BASE_URL } = process.env
-      const { path } = this.$route
-      window.open(
-        `http://www.facebook.com/sharer/sharer.php?u=${BASE_URL}${path}`
-      )
-    },
-    shareTwitter() {
-      const { BASE_URL } = process.env
-      const { path } = this.$route
-      window.open(
-        `https://twitter.com/intent/tweet?text=TEXT&url=${BASE_URL}${path}`
-      )
-    },
     async replySubmit(comment, index) {
       comment.loading = true
       const options = {

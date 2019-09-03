@@ -11,3 +11,5 @@ Vue.prototype.$titleUrl = (title, alias) => {
 }
 Vue.prototype.$sliceParams = paramsId =>
   paramsId.slice(paramsId.lastIndexOf('-') + 1, paramsId.length)
+Vue.prototype.$shareSns = url =>
+  window.open(url, 'share', 'menubar=1, resizable=1, width=800, height=500')

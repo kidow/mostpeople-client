@@ -225,14 +225,14 @@ export default {
     shareFacebook() {
       const { BASE_URL } = process.env
       const { path } = this.$route
-      window.open(
+      this.$shareSns(
         `http://www.facebook.com/sharer/sharer.php?u=${BASE_URL}${path}`
       )
     },
     shareTwitter() {
       const { BASE_URL } = process.env
       const { path } = this.$route
-      window.open(
+      this.$shareSns(
         `https://twitter.com/intent/tweet?text=TEXT&url=${BASE_URL}${path}`
       )
     },
