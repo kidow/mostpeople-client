@@ -1,11 +1,16 @@
 <template>
   <div>
     <vue-breadcrumb :breadcrumbs="breadcrumbs" />
-    <div style="height: 24px" />
-    <a-input-search placeholder="검색" @search="onSearch" style="width: 200px; margin-bottom: 24px" />
-    <vue-table :dataSource="data" :columns="columns" v-if="!$device.isMobile" />
+    <a-input-search placeholder="검색" @search="onSearch" style="width: 200px; margin: 24px 0" />
+    <vue-table :loading="loading" :dataSource="data" :columns="columns" v-if="!$device.isMobile" />
     <vue-list-post-mobile v-else :posts="data" />
-    <a-pagination :total="total" v-model="currentPage" style="margin-top: 24px" />
+    <a-pagination
+      :total="total"
+      :size="$device.isMobile ? 'small' : ''"
+      v-model="currentPage"
+      style="margin-top: 24px"
+      :defaultPageSize="20"
+    />
   </div>
 </template>
 
@@ -62,31 +67,26 @@ export default {
     ],
     loading: false,
     total: 0,
-    currentPage: 1
+    currentPage: 1,
+    offset: 0,
+    search: ''
   }),
   methods: {
-    customRow({ occupationId, uuid }) {
-      if (!uuid) return
-      const url = `/post/${uuid}`
-      return {
-        on: {
-          click: _ => this.$router.push(url)
-        }
-      }
-    },
     onSearch(search) {
-      this.updateQuerystring({ search, offset: 0 })
-    },
-    updateQuerystring(payload) {
-      const query = Object.assign({}, this.$route.query, payload)
-      this.$router.push({ query })
+      this.search = search
+      this.offset = 0
+      this.currentPage = 1
+      this.getData()
     },
     async getData() {
       this.loading = true
       const options = {
         url: '/posts/popular',
         method: 'get',
-        params: this.$route.query
+        params: {
+          offset: this.offset,
+          search: this.search
+        }
       }
       try {
         const { data } = await this.$axios(options)
@@ -105,8 +105,7 @@ export default {
   async asyncData({ app, query }) {
     const options = {
       url: '/posts/popular',
-      method: 'get',
-      params: query
+      method: 'get'
     }
     try {
       const { data } = await app.$axios(options)
@@ -116,10 +115,8 @@ export default {
     }
   },
   watch: {
-    currentPage() {
-      this.updateQuerystring({ offset: 20 * (this.currentPage - 1) })
-    },
-    '$route.query'() {
+    currentPage(val) {
+      this.offset = (val - 1) * 20
       this.getData()
     }
   }

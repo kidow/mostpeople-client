@@ -28,13 +28,19 @@
     </a-card>
     <a-tabs defaultActiveKey="1" @change="onChangeTab">
       <a-tab-pane tab="자유게시판" key="1">
-        <vue-table :dataSource="dataSource" :columns="columns" v-if="!$device.isMobile" />
-        <vue-list-post-mobile v-else :posts="dataSource" />
+        <vue-table
+          :loading="!loading.page"
+          :dataSource="posts"
+          :columns="columns"
+          v-if="!$device.isMobile"
+        />
+        <vue-list-post-mobile v-else :posts="posts" />
         <a-pagination
           :total="total"
           :size="$device.isMobile ? 'small' : ''"
           v-model="currentPage"
           style="margin-top: 24px"
+          :defaultPageSize="20"
         />
       </a-tab-pane>
 
@@ -60,7 +66,7 @@ export default {
   },
   data: _ => ({
     tab: '1',
-    dataSource: [],
+    posts: [],
     occupation: {},
     loading: {
       edit: false,
@@ -95,7 +101,8 @@ export default {
       }
     ],
     total: 0,
-    currentPage: 1
+    currentPage: 1,
+    offset: 0
   }),
   methods: {
     onChangeTab(tab) {
@@ -137,10 +144,13 @@ export default {
           this.$route.params.occupationId
         )}`,
         method: 'get',
-        params: this.$route.query
+        params: {
+          offset: this.offset
+        }
       }
       try {
         const { data } = await this.$axios(options)
+        window.scrollTo(0, 0)
         this.loading.page = false
         this.posts = data.posts
         this.total = data.total
@@ -149,10 +159,6 @@ export default {
         console.log(err)
         this.notifyError(err.response.data.message)
       }
-    },
-    updateQuerystring(payload) {
-      const query = Object.assign({}, this.$route.query, payload)
-      this.$router.push({ query })
     }
   },
   components: {
@@ -229,7 +235,7 @@ export default {
       if (!data.occupation.korName) return redirect('/')
       return {
         breadcrumbs: data.breadcrumbs,
-        dataSource: data.posts,
+        posts: data.posts,
         occupation: data.occupation,
         total: data.total
       }
@@ -243,10 +249,8 @@ export default {
     })
   },
   watch: {
-    currentPage() {
-      this.updateQuerystring({ offset: 20 * (this.currentPage - 1) })
-    },
-    '$route.query'() {
+    currentPage(val) {
+      this.offset = (val - 1) * 20
       this.getData()
     }
   }
