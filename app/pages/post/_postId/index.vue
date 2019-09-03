@@ -256,7 +256,7 @@ export default {
         {
           hid: 'og-description',
           property: 'og-description',
-          content: this.post.lpretext
+          content: this.post.pretext
         },
         {
           hid: 'og-image',
