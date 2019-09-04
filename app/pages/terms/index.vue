@@ -172,7 +172,7 @@ div {
   h5 {
     font-size: 22px;
     font-weight: 500;
-    color: $oc-green-8;
+    color: $brand-color;
     margin: 30px 15px 20px;
   }
   p {
