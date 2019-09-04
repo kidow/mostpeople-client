@@ -93,10 +93,6 @@ module.exports = {
         rel: 'stylesheet',
         href:
           'https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700&display=swap&subset=korean'
-      },
-      {
-        rel: 'manifest',
-        href: '/site.webmanifest'
       }
     ]
   },
@@ -132,6 +128,21 @@ module.exports = {
         'application/x-www-form-urlencoded;application/json'
       return config
     }
+  },
+  manifest: {
+    name: TITLE,
+    short_name: '모스트피플',
+    icons: [
+      {
+        src: '/icon.png',
+        sizes: '512x512',
+        type: 'image/png'
+      }
+    ],
+    theme_color: COLOR,
+    background_color: COLOR,
+    display: 'standalone',
+    start_url: '/?utm_source=homescreen'
   },
   recaptcha: {
     hideBadge: true,
