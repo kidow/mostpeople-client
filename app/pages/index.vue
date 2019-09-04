@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="card__container">
-      <div style="margin-bottom: 8px;">
-        <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">인기 글</span>
+      <div class="card__box">
+        <span class="card__title">인기 글</span>
         <nuxt-link to="/popular">더 보기</nuxt-link>
       </div>
       <vue-table :dataSource="posts" :columns="columns" v-if="!$device.isMobile" />
       <vue-list-post-mobile v-else :posts="posts" />
     </div>
     <div class="card__container">
-      <div style="margin: 24px 0 8px">
-        <span style="font-size: 24px; font-weight: bold; margin-right: 8px" class="card__title">게시판</span>
+      <div class="card__box top">
+        <span class="card__title">게시판</span>
         <nuxt-link to="/new">새 글</nuxt-link>
       </div>
       <vue-board :professions="professions" />
@@ -78,3 +78,22 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/scss/color.scss';
+
+.card__container {
+  .card__box {
+    margin-bottom: 8px;
+    &.top {
+      margin-top: 24px;
+    }
+    .card__title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-right: 8px;
+      color: $oc-gray-8;
+    }
+  }
+}
+</style>

@@ -4,7 +4,7 @@ const DESCRIPTION = '직업 커뮤니티'
 const IMAGE =
   'https://mostpeople.s3.ap-northeast-2.amazonaws.com/mostpeople-logo.png'
 const PUBLIC_LINK = 'https://mostpeople.kr'
-const COLOR = '#27ae60'
+const COLOR = '#00a8ff'
 const RECAPTCHA_KEY = '6LeqJrMUAAAAAOJbrYYGuDw0OpmpbtXaeRsimrGy'
 const BASE_URL =
   NODE_ENV === 'production' ? 'https://mostpeople.kr' : 'http://localhost:3000'

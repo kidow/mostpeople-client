@@ -242,7 +242,7 @@ export default {
     border-radius: 4px;
     font-size: 16px;
     padding: 0 15px;
-    color: rgba(0, 0, 0, 0.65);
+    color: $oc-gray-7;
     border: 1px solid #d9d9d9;
     cursor: pointer;
     &:hover {

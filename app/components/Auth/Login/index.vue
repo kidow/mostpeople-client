@@ -106,7 +106,7 @@ export default {
     font-size: 16px;
     padding: 0 15px;
     cursor: pointer;
-    color: rgba(0, 0, 0, 0.65);
+    color: $oc-gray-7;
     border: 1px solid #d9d9d9;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     &:hover {
