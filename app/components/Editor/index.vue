@@ -150,7 +150,6 @@ export default {
   min-height: 20vh;
 
   img {
-    width: 100% !important;
     max-width: 100% !important;
   }
 }

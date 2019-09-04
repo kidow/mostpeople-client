@@ -1,6 +1,6 @@
 const { NODE_ENV } = process.env
-const TITLE = '모스트피플'
-const DESCRIPTION = 'Most people have a job.'
+const TITLE = '모스트피플 - 직업 커뮤니티'
+const DESCRIPTION = '직업 커뮤니티'
 const IMAGE =
   'https://mostpeople.s3.ap-northeast-2.amazonaws.com/mostpeople-logo.png'
 const PUBLIC_LINK = 'https://mostpeople.kr'

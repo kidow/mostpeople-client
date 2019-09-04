@@ -1,5 +1,7 @@
 <template>
-  <nuxt-link to="/">MOSTPEOPLE</nuxt-link>
+  <nuxt-link to="/">
+    <img src="~/assets/icons/logo.png" alt="logo" />
+  </nuxt-link>
 </template>
 
 <script>
@@ -15,8 +17,8 @@ a {
   color: $brand-color;
   font-weight: 300;
   font-size: 24px;
-  &:hover {
-    text-decoration: none;
+  img {
+    width: 166px;
   }
 }
 </style>

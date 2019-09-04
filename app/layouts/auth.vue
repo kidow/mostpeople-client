@@ -5,6 +5,8 @@
       <a-col :md="8" :sm="12" :xs="20">
         <nuxt />
         <div class="auth__footer">
+          <nuxt-link to="/">홈</nuxt-link>
+          <a-divider type="vertical" />
           <nuxt-link target="_blank" to="/terms">이용약관</nuxt-link>
           <a-divider type="vertical" />
           <nuxt-link target="_blank" to="/privacy">개인정보처리방침</nuxt-link>
@@ -15,12 +17,6 @@
     </a-row>
   </div>
 </template>
-
-<script>
-export default {
-  data: _ => ({})
-}
-</script>
 
 <style lang="scss" scoped>
 .auth__container {
