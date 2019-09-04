@@ -1,10 +1,10 @@
-# mostpeople-client
+# 모스트피플 클라이언트
 
 > My mathematical Nuxt.js project
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 $ npm run install
 

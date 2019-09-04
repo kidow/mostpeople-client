@@ -1,6 +1,10 @@
 <template>
   <footer>
     <ul>
+      <li v-if="$route.path !== '/'">
+        <nuxt-link to="/">홈</nuxt-link>
+        <span class="separator">•</span>
+      </li>
       <li>
         <nuxt-link to="/terms">이용약관</nuxt-link>
       </li>
@@ -71,6 +75,7 @@ export default {
       try {
         await this.$axios(options)
         this.notifySuccess('소중한 의견을 내어 주셔서 감사합니다!')
+        this.content = ''
         this.visible = false
         this.loading = false
       } catch (err) {

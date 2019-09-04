@@ -95,7 +95,7 @@ export default {
 @import '~/assets/scss/color.scss';
 
 .header__container {
-  padding-bottom: 1rem;
+  padding-bottom: 2rem;
   .header__box {
     display: flex;
     justify-content: space-between;
