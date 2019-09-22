@@ -6,12 +6,14 @@
         <slot />
       </a-col>
       <a-col :lg="lg" :sm="2" :xs="1" />
+      <vue-navigation v-if="$device.isMobile" />
     </a-row>
   </a-locale-provider>
 </template>
 
 <script>
 import koKR from 'ant-design-vue/lib/locale-provider/ko_KR'
+import VueNavigation from '~/components/Navigation'
 export default {
   name: 'Layout',
   data: _ => ({
@@ -23,6 +25,9 @@ export default {
       if (path.indexOf('/post') > -1) return 5
       else return 3
     }
+  },
+  components: {
+    VueNavigation
   }
 }
 </script>

@@ -7,7 +7,7 @@ const PUBLIC_LINK = 'https://mostpeople.kr'
 const COLOR = '#2E3192'
 const RECAPTCHA_KEY = '6LeqJrMUAAAAAOJbrYYGuDw0OpmpbtXaeRsimrGy'
 const BASE_URL =
-  NODE_ENV === 'production' ? 'https://mostpeople.kr' : 'http://localhost:3000'
+  NODE_ENV === 'production' ? PUBLIC_LINK : 'http://localhost:3000'
 const API_BASE_URL =
   NODE_ENV === 'production'
     ? 'https://api.mostpeople.kr'
