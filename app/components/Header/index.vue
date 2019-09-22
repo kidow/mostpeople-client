@@ -115,6 +115,7 @@ export default {
     }
   }
   .header__box__mobile {
+    padding-bottom: 10px;
     .header__component {
       display: flex;
       justify-content: space-between;
