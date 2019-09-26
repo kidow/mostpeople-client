@@ -12,6 +12,36 @@ const API_BASE_URL =
   NODE_ENV === 'production'
     ? 'https://api.mostpeople.kr'
     : 'http://localhost:3001'
+const snippets = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    url: PUBLIC_LINK,
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: '+82-10-5140-5480',
+        contactType: 'customer service'
+      }
+    ]
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    url: PUBLIC_LINK,
+    logo: IMAGE
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: PUBLIC_LINK,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${BASE_URL}/search?keyword={search_term_string}`,
+      'query-input': 'required name=search_term_string'
+    }
+  }
+]
 
 module.exports = {
   mode: 'universal',
@@ -49,6 +79,10 @@ module.exports = {
       {
         name: 'theme-color',
         content: COLOR
+      },
+      {
+        name: 'naver-site-verification',
+        content: 'd1bbf42aae7787d3a852803c3d79616b8773515a'
       },
 
       // Open Graph
@@ -93,6 +127,13 @@ module.exports = {
         rel: 'stylesheet',
         href:
           'https://fonts.googleapis.com/css?family=Nanum+Gothic:400,700&display=swap&subset=korean'
+      }
+    ],
+    __dangerouslyDisableSanitizers: ['script'],
+    script: [
+      {
+        innerHTML: JSON.stringify(snippets),
+        type: 'application/ld+json'
       }
     ]
   },

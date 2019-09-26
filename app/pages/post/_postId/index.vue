@@ -239,6 +239,22 @@ export default {
     async copyLink() {
       this.$copyText(`${process.env.BASE_URL}${this.$route.path}`)
       this.messageSuccess('성공적으로 복사되었습니다')
+    },
+    makeSnippet() {
+      return [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: this.breadcrumbs[0].name,
+              item: process.env.BASE_URL + this.$route.path
+            }
+          ]
+        }
+      ]
     }
   },
   head() {
@@ -304,6 +320,13 @@ export default {
           property: 'twitter:domain',
           content: process.env.BASE_URL + this.$route.path
         }
+      ],
+      __dangerouslyDisableSanitizers: ['script'],
+      script: [
+        {
+          innerHTML: JSON.stringify(this.makeSnippet()),
+          type: 'application/ld+json'
+        }
       ]
     }
   },
@@ -335,6 +358,7 @@ export default {
   },
   mounted() {
     this.mounted = true
+    console.log(this.breadcrumbs)
   }
 }
 </script>
